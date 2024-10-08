@@ -21,6 +21,7 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { HomeService } from './core/service/home.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +43,8 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
     ThemeModule.forRoot(),
   ],
   providers: [
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor])),
+    HomeService
   ],
   bootstrap: [AppComponent],
 })
