@@ -1,19 +1,21 @@
 <div class="container">
   <div class="align-content-center">
     <div class="row">
-      <ng-container>
-        <div class="col-md-12 col-lg-7 col-xxxl-7" *ngIf="odsData">
+      <ng-container *ngIf="odsData">
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
           <img class="logo-ODS" src="assets/images/app/logo-ODS.png" alt="">
-          <div>Objetivo {{odsData.order}}</div>
-          <div>{{odsData.description}}</div>
-          <div>Meta Global</div>
+        </div>
+        <div class="col-md-12 col-lg-7 col-xxxl-7">
+          <h6 class="title">Objetivo {{odsData.order}}</h6>
+          <p>{{odsData.description}}</p>
+          <h6 class="title">Meta Global</h6>
           <div *ngFor="let item of odsData.odsGoals">
-            <p>{{ item.order }} - {{ item.description }}</p>
+            <p><strong>{{ item.order }}</strong> {{ item.description }}</p>
           </div>
         </div>
         <div class="col-md-12 col-lg-5 col-xxxl-5">
           <div class="ods-icons">
-            <img *ngFor="let i of odsNumbers" 
+            <img *ngFor="let i of odsNumbers" class="pointer"
                   [src]="'assets/images/app/ODS/ODS-' + i + '.png'" 
                   [alt]="'ODS ' + i"
                   (click)="getOdsInfo(i)">
