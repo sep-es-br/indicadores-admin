@@ -1,0 +1,64 @@
+<div class="container">
+  <div class="align-content-center">
+    <div class="row">
+      <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+      <ng-container>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <div class="d-flex justify-content-end">
+            <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
+            <div class="card-create-icon">
+              <i class="fas fa-plus-square"></i>
+            </div>
+          </div>
+          <div class="container mt-2">
+            <div *ngFor="let management of managements" class="row p-2 mb-2 align-items-center management-card">
+              <div class="col-sm-2">
+                <span class="fw-bold">Gestão</span>
+                <span>{{ management.name }}</span>
+              </div>
+              <div class="col-sm-4">
+                <span class="fw-bold">Descrição</span>
+                <span>{{ management.description }}</span>
+              </div>
+              <div class="col-sm-2">
+                <span class="fw-bold">Início da Gestão</span>
+                <span>{{ management.startYear }}</span>
+              </div>
+              <div class="col-sm-2">
+                <span class="fw-bold">Final da Gestão</span>
+                <span>{{ management.endYear }}</span>
+              </div>
+              <div class="col-sm-1">
+                <span class="fw-bold">Status:</span>
+                <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
+                  {{ management.active ? 'Ativo' : 'Inativo' }}
+                </span>
+              </div>
+              <div class="col-sm-1 d-flex justify-content-end">
+                <div ngbDropdown>
+                  <button class="btn border-none" ngbDropdownToggle>
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <div ngbDropdownMenu>
+                    <button ngbDropdownItem class="d-flex align-items-center">
+                      <i class="fas fa-pen-square m-2"></i>
+                      <span>Editar</span>
+                    </button>
+                    <button ngbDropdownItem class="d-flex align-items-center">
+                      <i class="fas fa-trash-alt m-2"></i>
+                      <span>Excluir</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ngx-pagination
+      [paginacaoDadosInput]="paginacaoDados"
+      (paginacaoOutput)="paginacaoOutputEvent($event)"
+    ></ngx-pagination>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

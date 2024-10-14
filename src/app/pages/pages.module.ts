@@ -9,6 +9,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import { HomeModule } from '../features/home/home.module';
 import { LoginModule } from '../features/login/login.module';
+import { ManagementModule } from '../features/management/management.module';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { LoginModule } from '../features/login/login.module';
     ECommerceModule,
     MiscellaneousModule,
     HomeModule,
+    ManagementModule,
     LoginModule
   ],
   declarations: [

@@ -5,7 +5,9 @@ import {Router} from '@angular/router';
 
 import { IProfile } from '../../core/interfaces/profile.interface';
 import { ProfileService } from '../../core/service/profile.service';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { NbToastrService } from '@nebular/theme';
 
 
 @Component({
@@ -16,7 +18,8 @@ import { tap } from 'rxjs/operators';
 export class AuthRedirectComponent {
   constructor(
     private _router: Router,
-    private _profileService: ProfileService
+    private _profileService: ProfileService,
+    private toastrService: NbToastrService,
   ) {
     const tokenQueryParamMap =
       this._router.getCurrentNavigation()?.initialUrl.queryParamMap;
@@ -42,10 +45,26 @@ export class AuthRedirectComponent {
             email: response.email,
             role: response.role,
           };
+          if (!response.role.includes('INDICADORES_ADMIN')) {
+            this.toastrService.show(
+              'Acesso negado: Você não tem permissão para acessar essa aplicação',
+              'Atenção',
+              { status: 'warning', duration: 8000 }
+            );
+            sessionStorage.clear(); 
+            this._router.navigate(['/login']); 
+            return;
+          }
 
           sessionStorage.setItem('user-profile', JSON.stringify(userProfile));
           this._router.navigate(['pages']);
         }),
+        catchError((error) => {
+          console.error('Erro ao obter informações do perfil:', error);
+          sessionStorage.clear();
+          this._router.navigate(['/login']);
+          return of(null);
+        })
       )
       .subscribe();
   }

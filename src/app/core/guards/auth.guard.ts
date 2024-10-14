@@ -1,8 +1,6 @@
 import {
   CanActivateChildFn,
-  UrlSegment,
-  UrlSegmentGroup,
-  UrlTree,
+  Router
 } from '@angular/router';
 
 export const authGuard: CanActivateChildFn = (route, state) => {
@@ -12,11 +10,10 @@ export const authGuard: CanActivateChildFn = (route, state) => {
     return true;
   }
 
-  const loginPageReroute = new UrlTree(
-    new UrlSegmentGroup([], {
-      primary: new UrlSegmentGroup([new UrlSegment('login', {})], {}),
-    })
-  );
+  const router = new Router();  
+  router.navigateByUrl('/login', {
+    state: { authError: 'Você precisa estar logado para acessar essa página.' }
+  });
 
-  return loginPageReroute;
+  return false;
 };

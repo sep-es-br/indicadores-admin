@@ -1,0 +1,19 @@
+.form-control {
+    background-color: transparent;
+    border: none;
+    border: 1px solid #0098DA; 
+    outline: none;
+    width: 100%;
+    padding: 5px;
+    font-size: 15px;
+    color: #0098DA; 
+  }
+  
+  .form-control::placeholder {
+    color: #0098DA; 
+  }
+  
+  .form-control:focus {
+    outline: none; 
+    box-shadow: none;
+  }

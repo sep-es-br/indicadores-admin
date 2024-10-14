@@ -16,7 +16,9 @@ import {
   NbDatepickerModule,
   NbDialogModule,
   NbMenuModule,
+  NbLayoutModule,
   NbSidebarModule,
+  NbThemeModule,
   NbToastrModule,
   NbWindowModule,
 } from '@nebular/theme';
@@ -32,9 +34,11 @@ import { HomeService } from './core/service/home.service';
     AppRoutingModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
+    NbLayoutModule,
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
+    NbThemeModule.forRoot(),
     NbToastrModule.forRoot(),
     NbChatModule.forRoot({
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',

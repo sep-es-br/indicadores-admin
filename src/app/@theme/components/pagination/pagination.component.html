@@ -1,0 +1,29 @@
+<div
+  class="d-flex flex-column flex-md-row justify-content-between"
+>
+  <div class="col-10 col-md-4 mb-2 mb-md-0">
+    <span class="report-total">
+      Mostrando de {{ paginacaoDadosInput.primeiroItemPagina }} até
+      {{ paginacaoDadosInput.ultimoItemPagina }} registros de
+      {{ paginacaoDadosInput.totalRegistros }}
+    </span>
+  </div>
+  <div class="col-10 col-md-4 mt-2 mt-md-0 d-flex justify-content-end">
+    <ngb-pagination
+      [page]="paginacaoDadosInput.paginaAtual"
+      [pageSize]="paginacaoDadosInput.itensPorPagina"
+      [collectionSize]="paginacaoDadosInput.totalRegistros"
+      [boundaryLinks]="true"
+      (pageChange)="ngbPaginationPageChangeEvent($event)"
+      [maxSize]="5" 
+      [rotate]="true" 
+      [ellipses]="false" 
+      [boundaryLinks]="true"
+    >
+      <!-- <ng-template ngbPaginationFirst>Primeiro</ng-template>
+      <ng-template ngbPaginationNext>Próximo</ng-template>
+      <ng-template ngbPaginationPrevious>Anterior</ng-template>
+      <ng-template ngbPaginationLast>Último</ng-template> -->
+    </ngb-pagination>
+  </div>
+</div>
