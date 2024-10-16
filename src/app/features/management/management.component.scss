@@ -30,8 +30,12 @@
     cursor: pointer;
     line-height: 1.1;
   }
+
+  .button-color:focus{
+    box-shadow: none;
+  }
   
-  .fw-bold {
+  .fw-bold, .button-color {
     color: #0098DA;
   }
   
@@ -49,7 +53,7 @@
   }
 
   .dropdown-menu {
-    min-width: auto; /* Dimensão mínima para o menu dropdown */
+    min-width: auto; 
   }
   
   .dropdown-menu-end {
@@ -61,17 +65,17 @@
     background-color: #EDF1F7;
   }
   .menu-icon:hover {
-    background-color: #E4E9F2; /* Cor de fundo ligeiramente mais escura ao passar o mouse */
+    background-color: #E4E9F2; 
     cursor: pointer;
   }
   
   @media (max-width: 991px) {
     .row {
-      margin-bottom: 15px; /* Espaçamento entre os blocos em telas pequenas */
+      margin-bottom: 15px; 
     }
     
     .text-end {
-      text-align: left; /* Centraliza o texto à esquerda em telas pequenas */
+      text-align: left; 
     }
   }
   

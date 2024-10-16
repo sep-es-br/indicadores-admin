@@ -5,6 +5,8 @@ import { ErrorHandlerService } from "./error-handler.service";
 import { Observable, throwError } from "rxjs";
 import { IManagement } from "../interfaces/management.interface";
 import { catchError } from "rxjs/operators";
+import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-get.interface";
+import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
 
 @Injectable({
     providedIn: 'root',
@@ -15,8 +17,11 @@ import { catchError } from "rxjs/operators";
 
     constructor(private _http: HttpClient, private _errorHandlerService: ErrorHandlerService) {}
 
-    public getManagements(): Observable<IManagement> {
-        return this._http.get<IManagement>(`${this._url}`).pipe(
+    public getManagements(pageConfig: IHttpGetRequestBody): Observable<IHttpGetResponseBody<IManagement>> {
+        return this._http.get<IHttpGetResponseBody<IManagement>>(`${this._url}`,{
+          params:
+            PageableQueryStringParametersHelper.buildQueryStringParams(pageConfig),
+        }).pipe(
           catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
             return throwError(() => err);

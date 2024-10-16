@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { menulinks } from '../../@core/utils/menuLinks';
 import { HomeService } from '../../core/service/home.service';
 import { IOds } from '../../core/interfaces/ods.interface';
@@ -17,10 +17,13 @@ export class HomeComponent implements OnInit {
 
   public odsNumbers = Array.from({ length: 17 }, (_, i) => i + 1);
 
-  constructor(private homeService: HomeService) { 
+  constructor(private homeService: HomeService, private route: ActivatedRoute) { 
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      console.log('ID:', params['id']); // Exibe no console para teste
+    });
     this.getOdsInfo(1)
   }
 

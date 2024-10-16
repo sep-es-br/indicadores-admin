@@ -43,7 +43,7 @@ export class AuthRedirectComponent {
           const userProfile = {
             name: response.name,
             email: response.email,
-            role: response.role,
+            roles: response.role,
           };
           if (!response.role.includes('INDICADORES_ADMIN')) {
             this.toastrService.show(

@@ -4,11 +4,14 @@ import { ManagementComponent } from './management.component';
 import { NbButtonModule, NbContextMenuModule, NbIconModule } from '@nebular/theme';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ThemeModule } from '../../@theme/theme.module';
+import { ManagementRoutingModule } from './management-routing.module';
+import { NewManagementComponent } from './new-management/new-management.component';
 
 
 @NgModule({
   declarations: [
     ManagementComponent,
+    NewManagementComponent
   ],
   imports: [
     CommonModule,
@@ -16,7 +19,8 @@ import { ThemeModule } from '../../@theme/theme.module';
     NbIconModule,
     NbButtonModule,
     NbContextMenuModule,
-    ThemeModule
+    ThemeModule,
+    ManagementRoutingModule,
   ]
 })
 export class  ManagementModule { }
