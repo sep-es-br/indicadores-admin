@@ -1,6 +1,5 @@
 export interface IHttpError {
-  status: string;
-  codigo: number;
-  mensagem: string;
-  erros: Array<string>;
+  mensagem: string; 
+  codigo: number;   
+  erros?: string[]; 
 }

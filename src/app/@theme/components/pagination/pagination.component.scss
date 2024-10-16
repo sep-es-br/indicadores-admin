@@ -1,0 +1,23 @@
+span.report-total {
+  vertical-align: sub !important;
+  color: #0098DA;
+}
+
+::ng-deep .pagination .page-item .page-link {
+  text-decoration: none; 
+  background-color: transparent;
+  border: 0.5px solid #0098DA; 
+  color: #0098DA;
+}
+
+::ng-deep .pagination .page-item .page-link:focus {
+  box-shadow: none; 
+}
+
+::ng-deep .pagination .page-item.active .page-link {
+  text-decoration: none; 
+  background-color: #0098DA;
+  border: 0.5px solid #0098DA; 
+  color: white;
+}
+

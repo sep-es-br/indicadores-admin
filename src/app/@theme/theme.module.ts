@@ -38,6 +38,12 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { RouterModule } from '@angular/router';
+import { TableSearchComponent } from './components/table-search/table-search.component';
+import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from './components/pagination/pagination.component';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -52,10 +58,14 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
+  NgbPaginationModule
 ];
 const COMPONENTS = [
   HeaderComponent,
   FooterComponent,
+  BreadcrumbComponent,
+  TableSearchComponent,
+  PaginationComponent,
   SearchInputComponent,
   TinyMCEComponent,
   OneColumnLayoutComponent,
@@ -71,7 +81,7 @@ const PIPES = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES],
+  imports: [CommonModule,RouterModule,FormsModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES],
 })

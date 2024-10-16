@@ -1,0 +1,82 @@
+/* Bordas arredondadas e layout responsivo */
+.container {
+    max-width: 100%;
+  }
+
+  button[ngbDropdownToggle]::after {
+    display: none;
+  }
+  
+  
+  .management-card {
+    border-left: 4px solid #0098DA; 
+    border-right: none; 
+    border-top: 1px solid #0098DA; 
+    border-bottom: 1px solid #0098DA; 
+    border-radius: 5px 0 0 5px; 
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+
+  .card-create-icon{
+    i{
+      color: #0098DA;
+      width: 30px;
+    }
+  }
+  
+  .card-create-icon i {
+    font-size: 2.5em;
+    cursor: pointer;
+    line-height: 1.1;
+  }
+
+  .button-color:focus{
+    box-shadow: none;
+  }
+  
+  .fw-bold, .button-color {
+    color: #0098DA;
+  }
+  
+  span {
+    display: block;
+    line-height: 1.5; 
+  }
+  
+  .text-danger {
+    color: red; 
+  }
+  
+  .text-success {
+    color: green; 
+  }
+
+  .dropdown-menu {
+    min-width: auto; 
+  }
+  
+  .dropdown-menu-end {
+    right: 0;
+    left: auto;
+  }
+
+  .menu-icon {
+    background-color: #EDF1F7;
+  }
+  .menu-icon:hover {
+    background-color: #E4E9F2; 
+    cursor: pointer;
+  }
+  
+  @media (max-width: 991px) {
+    .row {
+      margin-bottom: 15px; 
+    }
+    
+    .text-end {
+      text-align: left; 
+    }
+  }
+  
+

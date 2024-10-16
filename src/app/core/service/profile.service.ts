@@ -12,7 +12,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ProfileService {
-  private _url = `${environment.apiUrl}/signin/user-info`;
+  private _url = `${environment.apiUrl}/signin`;
   private _sessionProfileSubject = new BehaviorSubject<IProfile>({token:"", name:"", email:"", role:[]});
   public sessionProfile$ = this._sessionProfileSubject.asObservable();
 
@@ -22,7 +22,16 @@ export class ProfileService {
   ) { }
 
   public getUserInfo(): Observable<IProfile> {
-    return this._http.get<IProfile>(`${this._url}`).pipe(
+    return this._http.get<IProfile>(`${this._url}/user-info`).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  public getTokenInfo(urlToken: string): Observable<IProfile> {
+    return this._http.get<IProfile>(`${this._url}/token-info`).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => err);

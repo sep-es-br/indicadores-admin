@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
-import { ToastService } from './toast.service';
 import { IHttpError } from '../interfaces/http-error.interface';
+import { NbToastrService } from '@nebular/theme';
 
 
 /**
@@ -13,7 +13,7 @@ import { IHttpError } from '../interfaces/http-error.interface';
   providedIn: 'root',
 })
 export class ErrorHandlerService {
-  constructor(private _toastService: ToastService, private _router: Router) {
+  constructor(private toastrService: NbToastrService, private _router: Router) {
   }
 
   /**
@@ -30,29 +30,29 @@ export class ErrorHandlerService {
    */
   public handleError(error: HttpErrorResponse): void {
     const backEndError: IHttpError = error.error;
-
+    let errorMessage = 'Houve um erro ao processar sua requisição.';
     if (backEndError) {
-      this._toastService.showToast(
-        'error',
-        backEndError.mensagem,
-        backEndError.erros
-      );
-    } else {
-      this._toastService.showToast('error', 'Ocorreu um erro.', [
-        'Houve um erro ao processar sua requisição.',
-      ]);
+      errorMessage = backEndError.erros.join(', ') || errorMessage;
     }
 
     const errorCode = backEndError.codigo;
 
     switch (errorCode) {
       case 401:
-        this._router.navigateByUrl('login');
+        this._router.navigate(['/login'], {
+          state: { authError: errorMessage }
+        });
         break;
       case 403:
-        this._router.navigateByUrl('login');
+        this._router.navigate(['/login'], {
+          state: { authError: errorMessage }
+        });
         break;
       default:
+        this.toastrService.show(
+          errorMessage , 'Atenção',
+          { status: 'warning', duration: 8000 }
+        );
         break;
     }
   }

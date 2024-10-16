@@ -1,14 +1,4 @@
 import { NbMenuItem } from '@nebular/theme';
-import { menulinks } from '../@core/utils/menuLinks';
-
-const dynamicMenuItems: NbMenuItem[] = menulinks.map(menu => ({
-  title: menu.name,
-  icon: menu.menuIcon || 'monitor-outline', 
-  link: menu.link || undefined,
-  url: menu.url || undefined,
-  target: menu.url ? '_blank' : undefined, 
-  hidden: !menu.status,
-}));
 
 export const MENU_ITEMS: NbMenuItem[] = [
   {
@@ -17,7 +7,36 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/home',
     
   },
-  ...dynamicMenuItems,
+  {
+    title: 'Gestão Administrativa',
+    icon: 'repeat-outline',
+    link: '/pages/management',
+    
+  },
+  {
+    title: 'Eixos',
+    icon: 'shuffle-2-outline',
+    link: '/pages/axes',
+  },
+  {
+    title: 'Áreas Temáticas',
+    icon: 'loader-outline',
+    link: '/pages/area',
+    
+  },
+  {
+    title: 'Desafios',
+    icon: 'shuffle-outline',
+    link: '/pages/challenge',
+    
+  },
+  {
+    title: 'Indicadores',
+    icon: 'trending-up-outline',
+    link: '/pages/indicators',
+    
+  },
+
   // {
   //   title: 'FEATURES',
   //   group: true,
