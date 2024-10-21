@@ -24,6 +24,7 @@ import {
 } from '@nebular/theme';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { HomeService } from './core/service/home.service';
+import { applicationInterceptor } from './core/interceptors/application.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,7 +48,7 @@ import { HomeService } from './core/service/home.service';
     ThemeModule.forRoot(),
   ],
   providers: [
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, applicationInterceptor])),
     HomeService
   ],
   bootstrap: [AppComponent],
