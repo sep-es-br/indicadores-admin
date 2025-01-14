@@ -29,4 +29,12 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
         );
       }
 
-  }
+      public createManagement(management: IManagement): Observable<IManagement> {
+        return this._http.post<IManagement>(this._url, management).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err);
+          })
+        );
+      }
+    }

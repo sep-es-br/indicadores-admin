@@ -1,4 +1,9 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
+import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { IManagement } from '../../../core/interfaces/management.interface';
+import { ManagementService } from '../../../core/service/management.service';
 
 
 @Component({
@@ -8,91 +13,67 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 })
 export class NewManagementComponent{
 
-  // private _pageConfig: IHttpGetRequestBody = {
-  //   page: 0,
-  //   search: '',
-  //   size: 8,
-  //   sort: '',
-  // };
+  submitted = false;
+  form: FormGroup;
 
-  // private _managementList: BehaviorSubject<Array<IManagement>> =
-  // new BehaviorSubject<Array<IManagement>>([]);
-  
-  // public get managementList(): Observable<Array<IManagement>> {
-  //   return this._managementList;
-  // }
+  public breadcrumb: Array<IBreadcrumbItem> = [];
 
-  // public loading: boolean = true;
 
-  // public breadcrumb: Array<IBreadcrumbItem> = [];
-
-  // public managements: IManagement;
-
-  // public paginacaoDados: IPaginacaoDados = {
-  //   paginaAtual: 1,
-  //   itensPorPagina: 8,
-  //   primeiroItemPagina: 1,
-  //   ultimoItemPagina: 8,
-  //   totalRegistros: 50,
-  // };
-
-  constructor() { 
+  constructor(private fb: FormBuilder, private router: Router, private managementService: ManagementService) { 
+    this.form = this.fb.group({
+      name: ['', [Validators.required]], 
+      description: ['', [Validators.required]], 
+      startYear: ['', [Validators.required, Validators.min(1000), Validators.max(9999)]], 
+      endYear: ['', [Validators.required, Validators.min(1000), Validators.max(9999)]], 
+    });
+    this.updateBreadcrumb()
   }
 
+  onSubmit(): void {
+    this.submitted = true;
+    if (this.form.valid) {
+      const management: IManagement = {
+        name: this.form.value.name,
+        description: this.form.value.description,
+        startYear: this.form.value.startYear,
+        endYear: this.form.value.endYear,
+      };
 
+      this.managementService.createManagement(management).subscribe({
+        next: (response) => {
+          console.log('Gestão criada com sucesso:', response);
+          this.router.navigate(['/pages/management']);
+        },
+        error: (error) => {
+          console.error('Erro ao criar gestão:', error);
+          this.router.navigate(['/pages/management']);
+        },
+      });
+    }
+  }
 
-  // private fetchPage(pageConfigParam?: {
-  //   [K in keyof IHttpGetRequestBody]?: IHttpGetRequestBody[K];
-  // }): void {
-  //   const tempPageConfig = { ...this._pageConfig, ...pageConfigParam };
+  onCancel(): void {
+    this.form.reset();
+    this.router.navigate(['/pages/management']);
+  }
 
-  //   this.managementService.getManagements(tempPageConfig).pipe(tap((response) => {
-  //     this._managementList.next(response.content);
+  onInput(event: any): void {
+    const inputElement = event.target;
+    if (inputElement.value.length > 4) {
+      inputElement.value = inputElement.value.slice(0, 4);
+    }
+  }
 
-  //     this.paginacaoDados = {
-  //       paginaAtual: response.pageable.pageNumber + 1,
-  //       itensPorPagina: response.pageable.pageSize,
-  //       primeiroItemPagina: response.pageable.offset + 1,
-  //       ultimoItemPagina:
-  //         response.pageable.offset + response.numberOfElements,
-  //       totalRegistros: response.totalElements,
-  //     };
-  //   }),
-  //   finalize(() => (this.loading = false, this.updateBreadcrumb()))
-  // )
-  // .subscribe();
+  updateBreadcrumb() {
+		this.breadcrumb = [
+			{
+				label: 'Gestão Administrativa',
+			},
+      {
+				label: 'Cadastrar',
+			},
 
-  // }
-
-  // public filtroPesquisaOutputEvent(filtro: string): void {
-  //   this._pageConfig.search = filtro;
-
-  //   if (!filtro) {
-  //     this._pageConfig.sort = '';
-  //     this.limparSortColumn();
-  //   }
-
-  //   this.fetchPage();
-  // }
-
-  // public paginacaoOutputEvent(event: number): void {
-  //   this.fetchPage({ page: event - 1 });
-  // }
-
-  // updateBreadcrumb() {
-	// 	this.breadcrumb = [
-	// 		{
-	// 			label: 'Gestão Administrativa',
-	// 		},
-
-	// 	];
-	// }
-
-  // private limparSortColumn(): void {
-  //   document.querySelectorAll('th[ng-reflect-sortable]').forEach((el) => {
-  //     this._r2.removeClass(el, 'asc');
-  //     this._r2.removeClass(el, 'desc');
-  //   });
-  // }
+		];
+	}
 
 }

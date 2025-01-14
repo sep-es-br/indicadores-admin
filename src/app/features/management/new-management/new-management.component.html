@@ -1,65 +1,80 @@
-<h1>Teste</h1>
-<!-- <div class="container">
+<div class="container"> 
   <div class="align-content-center">
-    <div class="row" *ngIf="!loading">
+    <div class="row">
       <ng-container>
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
         <div class="col-md-12 col-lg-12 col-xxxl-12">
-          <div class="d-flex justify-content-end">
-            <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
-            <div class="card-create-icon">
-              <i class="fas fa-plus-square"></i>
-            </div>
-          </div>
-          <div class="container mt-2">
-            <div *ngFor="let management of managementList | async" class="row p-2 mb-2 align-items-center management-card">
-              <div class="col-sm-2">
-                <span class="fw-bold">Nome</span>
-                <span>{{ management.name }}</span>
-              </div>
-              <div class="col-sm-4">
-                <span class="fw-bold">Descrição</span>
-                <span>{{ management.description }}</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="fw-bold">Início da Gestão</span>
-                <span>{{ management.startYear }}</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="fw-bold">Final da Gestão</span>
-                <span>{{ management.endYear }}</span>
-              </div>
-              <div class="col-sm-1">
-                <span class="fw-bold">Status:</span>
-                <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
-                  {{ management.active ? 'Ativo' : 'Inativo' }}
-                </span>
-              </div>
-              <div class="col-sm-1 d-flex justify-content-end">
-                <div ngbDropdown>
-                  <button class="btn button-color" ngbDropdownToggle>
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                  <div ngbDropdownMenu>
-                    <button ngbDropdownItem class="d-flex align-items-center">
-                      <i class="fas fa-pen-square m-2"></i>
-                      <span>Editar</span>
-                    </button>
-                    <button ngbDropdownItem class="d-flex align-items-center">
-                      <i class="fas fa-trash-alt m-2"></i>
-                      <span>Excluir</span>
-                    </button>
+          <p>Cadastrar</p>
+          <div class="form-container">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Gestão</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    class="form-control" 
+                    placeholder="Digite a gestão" 
+                    formControlName="name"
+                    [ngClass]="{'is-invalid': submitted && form.controls['name'].invalid}" />
+                  <div *ngIf="submitted && form.controls['name'].invalid" class="invalid-feedback">
+                    O campo gestão é obrigatório.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="description">Descrição</label>
+                  <input 
+                    type="text" 
+                    id="description" 
+                    class="form-control" 
+                    placeholder="Digite a descrição" 
+                    formControlName="description" 
+                    [ngClass]="{'is-invalid': submitted && form.controls['description'].invalid}" />
+                  <div *ngIf="submitted && form.controls['description'].invalid" class="invalid-feedback">
+                    O campo descrição é obrigatório.
                   </div>
                 </div>
               </div>
-            </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="startYear">Início da Gestão</label>
+                  <input 
+                    type="number" 
+                    id="startYear" 
+                    class="form-control" 
+                    placeholder="Ano" 
+                    min="1000" 
+                    max="9999" 
+                    formControlName="startYear" 
+                    [ngClass]="{'is-invalid': submitted && form.controls['startYear'].invalid}" />
+                  <div *ngIf="submitted && form.controls['startYear'].invalid" class="invalid-feedback">
+                    O campo início da gestão é obrigatório e deve ser um ano válido.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="endYear">Final da Gestão</label>
+                  <input 
+                    type="number" 
+                    id="endYear" 
+                    class="form-control" 
+                    placeholder="Ano" 
+                    min="1000" 
+                    max="9999" 
+                    formControlName="endYear" 
+                    [ngClass]="{'is-invalid': submitted && form.controls['endYear'].invalid}" />
+                  <div *ngIf="submitted && form.controls['endYear'].invalid" class="invalid-feedback">
+                    O campo final da gestão é obrigatório e deve ser um ano válido.
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
           </div>
-          <ngx-pagination
-      [paginacaoDadosInput]="paginacaoDados"
-      (paginacaoOutput)="paginacaoOutputEvent($event)"
-    ></ngx-pagination>
         </div>
       </ng-container>
     </div>
   </div>
-</div> -->
+</div>

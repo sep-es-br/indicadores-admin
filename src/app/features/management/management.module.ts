@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ThemeModule } from '../../@theme/theme.module';
 import { ManagementRoutingModule } from './management-routing.module';
 import { NewManagementComponent } from './new-management/new-management.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { NewManagementComponent } from './new-management/new-management.componen
     NbContextMenuModule,
     ThemeModule,
     ManagementRoutingModule,
+    ReactiveFormsModule,
   ]
 })
 export class  ManagementModule { }

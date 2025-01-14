@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private _url = `${environment.apiUrl}/oauth2/authorization/admin-acessocidadao`;
+  private _url = `${environment.apiUrl}/oauth2/authorization/painel-acessocidadao`;
 
 
   constructor(private _http: HttpClient, private router: Router) {}
