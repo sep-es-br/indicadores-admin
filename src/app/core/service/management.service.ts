@@ -37,4 +37,14 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
           })
         );
       }
+
+      public deleteManagement(managementId: string): Observable<void> {
+        const url = `${this._url}/${managementId}`;
+        return this._http.delete<void>(url).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err); 
+          })
+        );
+      }
     }

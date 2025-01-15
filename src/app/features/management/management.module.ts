@@ -6,7 +6,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ThemeModule } from '../../@theme/theme.module';
 import { ManagementRoutingModule } from './management-routing.module';
 import { NewManagementComponent } from './new-management/new-management.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BreadcrumbComponent } from '../../@theme/components/breadcrumb/breadcrumb.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ThemeModule,
     ManagementRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
   ]
 })
 export class  ManagementModule { }

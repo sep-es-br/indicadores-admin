@@ -7,6 +7,7 @@ import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs-compat';
 import { finalize, tap } from 'rxjs/operators';
+import { NbDialogService } from '@nebular/theme';
 
 
 @Component({
@@ -29,6 +30,18 @@ export class ManagementComponent implements OnInit{
   public get managementList(): Observable<Array<IManagement>> {
     return this._managementList;
   }
+
+  public isEditing: boolean = false;
+  public isViewer: boolean = false; 
+
+  selectedManagement: IManagement = {
+    id: '',
+    name: '',
+    description: '',
+    startYear: 0,
+    endYear: 0,
+    active: false,
+  };
 
   public loading: boolean = true;
 
@@ -60,7 +73,7 @@ export class ManagementComponent implements OnInit{
 
     this.managementService.getManagements(tempPageConfig).pipe(tap((response) => {
       this._managementList.next(response.content);
-
+      console.log(response.content)
       this.paginacaoDados = {
         paginaAtual: response.pageable.pageNumber + 1,
         itensPorPagina: response.pageable.pageSize,
@@ -75,6 +88,18 @@ export class ManagementComponent implements OnInit{
   .subscribe();
 
   }
+
+  public deleteManagement(managementId: string): void {
+    if (confirm('Tem certeza de que deseja excluir esta gestão?')) {
+      this.managementService.deleteManagement(managementId)
+        .pipe(finalize(() => this.fetchPage())) 
+        .subscribe({
+          next: () => alert('Gestão excluída com sucesso!'),
+          error: (err) => alert('Erro ao excluir a gestão: ' + err.message),
+        });
+    }
+  }
+  
 
   public filtroPesquisaOutputEvent(filtro: string): void {
     this._pageConfig.search = filtro;
@@ -105,6 +130,68 @@ export class ManagementComponent implements OnInit{
       this._r2.removeClass(el, 'asc');
       this._r2.removeClass(el, 'desc');
     });
+  }
+
+  editManagement(management: IManagement): void {
+    this.selectedManagement = { ...management }; 
+    this.isEditing = true;
+    this.isViewer = false;
+    this.breadcrumb = [
+			{
+				label: 'Gestão Administrativa',
+			},
+      {
+				label: 'Editar',
+			},
+		];
+  }
+
+  viewManagement(management: IManagement): void {
+    this.selectedManagement = { ...management };
+    this.isViewer = true; 
+    this.isEditing = false;
+    this.breadcrumb = [
+			{
+				label: 'Gestão Administrativa',
+			},
+      {
+				label: 'Visualizar',
+			},
+		];
+  }
+  
+  cancelEdit(): void {
+    this.isEditing = false;
+    this.isViewer = true;
+    this.breadcrumb = [
+			{
+				label: 'Gestão Administrativa',
+			},
+      {
+				label: 'Visualizar',
+			},
+		];
+  }
+
+  toggleEditMode() {
+    this.isEditing = !this.isEditing;
+    this.isViewer = !this.isEditing;
+  }
+  
+  saveManagement(): void {
+    if (this.selectedManagement) {
+      // Lógica para salvar a gestão (chamada ao serviço)
+      // this.managementService.updateManagement(this.selectedManagement).subscribe(() => {
+      //   // Atualiza a lista de gestões ou exibe uma mensagem de sucesso
+      this.isEditing = false;
+      this.isViewer = true;
+      // });
+    }
+  }
+  
+  onBreadcrumbClick(data: any) {
+    // Lógica dinâmica dependendo do item clicado
+    console.log('Breadcrumb clicado:', data);
   }
 
 }

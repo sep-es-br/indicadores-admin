@@ -74,6 +74,146 @@
             </form>
           </div>
         </div>
+
+        <div class="organizer-container">
+          <p>Organizador</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Estrutura</th>
+                <th>Ícone</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Item em branco fixo no topo -->
+              <tr>
+                <td><input type="text" class="form-control" [(ngModel)]="newItem.name" placeholder="Nome" /></td>
+                <td><input type="text" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição" /></td>
+                <td>
+                  <select class="form-control" [(ngModel)]="newItem.structure">
+                    <option value="">Selecionar</option>
+                    <option value="Eixo">Eixo</option>
+                    <option value="Área Temática">Área Temática</option>
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" [(ngModel)]="newItem.icon">
+                    <option value="">Selecionar</option>
+                    <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" [(ngModel)]="newItem.status">
+                    <option value="">Selecionar</option>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                  </select>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-success btn-sm" (click)="addNewItem()">
+                    <i class="fa fa-plus"></i> <!-- ícone de "+" -->
+                  </button>
+                </td>
+              </tr>
+        
+              <!-- Lista de itens existentes -->
+              <ng-container *ngFor="let item of organizerList">
+                <ng-template [ngTemplateOutlet]="renderItem" [ngTemplateOutletContext]="{ item: item, parent: null }"></ng-template>
+              </ng-container>
+            </tbody>
+          </table>
+        
+          <!-- Template para renderizar itens (recursivo) -->
+          <ng-template #renderItem let-item="item" let-parent="parent">
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="item.name"
+                  placeholder="Nome"
+                  [disabled]="!item.editable" />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="item.description"
+                  placeholder="Descrição"
+                  [disabled]="!item.editable" />
+              </td>
+              <td>
+                <select class="form-control" [(ngModel)]="item.structure" [disabled]="!item.editable">
+                  <option value="">Selecionar</option>
+                  <option value="Eixo">Eixo</option>
+                  <option value="Área Temática">Área Temática</option>
+                </select>
+              </td>
+              <td>
+                <select class="form-control" [(ngModel)]="item.icon" [disabled]="!item.editable">
+                  <option value="">Selecionar</option>
+                  <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
+                </select>
+              </td>
+              <td>
+                <select class="form-control" [(ngModel)]="item.status" [disabled]="!item.editable">
+                  <option value="">Selecionar</option>
+                  <option value="Ativo">Ativo</option>
+                  <option value="Inativo">Inativo</option>
+                </select>
+              </td>
+              <td class="text-center"> <!-- Alinha todos os ícones ao centro -->
+                <!-- Botão de Editar/Salvar (Lápis ou Check) -->
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="toggleEditable(item)"
+                  [title]="item.editable ? 'Salvar' : 'Editar'">
+                  <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i> <!-- Lápis ou Check -->
+                </button>
+        
+                <!-- Botão de Excluir (Lixeira) -->
+                <button
+                  class="btn btn-danger btn-sm"
+                  (click)="deleteItem(parent || organizerList, item)"
+                  title="Excluir">
+                  <i class="fa fa-trash"></i> <!-- Lixeira -->
+                </button>
+        
+                <!-- Botão de Adicionar Subitem (Bolinha com +) -->
+                <button
+          *ngIf="item.structure === 'Eixo'"
+          class="btn btn-success btn-sm"
+          (click)="addChild(item)"
+          title="Adicionar Subitem"
+        >
+          <i class="fa fa-plus-circle"></i>
+        </button>
+              </td>
+            </tr>
+        
+            <!-- Subitens -->
+            <tr *ngIf="item.children && item.children.length">
+              <td colspan="6" class="sub-item">
+                <table class="table table-striped">
+                  <tbody>
+                    <ng-container *ngFor="let child of item.children">
+                      <ng-template [ngTemplateOutlet]="renderItem" [ngTemplateOutletContext]="{ item: child, parent: item.children }"></ng-template>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </ng-template>
+          <div class="text-center">
+            <button class="btn btn-success" (click)="saveItems()">Salvar Itens</button>
+          </div>
+        </div>
+        
+        
       </ng-container>
     </div>
   </div>

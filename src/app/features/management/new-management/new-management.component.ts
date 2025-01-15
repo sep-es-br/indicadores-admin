@@ -18,6 +18,29 @@ export class NewManagementComponent{
 
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
+  organizerList: any[] = [];
+
+  structure: any = {
+    name: 'Eixo', // Tipo principal
+    children: [ // Lista de subitens
+      {
+        name: 'Área', // Tipo do subitem
+      }
+    ]
+  };
+
+  newItem: any = {
+    name: '',
+    description: '',
+    structure: this.structure.name,
+    icon: '',
+    status: '',
+    children: [],
+  };
+
+  // Lista de ícones disponíveis
+  iconList: string[] = ['Ícone 1', 'Ícone 2', 'Ícone 3'];
+
 
   constructor(private fb: FormBuilder, private router: Router, private managementService: ManagementService) { 
     this.form = this.fb.group({
@@ -64,6 +87,48 @@ export class NewManagementComponent{
     }
   }
 
+  addNewItem(): void {
+    if (this.newItem.name || this.newItem.description || this.newItem.structure) {
+      this.organizerList.push({ ...this.newItem, editable: false }); 
+
+      this.newItem = {
+        name: '',
+        description: '',
+        structure: this.structure,
+        icon: '',
+        status: '',
+        children: [],
+        editable: true,
+      };
+    }
+  }
+
+
+  toggleEditable(item: any): void {
+    item.editable = !item.editable;
+  }
+  
+
+  addChild(item: any): void {
+    item.children = item.children || [];
+    item.children.push({
+      name: '',
+      description: '',
+      structure: this.structure.children.name,
+      icon: '',
+      status: '',
+      children: [],
+      editable: true, // Subitem novo começa editável
+    });
+  }
+
+  deleteItem(targetArray: any[], item: any): void {
+    const index = targetArray.indexOf(item);
+    if (index > -1) {
+      targetArray.splice(index, 1);
+    }
+  }
+
   updateBreadcrumb() {
 		this.breadcrumb = [
 			{
@@ -75,5 +140,15 @@ export class NewManagementComponent{
 
 		];
 	}
+
+  saveItems(): void {
+    console.log('Itens criados:', this.organizerList);
+    // Se você quiser ver todos os filhos também
+    this.organizerList.forEach(item => {
+      if (item.children.length > 0) {
+        console.log(`Item: ${item.name} possui filhos:`, item.children);
+      }
+    });
+  }
 
 }

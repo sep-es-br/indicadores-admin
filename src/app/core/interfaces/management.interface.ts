@@ -3,5 +3,6 @@ export interface IManagement{
     description: string,
     startYear: number,
     endYear:number,
-    active?:boolean
+    active?:boolean,
+    id?:string
 }

@@ -1,9 +1,10 @@
 <div class="container">
   <div class="align-content-center">
-    <div class="row" *ngIf="!loading">
+    <!-- Tabela -->
+    <div class="row">
       <ng-container>
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
-        <div class="col-md-12 col-lg-12 col-xxxl-12">
+        <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading && !isEditing && !isViewer">
           <div class="d-flex justify-content-end">
             <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
             <div class="card-create-icon" [routerLink]="['new']">
@@ -11,7 +12,10 @@
             </div>
           </div>
           <div class="container mt-2">
-            <div *ngFor="let management of managementList | async" class="row p-2 mb-2 align-items-center management-card">
+            <div
+              *ngFor="let management of managementList | async"
+              class="row p-2 mb-2 align-items-center management-card"
+            >
               <div class="col-sm-2">
                 <span class="fw-bold">Nome</span>
                 <span>{{ management.name }}</span>
@@ -40,13 +44,29 @@
                     <i class="fas fa-ellipsis-h"></i>
                   </button>
                   <div ngbDropdownMenu>
-                    <button ngbDropdownItem class="d-flex align-items-center">
+                    <button
+                      ngbDropdownItem
+                      class="d-flex align-items-center"
+                      (click)="editManagement(management)"
+                    >
                       <i class="fas fa-pen-square m-2"></i>
                       <span>Editar</span>
                     </button>
-                    <button ngbDropdownItem class="d-flex align-items-center">
+                    <button
+                      ngbDropdownItem
+                      class="d-flex align-items-center"
+                      (click)="deleteManagement(management.id)"
+                    >
                       <i class="fas fa-trash-alt m-2"></i>
                       <span>Excluir</span>
+                    </button>
+                    <button
+                      ngbDropdownItem
+                      class="d-flex align-items-center"
+                      (click)="viewManagement(management)"
+                    >
+                      <i class="fas fa-eye m-2"></i>
+                      <span>Visualizar</span>
                     </button>
                   </div>
                 </div>
@@ -54,11 +74,93 @@
             </div>
           </div>
           <ngx-pagination
-      [paginacaoDadosInput]="paginacaoDados"
-      (paginacaoOutput)="paginacaoOutputEvent($event)"
-    ></ngx-pagination>
+            [paginacaoDadosInput]="paginacaoDados"
+            (paginacaoOutput)="paginacaoOutputEvent($event)"
+          ></ngx-pagination>
         </div>
+
+            <!-- Formulário de Edição -->
+
+  <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="isEditing || isViewer">
+    <p>{{ isEditing ? 'Editar Gestão' : (isViewer ? 'Visualizar Gestão' : 'Gestão') }}</p>
+    <form>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="name" class="form-label">Gestão</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            [(ngModel)]="selectedManagement.name"
+            name="name"
+            [readonly]="!isEditing && isViewer"
+            placeholder="Digite a gestão"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="description" class="form-label">Descrição</label>
+          <input
+            type="text"
+            id="description"
+            class="form-control"
+            [(ngModel)]="selectedManagement.description"
+            name="description"
+            [readonly]="!isEditing && isViewer"
+            placeholder="Digite a descrição"
+          />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="startYear" class="form-label">Início da Gestão</label>
+          <input
+            type="number"
+            id="startYear"
+            class="form-control"
+            [(ngModel)]="selectedManagement.startYear"
+            name="startYear"
+            [readonly]="!isEditing && isViewer"
+            placeholder="Ano"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="endYear" class="form-label">Final da Gestão</label>
+          <input
+            type="number"
+            id="endYear"
+            class="form-control"
+            [(ngModel)]="selectedManagement.endYear"
+            name="endYear"
+            [readonly]="!isEditing && isViewer"
+            placeholder="Ano"
+          />
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-secondary me-2 mr-3"
+          *ngIf="isEditing"
+          (click)="cancelEdit()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="isEditing ? saveManagement() : toggleEditMode()"
+          *ngIf="isViewer || isEditing"
+        >
+          {{ isEditing ? 'Salvar' : 'Editar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
       </ng-container>
     </div>
+
+
+
   </div>
 </div>
