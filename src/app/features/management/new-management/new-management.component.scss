@@ -197,13 +197,12 @@ p {
 }
 
 .sub-item:first-child td {
-  font-size: 0.85rem; /* Diminui o tamanho da fonte, você pode ajustar conforme necessário */
-  padding-left: 20px; /* Adiciona um deslocamento para a esquerda, para simular a cascata */
+  font-size: 0.85rem; 
+  padding-left: 20px; 
 }
 
-/* Estilo geral para os filhos restantes (subitens) */
 .sub-item td {
-  font-size: 1rem; /* Mantém o tamanho original, igual ao do pai */
-  padding-left: 10px; /* Um pouco menos de deslocamento para o restante */
+  font-size: 1rem; 
+  padding-left: 10px; 
 }
 

@@ -6,3 +6,20 @@ export interface IManagement{
     active?:boolean,
     id?:string
 }
+
+export interface OrganizerItem {
+    name: string;
+    description: string;
+    structureName: string;
+    icon: string;
+    status: string;
+    children: OrganizerItem[];
+    editable: boolean;
+  }
+
+  export interface StructureChild {
+    structureName: string;
+    namePlural?: string;
+    children?: StructureChild[];
+    editable: boolean;
+  }
