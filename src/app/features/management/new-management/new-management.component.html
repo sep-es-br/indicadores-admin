@@ -86,7 +86,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr class="new-structure-row">
                 <td><input type="text" class="form-control" [(ngModel)]="newStructure.structureName" placeholder="Nome" /></td>
                 <td><input type="text" class="form-control" [(ngModel)]="newStructure.namePlural" placeholder="Nome no Plural" /></td>
                 <td class="text-center" >
@@ -102,8 +102,8 @@
             </tbody>
           </table>
         
-          <ng-template #renderItemStructure let-item="item" let-parent="parent">
-            <tr>
+          <ng-template #renderItemStructure let-item="item" let-parent="parent" let-level="level">
+            <tr [class.has-children]="item.children && item.children.length" [ngClass]="'child-level-' + level" class="first-item">
               <td>
                 <input
                   type="text"
@@ -123,38 +123,26 @@
                 />
               </td>
               <td class="text-center">
-                <button
-                  class="btn btn-primary btn-sm"
-                  (click)="structureToggleEditable(item)"
-                  [title]="item.editable ? 'Salvar' : 'Editar'"
-                >
+                <button class="btn btn-primary btn-sm" (click)="structureToggleEditable(item)">
                   <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i>
                 </button>
-        
-                <button
-                  class="btn btn-danger btn-sm"
-                  (click)="deleteItemStructure(parent || structureList, item)"
-                  title="Excluir"
-                >
+          
+                <button class="btn btn-danger btn-sm" (click)="deleteItemStructure(parent || structureList, item)">
                   <i class="fa fa-trash"></i>
                 </button>
-                <button
-                  class="btn btn-success btn-sm"
-                  (click)="addChildStructure(item)"
-                  title="Adicionar Subitem"
-                >
+                <button class="btn btn-success btn-sm" (click)="addChildStructure(item)">
                   <i class="fa fa-plus-circle"></i>
                 </button>
               </td>
             </tr>
-        
+          
             <!-- Subitens -->
             <tr *ngIf="item.children && item.children.length">
-              <td colspan="3" class="sub-item">
+              <td colspan="3" class="sub-item no-top-border">
                 <table class="table table-striped">
                   <tbody>
                     <ng-container *ngFor="let child of item.children">
-                      <ng-template [ngTemplateOutlet]="renderItemStructure" [ngTemplateOutletContext]="{ item: child, parent: item.children }"></ng-template>
+                      <ng-template [ngTemplateOutlet]="renderItemStructure" [ngTemplateOutletContext]="{ item: child, parent: item.children, level: (level || 0) + 1 }"></ng-template>
                     </ng-container>
                   </tbody>
                 </table>
@@ -212,8 +200,8 @@
           </table>
         
           <!-- Template para renderizar itens (recursivo) -->
-          <ng-template #renderItem let-item="item" let-parent="parent">
-            <tr>
+          <ng-template #renderItem let-item="item" let-parent="parent" let-level="level">
+            <tr [class.has-children]="item.children && item.children.length" [ngClass]="'child-level-' + level" class="first-item">
               <td>
                 <input
                   type="text"
@@ -280,11 +268,11 @@
         
             <!-- Subitens -->
             <tr *ngIf="item.children && item.children.length">
-              <td colspan="6" class="sub-item">
+              <td colspan="6" class="sub-item no-top-border">
                 <table class="table table-striped">
                   <tbody>
                     <ng-container *ngFor="let child of item.children">
-                      <ng-template [ngTemplateOutlet]="renderItem" [ngTemplateOutletContext]="{ item: child, parent: item.children }"></ng-template>
+                      <ng-template [ngTemplateOutlet]="renderItem" [ngTemplateOutletContext]="{ item: child, parent: item.children, level: (level || 0) + 1 }"></ng-template>
                     </ng-container>
                   </tbody>
                 </table>
