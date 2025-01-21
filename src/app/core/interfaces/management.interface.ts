@@ -11,8 +11,8 @@ export interface OrganizerItem {
     name: string;
     description: string;
     structureName: string;
+    structureNamePlural: string;
     icon: string;
-    status: string;
     children: OrganizerItem[];
     editable: boolean;
   }

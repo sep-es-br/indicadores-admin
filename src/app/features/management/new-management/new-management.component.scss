@@ -77,8 +77,8 @@ p {
   }
 
   .is-invalid {
-    border-color: #dc3545;
-    background-color: #f8d7da;
+    border-color: #dc3545 !important;
+    background-color: #f8d7da !important;
   }
   
   .invalid-feedback {
@@ -253,4 +253,3 @@ p {
 .table .sub-item > table > tbody > tr.child-level-4 > td:first-child {
   padding-left: 80px; 
 }
-

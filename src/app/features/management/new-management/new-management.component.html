@@ -16,10 +16,11 @@
                     class="form-control" 
                     placeholder="Digite a gestão" 
                     formControlName="name"
-                    [ngClass]="{'is-invalid': submitted && form.controls['name'].invalid}" />
-                  <div *ngIf="submitted && form.controls['name'].invalid" class="invalid-feedback">
-                    O campo gestão é obrigatório.
-                  </div>
+                    [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+                    />
+                    <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="error-message">
+                      Nome é obrigatório.
+                    </div>
                 </div>
                 <div class="form-group">
                   <label for="description">Descrição</label>
@@ -29,10 +30,11 @@
                     class="form-control" 
                     placeholder="Digite a descrição" 
                     formControlName="description" 
-                    [ngClass]="{'is-invalid': submitted && form.controls['description'].invalid}" />
-                  <div *ngIf="submitted && form.controls['description'].invalid" class="invalid-feedback">
-                    O campo descrição é obrigatório.
-                  </div>
+                    [class.is-invalid]="form.get('description')?.invalid && form.get('description')?.touched"
+                    />
+                    <div *ngIf="form.get('description')?.invalid && form.get('description')?.touched" class="error-message">
+                      Descrição é obrigatória.
+                    </div>
                 </div>
               </div>
               <div class="form-row">
@@ -46,10 +48,11 @@
                     min="1000" 
                     max="9999" 
                     formControlName="startYear" 
-                    [ngClass]="{'is-invalid': submitted && form.controls['startYear'].invalid}" />
-                  <div *ngIf="submitted && form.controls['startYear'].invalid" class="invalid-feedback">
-                    O campo início da gestão é obrigatório e deve ser um ano válido.
-                  </div>
+                    [class.is-invalid]="form.get('startYear')?.invalid && form.get('startYear')?.touched"
+                    />
+                    <div *ngIf="form.get('startYear')?.invalid && form.get('startYear')?.touched" class="error-message">
+                      Ano de início deve ser entre 1000 e 9999.
+                    </div>
                 </div>
                 <div class="form-group">
                   <label for="endYear">Final da Gestão</label>
@@ -61,16 +64,17 @@
                     min="1000" 
                     max="9999" 
                     formControlName="endYear" 
-                    [ngClass]="{'is-invalid': submitted && form.controls['endYear'].invalid}" />
-                  <div *ngIf="submitted && form.controls['endYear'].invalid" class="invalid-feedback">
-                    O campo final da gestão é obrigatório e deve ser um ano válido.
-                  </div>
+                    [class.is-invalid]="form.get('endYear')?.invalid && form.get('endYear')?.touched"
+                    />
+                    <div *ngIf="form.get('endYear')?.invalid && form.get('endYear')?.touched" class="error-message">
+                      Ano de fim deve ser entre 1000 e 9999.
+                    </div>
                 </div>
               </div>
-              <div class="form-actions">
+              <!-- <div class="form-actions">
                 <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Salvar</button>
-              </div>
+              </div> -->
             </form>
           </div>
         </div>
@@ -111,6 +115,7 @@
                   [(ngModel)]="item.structureName"
                   placeholder="Nome"
                   [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.structureName"
                 />
               </td>
               <td>
@@ -120,6 +125,7 @@
                   [(ngModel)]="item.namePlural"
                   placeholder="Nome no Plural"
                   [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.namePlural"
                 />
               </td>
               <td class="text-center">
@@ -130,13 +136,12 @@
                 <button class="btn btn-danger btn-sm" (click)="deleteItemStructure(parent || structureList, item)">
                   <i class="fa fa-trash"></i>
                 </button>
-                <button class="btn btn-success btn-sm" (click)="addChildStructure(item)">
+                <button class="btn btn-success btn-sm" (click)="addChildStructure(item)" *ngIf="item.children.length === 0">
                   <i class="fa fa-plus-circle"></i>
                 </button>
               </td>
             </tr>
           
-            <!-- Subitens -->
             <tr *ngIf="item.children && item.children.length">
               <td colspan="3" class="sub-item no-top-border">
                 <table class="table table-striped">
@@ -160,14 +165,12 @@
                 <th>Descrição</th>
                 <th>Estrutura</th>
                 <th>Ícone</th>
-                <th>Status</th>
                 <th>Ação</th>
               </tr>
             </thead>
             <tbody>
-              <!-- Item em branco fixo no topo -->
               <tr>
-                <td><input type="text" class="form-control" [(ngModel)]="newItem.name" placeholder="Nome" /></td>
+                <td><input type="text" class="form-control" [(ngModel)]="newItem.name" placeholder="Nome"/></td>
                 <td><input type="text" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição" /></td>
                 <td>
                   <input type="text" class="form-control" [(ngModel)]="newItem.structureName" [disabled]="true" placeholder="Sem Estrutura" />
@@ -178,28 +181,17 @@
                     <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
                   </select>
                 </td>
-                <td>
-                  <select class="form-control" [(ngModel)]="newItem.status">
-                    <option value="">Selecionar</option>
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                  </select>
-                </td>
                 <td class="text-center">
                   <button class="btn btn-success btn-sm" (click)="addNewItem()">
                     <i class="fa fa-plus"></i>
                   </button>
                 </td>
               </tr>
-        
-              <!-- Lista de itens existentes -->
               <ng-container *ngFor="let item of organizerList">
                 <ng-template [ngTemplateOutlet]="renderItem" [ngTemplateOutletContext]="{ item: item, parent: null }"></ng-template>
               </ng-container>
             </tbody>
           </table>
-        
-          <!-- Template para renderizar itens (recursivo) -->
           <ng-template #renderItem let-item="item" let-parent="parent" let-level="level">
             <tr [class.has-children]="item.children && item.children.length" [ngClass]="'child-level-' + level" class="first-item">
               <td>
@@ -208,7 +200,8 @@
                   class="form-control"
                   [(ngModel)]="item.name"
                   placeholder="Nome"
-                  [disabled]="!item.editable" />
+                  [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.name" />
               </td>
               <td>
                 <input
@@ -216,7 +209,8 @@
                   class="form-control"
                   [(ngModel)]="item.description"
                   placeholder="Descrição"
-                  [disabled]="!item.editable" />
+                  [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.description" />
               </td>
               <td>
                 <input
@@ -231,28 +225,18 @@
                   <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
                 </select>
               </td>
-              <td>
-                <select class="form-control" [(ngModel)]="item.status" [disabled]="!item.editable">
-                  <option value="">Selecionar</option>
-                  <option value="Ativo">Ativo</option>
-                  <option value="Inativo">Inativo</option>
-                </select>
-              </td>
-              <td class="text-center"> <!-- Alinha todos os ícones ao centro -->
-                <!-- Botão de Editar/Salvar (Lápis ou Check) -->
+              <td class="text-center"> 
                 <button
                   class="btn btn-primary btn-sm"
                   (click)="toggleEditable(item)"
                   [title]="item.editable ? 'Salvar' : 'Editar'">
-                  <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i> <!-- Lápis ou Check -->
+                  <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i> 
                 </button>
-        
-                <!-- Botão de Excluir (Lixeira) -->
                 <button
                   class="btn btn-danger btn-sm"
                   (click)="deleteItem(parent || organizerList, item)"
                   title="Excluir">
-                  <i class="fa fa-trash"></i> <!-- Lixeira -->
+                  <i class="fa fa-trash"></i> 
                 </button>
         
                 <button
@@ -265,10 +249,8 @@
                 </button>
               </td>
             </tr>
-        
-            <!-- Subitens -->
             <tr *ngIf="item.children && item.children.length">
-              <td colspan="6" class="sub-item no-top-border">
+              <td colspan="5" class="sub-item no-top-border">
                 <table class="table table-striped">
                   <tbody>
                     <ng-container *ngFor="let child of item.children">
@@ -282,9 +264,7 @@
           <div class="text-center">
             <button class="btn btn-success" (click)="saveItems()">Salvar Itens</button>
           </div>
-        </div>
-        
-        
+        </div> 
       </ng-container>
     </div>
   </div>

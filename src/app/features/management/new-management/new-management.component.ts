@@ -24,6 +24,8 @@ export class NewManagementComponent{
 
   oldValue: string;
 
+  savedData: any;
+
   newStructure: StructureChild = {
     structureName: '',
     namePlural: '',
@@ -36,8 +38,8 @@ export class NewManagementComponent{
     name: '',
     description: '',
     structureName: this.structureList?.[0]?.structureName ?? '',
+    structureNamePlural: this.structureList?.[0]?.namePlural ?? '',
     icon: '',
-    status: '',
     children: [],
     editable: true,
   };
@@ -94,6 +96,8 @@ export class NewManagementComponent{
     if (this.newItem.name && this.newItem.description && this.newItem.structureName) {
       this.organizerList.push({ ...this.newItem, editable: false });
       this.resetNewItem();
+    }else{
+      alert("Por favor, preencha todos os campos obrigatórios: Nome, Descrição e Estrutura.");
     }
   }
 
@@ -118,8 +122,8 @@ export class NewManagementComponent{
       name: '',
       description: '',
       structureName: this.structureList?.[0]?.structureName ?? '',
+      structureNamePlural: this.structureList?.[0]?.namePlural ?? '',
       icon: '',
-      status: '',
       children: [],
       editable: true,
     };
@@ -133,6 +137,11 @@ export class NewManagementComponent{
     item.editable = !item.editable;
   
     if (!item.editable) {
+      if (!item.structureName || !item.namePlural) {
+        alert('Por favor, preencha o Nome e o Nome no Plural antes de salvar.');
+        item.editable = !item.editable;
+        return; 
+      }
       this.updateItemInList(item);  
       this.resetNewItem();
     } else {
@@ -146,9 +155,11 @@ export class NewManagementComponent{
   }
 
   updateStructureRecursively(items: OrganizerItem[], updatedItem: any): void {
+    console.log(updatedItem)
     items.forEach(item => {
       if (item.structureName === this.oldValue) {
-        item.structureName = updatedItem.structureName; 
+        item.structureName = updatedItem.structureName;
+        item.structureNamePlural = updatedItem.namePlural
       }
   
       if (item.children && item.children.length > 0) {
@@ -160,6 +171,9 @@ export class NewManagementComponent{
   hasChildren(structureName: string): boolean {
     const findStructure = (structure: any, name: string): boolean => {
       if (structure.structureName === name) {
+        if (structure.editable) {
+          return false; 
+        }
         return structure.children && structure.children.length > 0;
       }
   
@@ -198,11 +212,11 @@ export class NewManagementComponent{
   
 
   addChild(item: OrganizerItem): void {
-    const findNextChild = (structure: StructureChild, targetName: string): string | null => {
+    const findNextChild = (structure: StructureChild, targetName: string): { structureName: string; structureNamePlural: string } | null => {
       if (structure.structureName === targetName) {
         if (structure.children && structure.children.length > 0) {
-          console.log(structure.children[0].structureName)
-          return structure.children[0].structureName;
+          const child = structure.children[0];
+          return { structureName: child.structureName, structureNamePlural: child.namePlural };
         }
         return null; 
       }
@@ -210,7 +224,6 @@ export class NewManagementComponent{
       if (structure.children) {
         for (const child of structure.children) {
           const result = findNextChild(child, targetName);
-          console.log(result)
           if (result) {
             return result; 
           }
@@ -219,22 +232,22 @@ export class NewManagementComponent{
       
       return null; 
     };
-    let nextChildName: string | null = null;
+    let nextChild: { structureName: string; structureNamePlural: string } | null = null;
 
     for (const structure of this.structureList) {
-      nextChildName = findNextChild(structure, item.structureName);
-      if (nextChildName) {
+      nextChild = findNextChild(structure, item.structureName);
+      if (nextChild) {
         break;
       }
     }
   
-    if (nextChildName) {
+    if (nextChild) {
       item.children.push({
         name: '',  
         description: '',
-        structureName: nextChildName, 
+        structureName: nextChild.structureName,
+        structureNamePlural: nextChild.structureNamePlural,  
         icon: '',
-        status: '',
         children: [],  
         editable: true,
       });
@@ -256,7 +269,6 @@ export class NewManagementComponent{
 
   deleteItemStructure(targetArray: any[], item: any): void {
     const index = targetArray.indexOf(item);
-    console.log(index)
     if (index > -1) {
       if(!this.checkIfStructureExists(item)){
         if (confirm('Você tem certeza que deseja excluir este item?')) {
@@ -294,14 +306,25 @@ export class NewManagementComponent{
 		];
 	}
 
-  saveItems(): void {
-    console.log('Itens criados:', this.organizerList);
-    this.organizerList.forEach(item => {
-      if (item.children.length > 0) {
-        console.log(`Item: ${item.name} possui filhos:`, item.children);
-      }
-    });
+  saveItems() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+  
+    if (!this.organizerList || this.organizerList.length === 0) {
+      alert('A lista de organizadores não pode estar vazia.');
+      return;
+    }
+  
+    this.savedData = {
+      form: this.form.value,
+      organizers: this.organizerList,
+    };
+  
+    console.log('Dados Salvos:', this.savedData);
   }
+  
 
   updateStructure(structureName: string) {
     this.newItem.structureName = structureName;
