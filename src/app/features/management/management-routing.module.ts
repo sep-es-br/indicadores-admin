@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ManagementComponent } from './management.component';
 import { NewManagementComponent } from './new-management/new-management.component';
+import { EditManagementComponent } from './edit-management/edit-management.component';
 
 
 const routes: Routes = [{
@@ -14,6 +15,10 @@ const routes: Routes = [{
     {
       path: 'new',
       component: NewManagementComponent,
+    },
+    {
+      path: 'edit',
+      component: EditManagementComponent,
     }
   ]
 }];

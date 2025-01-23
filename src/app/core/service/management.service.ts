@@ -47,4 +47,14 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
           })
         );
       }
-    }
+
+      public updateManagement(management: IManagement): Observable<void> {
+        return this._http.put<void>(this._url, management).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err); 
+          })
+        );
+      }
+      
+  }

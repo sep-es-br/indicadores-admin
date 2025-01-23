@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs-compat';
 import { finalize, tap } from 'rxjs/operators';
 import { NbDialogService } from '@nebular/theme';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -57,7 +58,7 @@ export class ManagementComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private managementService: ManagementService, private _r2: Renderer2) { 
+  constructor(private managementService: ManagementService, private _r2: Renderer2, private router: Router) { 
   }
 
   ngOnInit(): void {
@@ -133,17 +134,7 @@ export class ManagementComponent implements OnInit{
   }
 
   editManagement(management: IManagement): void {
-    this.selectedManagement = { ...management }; 
-    this.isEditing = true;
-    this.isViewer = false;
-    this.breadcrumb = [
-			{
-				label: 'Gestão Administrativa',
-			},
-      {
-				label: 'Editar',
-			},
-		];
+    this.router.navigate(['/pages/management/edit'], { queryParams: management });
   }
 
   viewManagement(management: IManagement): void {

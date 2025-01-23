@@ -7,79 +7,93 @@
           <p>Cadastrar</p>
           <div class="form-container">
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="name">Gestão</label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    class="form-control" 
-                    placeholder="Digite a gestão" 
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Gestão</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
                     formControlName="name"
-                    [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
-                    />
-                    <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="error-message">
-                      Nome é obrigatório.
-                    </div>
+                    [class.is-invalid]="form.get('name')?.invalid && (form.get('name')?.touched || submitted)"
+                    placeholder="Digite a gestão"
+                  />
+                  <div
+                    *ngIf="form.get('name')?.invalid && (form.get('name')?.touched || submitted)"
+                    class="error-message"
+                  >
+                    Nome é obrigatório.
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="description">Descrição</label>
-                  <input 
-                    type="text" 
-                    id="description" 
-                    class="form-control" 
-                    placeholder="Digite a descrição" 
-                    formControlName="description" 
-                    [class.is-invalid]="form.get('description')?.invalid && form.get('description')?.touched"
-                    />
-                    <div *ngIf="form.get('description')?.invalid && form.get('description')?.touched" class="error-message">
-                      Descrição é obrigatória.
-                    </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="startYear">Início da Gestão</label>
-                  <input 
-                    type="number" 
-                    id="startYear" 
-                    class="form-control" 
-                    placeholder="Ano" 
-                    min="1000" 
-                    max="9999" 
-                    formControlName="startYear" 
-                    [class.is-invalid]="form.get('startYear')?.invalid && form.get('startYear')?.touched"
-                    />
-                    <div *ngIf="form.get('startYear')?.invalid && form.get('startYear')?.touched" class="error-message">
-                      Ano de início deve ser entre 1000 e 9999.
-                    </div>
-                </div>
-                <div class="form-group">
-                  <label for="endYear">Final da Gestão</label>
-                  <input 
-                    type="number" 
-                    id="endYear" 
-                    class="form-control" 
-                    placeholder="Ano" 
-                    min="1000" 
-                    max="9999" 
-                    formControlName="endYear" 
-                    [class.is-invalid]="form.get('endYear')?.invalid && form.get('endYear')?.touched"
-                    />
-                    <div *ngIf="form.get('endYear')?.invalid && form.get('endYear')?.touched" class="error-message">
-                      Ano de fim deve ser entre 1000 e 9999.
-                    </div>
+                <div class="col-md-6">
+                  <label for="description" class="form-label">Descrição</label>
+                  <input
+                    type="text"
+                    id="description"
+                    class="form-control"
+                    formControlName="description"
+                    [class.is-invalid]="form.get('description')?.invalid && (form.get('description')?.touched || submitted)"
+                    placeholder="Digite a descrição"
+                  />
+                  <div
+                    *ngIf="form.get('description')?.invalid && (form.get('description')?.touched || submitted)"
+                    class="error-message"
+                  >
+                    Descrição é obrigatória.
+                  </div>
                 </div>
               </div>
-              <!-- <div class="form-actions">
-                <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="startYear" class="form-label">Início da Gestão</label>
+                  <input
+                    type="number"
+                    id="startYear"
+                    class="form-control"
+                    formControlName="startYear"
+                    [class.is-invalid]="form.get('startYear')?.invalid && (form.get('startYear')?.touched || submitted)"
+                    placeholder="Ano"
+                  />
+                  <div
+                    *ngIf="form.get('startYear')?.invalid && (form.get('startYear')?.touched || submitted)"
+                    class="error-message"
+                  >
+                    Ano de início é obrigatório e deve ser válido.
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="endYear" class="form-label">Final da Gestão</label>
+                  <input
+                    type="number"
+                    id="endYear"
+                    class="form-control"
+                    formControlName="endYear"
+                    [class.is-invalid]="form.get('endYear')?.invalid && (form.get('endYear')?.touched || submitted)"
+                    placeholder="Ano"
+                  />
+                  <div
+                    *ngIf="form.get('endYear')?.invalid && (form.get('endYear')?.touched || submitted)"
+                    class="error-message"
+                  >
+                    Ano de término é obrigatório e deve ser válido.
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="onCancel()"
+                >
+                  Cancelar
+                </button>
                 <button type="submit" class="btn btn-primary">Salvar</button>
-              </div> -->
+              </div>
             </form>
           </div>
         </div>
 
-        <div class="organizer-container">
+        <!-- <div class="organizer-container">
           <p>Estrutura</p>
           <table class="table table-bordered">
             <thead>
@@ -265,7 +279,7 @@
             <button class="btn btn-success" (click)="saveItems()">Salvar Itens</button>
           </div>
         </div> 
-      </ng-container>
+      </ng-container> 
     </div>
   </div>
-</div>
+</div>-->

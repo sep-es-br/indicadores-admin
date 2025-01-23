@@ -8,12 +8,14 @@ import { ManagementRoutingModule } from './management-routing.module';
 import { NewManagementComponent } from './new-management/new-management.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BreadcrumbComponent } from '../../@theme/components/breadcrumb/breadcrumb.component';
+import { EditManagementComponent } from './edit-management/edit-management.component';
 
 
 @NgModule({
   declarations: [
     ManagementComponent,
-    NewManagementComponent
+    NewManagementComponent,
+    EditManagementComponent
   ],
   imports: [
     CommonModule,
