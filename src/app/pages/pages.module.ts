@@ -10,6 +10,7 @@ import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import { HomeModule } from '../features/home/home.module';
 import { LoginModule } from '../features/login/login.module';
 import { ManagementModule } from '../features/management/management.module';
+import { OrganizerModule } from '../features/organizer/organizer.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { ManagementModule } from '../features/management/management.module';
     MiscellaneousModule,
     HomeModule,
     ManagementModule,
-    LoginModule
+    LoginModule,
+    OrganizerModule
   ],
   declarations: [
     PagesComponent,

@@ -7,8 +7,9 @@ import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs-compat';
 import { finalize, tap } from 'rxjs/operators';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 
 
 @Component({
@@ -58,7 +59,7 @@ export class ManagementComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private managementService: ManagementService, private _r2: Renderer2, private router: Router) { 
+  constructor(private managementService: ManagementService, private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
   }
 
   ngOnInit(): void {
@@ -91,14 +92,29 @@ export class ManagementComponent implements OnInit{
   }
 
   public deleteManagement(managementId: string): void {
-    if (confirm('Tem certeza de que deseja excluir esta gestão?')) {
-      this.managementService.deleteManagement(managementId)
-        .pipe(finalize(() => this.fetchPage())) 
-        .subscribe({
-          next: () => alert('Gestão excluída com sucesso!'),
-          error: (err) => alert('Erro ao excluir a gestão: ' + err.message),
-        });
-    }
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Confirmação', 
+          message: 'Tem certeza de que deseja excluir esta gestão?', 
+        },
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.managementService.deleteManagement(managementId)
+            .pipe(finalize(() => this.fetchPage()))
+            .subscribe({
+              next: () => this.toastrService.show(
+                '', 'Gestão deletada com sucesso!',
+                { status: 'success', duration: 8000 }
+              ),
+              error: (err) => this.toastrService.show(
+                'Erro ao excluir a gestão: ' + err.message,
+                'Erro', { status: 'danger', duration: 8000 }
+              ),
+            });
+        }
+      });
   }
   
 

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ManagementComponent } from './management.component';
-import { NbButtonModule, NbContextMenuModule, NbIconModule } from '@nebular/theme';
+import { NbButtonModule, NbContextMenuModule, NbIconModule, NbToggleModule } from '@nebular/theme';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ThemeModule } from '../../@theme/theme.module';
 import { ManagementRoutingModule } from './management-routing.module';
@@ -27,6 +27,7 @@ import { EditManagementComponent } from './edit-management/edit-management.compo
     ManagementRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    NbToggleModule
   ]
 })
 export class  ManagementModule { }

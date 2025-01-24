@@ -5,6 +5,7 @@ import { IManagement } from '../../../core/interfaces/management.interface';
 import { ManagementService } from '../../../core/service/management.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NbToastrService } from '@nebular/theme';
 
 
 @Component({
@@ -19,14 +20,12 @@ export class EditManagementComponent{
 
   selectedManagement: IManagement;
 
-  public loading: boolean = true;
-
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
   public managements: IManagement;
 
 
-  constructor(private managementService: ManagementService, private fb: FormBuilder,  private router: Router, private route: ActivatedRoute) { 
+  constructor(private managementService: ManagementService, private fb: FormBuilder,  private router: Router, private route: ActivatedRoute, private toastrService: NbToastrService) { 
     this.form = this.fb.group({
           id: [''],
           name: ['', [Validators.required]], 
@@ -86,11 +85,14 @@ export class EditManagementComponent{
       console.log(this.selectedManagement)
       this.managementService.updateManagement(this.selectedManagement).subscribe({
         next: () => {
-          console.log('Gestão atualizada com sucesso!');
-          // Redirecionar ou atualizar a interface após o sucesso
+          this.toastrService.show(
+            '' , 'Gestão atualizada com sucesso!',
+            { status: 'success', duration: 8000 }
+          );
+          this.router.navigate(['/pages/management']);
         },
         error: (err) => {
-          console.error('Erro ao atualizar a gestão:', err);
+          this.router.navigate(['/pages/management']);
         },
       });
     }

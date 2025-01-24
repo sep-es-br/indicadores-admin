@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IManagement, OrganizerItem, StructureChild } from '../../../core/interfaces/management.interface';
 import { ManagementService } from '../../../core/service/management.service';
+import { NbToastrService } from '@nebular/theme';
 
 
 @Component({
@@ -47,7 +48,7 @@ export class NewManagementComponent{
   iconList: string[] = ['Ícone 1', 'Ícone 2', 'Ícone 3'];
 
 
-  constructor(private fb: FormBuilder, private router: Router, private managementService: ManagementService) { 
+  constructor(private fb: FormBuilder, private router: Router, private managementService: ManagementService,private toastrService: NbToastrService) { 
     this.form = this.fb.group({
       name: ['', [Validators.required]], 
       description: ['', [Validators.required]], 
@@ -69,7 +70,10 @@ export class NewManagementComponent{
 
       this.managementService.createManagement(management).subscribe({
         next: (response) => {
-          console.log('Gestão criada com sucesso:', response);
+          this.toastrService.show(
+            '' , 'Gestão criada com sucesso!',
+            { status: 'success', duration: 8000 }
+          );
           this.router.navigate(['/pages/management']);
         },
         error: (error) => {

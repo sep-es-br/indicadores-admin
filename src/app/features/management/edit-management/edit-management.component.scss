@@ -73,3 +73,17 @@ p {
     font-size: 0.875em;
     margin-top: 0.25em;
   }
+
+  nb-toggle {
+    transform: scale(0.8);
+  }
+
+  ::ng-deep nb-toggle.status-basic .toggle.checked {
+    background-color: #0098DA !important;
+    border-color: #0098DA !important;
+  }
+  
+  ::ng-deep nb-toggle .native-input:enabled:focus + .toggle {
+    box-shadow: none !important; 
+  }
+  
