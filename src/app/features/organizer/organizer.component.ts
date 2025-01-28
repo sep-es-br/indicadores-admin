@@ -11,7 +11,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { OrganizerService } from '../../core/service/organizer.service';
-import { IOrganizerAdminDto } from '../../core/interfaces/organizer.interface';
+import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
 
 
 @Component({
@@ -28,14 +28,14 @@ export class OrganizerComponent implements OnInit{
     sort: '',
   };
 
-  private _organizerList: BehaviorSubject<Array<IOrganizerAdminDto>> =
-  new BehaviorSubject<Array<IOrganizerAdminDto>>([]);
+  private _organizerList: BehaviorSubject<Array<IOrganizerAdmin>> =
+  new BehaviorSubject<Array<IOrganizerAdmin>>([]);
   
-  public get organizerList(): Observable<Array<IOrganizerAdminDto>> {
+  public get organizerList(): Observable<Array<IOrganizerAdmin>> {
     return this._organizerList;
   }
 
-  selectedManagement: IOrganizerAdminDto = {
+  selectedManagement: IOrganizerAdmin = {
     nameAdministration: '',
     nameOrganizer: '',
     typeOrganizer: '',
@@ -136,7 +136,7 @@ export class OrganizerComponent implements OnInit{
   updateBreadcrumb() {
 		this.breadcrumb = [
 			{
-				label: 'Organização',
+				label: 'Organizador',
 			},
 
 		];

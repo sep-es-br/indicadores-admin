@@ -6,9 +6,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ECommerceComponent } from './e-commerce/e-commerce.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 import { HomeComponent } from '../features/home/home.component';
-import { ManagementComponent } from '../features/management/management.component';
-import { NewManagementComponent } from '../features/management/new-management/new-management.component';
-import { OrganizerComponent } from '../features/organizer/organizer.component';
 
 const routes: Routes = [{
   path: '',
@@ -20,13 +17,11 @@ const routes: Routes = [{
     },
     {
       path: 'management',
-      // component: ManagementComponent,
       loadChildren: () => import('../features/management/management.module').then(m => m.ManagementModule),
     },
     {
       path: 'organizer',
-      component: OrganizerComponent,
-      // loadChildren: () => import('../features/organizer/organizer.module').then(m => m.OrganizerModule),
+      loadChildren: () => import('../features/organizer/organizer.module').then(m => m.OrganizerModule),
     },
     {
       path: 'dashboard',

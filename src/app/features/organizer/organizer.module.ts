@@ -6,12 +6,15 @@ import { NbButtonModule, NbContextMenuModule, NbIconModule, NbToggleModule } fro
 import { ThemeModule } from "../../@theme/theme.module";
 import { ManagementRoutingModule } from "../management/management-routing.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { OrganizerRoutingModule } from "./organizer-routing.module";
+import { NewOrganizerComponent } from "./new-organizer/new-organizer.component";
 
 
 
 @NgModule({
   declarations: [
     OrganizerComponent,
+    NewOrganizerComponent
   ],
   imports: [
     CommonModule,
@@ -22,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     ThemeModule,
     ReactiveFormsModule,
     FormsModule,
+    OrganizerRoutingModule,
     NbToggleModule
   ]
 })

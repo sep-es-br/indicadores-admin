@@ -6,7 +6,8 @@ import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-ge
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
-import { IOrganizerAdminDto } from "../interfaces/organizer.interface";
+import { IOrganizerAdmin, IOrganizerItem, IStructure, IStructureChild } from "../interfaces/organizer.interface";
+import { IManagement } from "../interfaces/management.interface";
 
 @Injectable({
     providedIn: 'root',
@@ -19,14 +20,14 @@ import { IOrganizerAdminDto } from "../interfaces/organizer.interface";
 
     public getOrganizerList(
         pageConfig: IHttpGetRequestBody
-    ): Observable<IHttpGetResponseBody<IOrganizerAdminDto>> {
+    ): Observable<IHttpGetResponseBody<IOrganizerAdmin>> {
 
         const url = `${this._url}/getAll`;
        
         const params = PageableQueryStringParametersHelper.buildQueryStringParams(pageConfig);
 
         return this._http
-        .get<IHttpGetResponseBody<IOrganizerAdminDto>>(url, { params })
+        .get<IHttpGetResponseBody<IOrganizerAdmin>>(url, { params })
         .pipe(
             catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
@@ -34,4 +35,32 @@ import { IOrganizerAdminDto } from "../interfaces/organizer.interface";
             })
         );
     }
+
+    public createOrganizer(organizers: IOrganizerItem[], managementId: string): Observable<void> {
+
+        return this._http.post<void>(`${this._url}/${managementId}`, organizers).pipe(
+              catchError((err: HttpErrorResponse) => {
+                this._errorHandlerService.handleError(err);
+                return throwError(() => err); 
+              })
+            );
+          }
+
+    public getStructureList(administrationId: string): Observable<IStructure[]> {
+        return this._http.get<IStructure[]>(`${this._url}/getStructure/${administrationId}`).pipe(
+        catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err); 
+        })
+        );
+    }
+
+    public  administrationList():  Observable<IManagement[]>{
+        return this._http.get<IManagement[]>(`${environment.apiUrl}/home-info/administrations`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                this._errorHandlerService.handleError(err);
+                return throwError(() => err);
+        }));
+    }
+
   }

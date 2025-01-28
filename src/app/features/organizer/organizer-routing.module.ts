@@ -1,31 +1,26 @@
-// import { NgModule } from '@angular/core';
-// import { Routes, RouterModule } from '@angular/router';
-// import { ManagementComponent } from './management.component';
-// import { NewManagementComponent } from './new-management/new-management.component';
-// import { EditManagementComponent } from './edit-management/edit-management.component';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { OrganizerComponent } from './organizer.component';
+import { NewOrganizerComponent } from './new-organizer/new-organizer.component';
 
 
-// const routes: Routes = [{
-//   path: '',
-//   children: [
-//     {
-//       path: '',
-//       component: ManagementComponent
-//     },
-//     {
-//       path: 'new',
-//       component: NewManagementComponent,
-//     },
-//     {
-//       path: 'edit',
-//       component: EditManagementComponent,
-//     }
-//   ]
-// }];
+const routes: Routes = [{
+  path: '',
+  children: [
+    {
+      path: '',
+      component: OrganizerComponent
+    },
+    {
+      path: 'new',
+      component: NewOrganizerComponent,
+    }
+  ]
+}];
 
-// @NgModule({
-//   imports: [RouterModule.forChild(routes)],
-//   exports: [RouterModule],
-// })
-// export class ManagementRoutingModule {
-// }
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class OrganizerRoutingModule {
+}

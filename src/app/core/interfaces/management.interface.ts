@@ -7,19 +7,3 @@ export interface IManagement{
     id?:string
 }
 
-export interface OrganizerItem {
-    name: string;
-    description: string;
-    structureName: string;
-    structureNamePlural: string;
-    icon: string;
-    children: OrganizerItem[];
-    editable: boolean;
-  }
-
-  export interface StructureChild {
-    structureName: string;
-    namePlural?: string;
-    children?: StructureChild[];
-    editable: boolean;
-  }

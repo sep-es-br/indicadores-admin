@@ -13,15 +13,15 @@
           <div class="container mt-2">
             <div *ngFor="let organizer of organizerList | async"
               class="row p-2 mb-2 align-items-center management-card">
-              <div class="col-sm-4" *ngIf="organizer.children && organizer.children.length > 0">
+              <div class="col-sm-4">
+                <span class="fw-bold">{{ organizer.typeOrganizer }}</span>
+                <span>{{ organizer.nameOrganizer }}</span>
+              </div>
+              <div class="col-sm-4" [ngClass]="{'invisible': organizer.children && organizer.children.length === 0}">
                 <div *ngFor="let child of organizer.children" class="child-info">
                   <span class="fw-bold">{{ child.typeOrganizer }}</span>
                   <span>{{ child.nameOrganizer }}</span>
                 </div>
-              </div>
-              <div class="col-sm-4">
-                <span class="fw-bold">{{ organizer.typeOrganizer }}</span>
-                <span>{{ organizer.nameOrganizer }}</span>
               </div>
               <div class="col-sm-4">
                 <span class="fw-bold">Nome da Gestão</span>
