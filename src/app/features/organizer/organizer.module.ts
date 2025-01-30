@@ -8,13 +8,15 @@ import { ManagementRoutingModule } from "../management/management-routing.module
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { OrganizerRoutingModule } from "./organizer-routing.module";
 import { NewOrganizerComponent } from "./new-organizer/new-organizer.component";
+import { EditOrganizerComponent } from "./edit-organizer/edit-organizer.component";
 
 
 
 @NgModule({
   declarations: [
     OrganizerComponent,
-    NewOrganizerComponent
+    NewOrganizerComponent,
+    EditOrganizerComponent
   ],
   imports: [
     CommonModule,

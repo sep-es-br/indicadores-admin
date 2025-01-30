@@ -6,6 +6,11 @@ export interface IOrganizerAdmin {
     children: IOrganizerAdmin[]; 
   }
 
+  export interface IOrganizerItemStructure {
+    organizer: IOrganizerItem;
+    structureList: IStructure[];
+  }
+
   export interface IOrganizerItem {
     name: string;
     description: string;

@@ -6,7 +6,7 @@ import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-ge
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
-import { IOrganizerAdmin, IOrganizerItem, IStructure, IStructureChild } from "../interfaces/organizer.interface";
+import { IOrganizerAdmin, IOrganizerItem, IOrganizerItemStructure, IStructure, IStructureChild } from "../interfaces/organizer.interface";
 import { IManagement } from "../interfaces/management.interface";
 
 @Injectable({
@@ -55,12 +55,34 @@ import { IManagement } from "../interfaces/management.interface";
         );
     }
 
-    public  administrationList():  Observable<IManagement[]>{
+    public administrationList():  Observable<IManagement[]>{
         return this._http.get<IManagement[]>(`${environment.apiUrl}/home-info/administrations`).pipe(
             catchError((err: HttpErrorResponse) => {
                 this._errorHandlerService.handleError(err);
                 return throwError(() => err);
         }));
     }
+
+    public deleteOrganizer(organizerId: string): Observable<void> {
+        const url = `${this._url}/${organizerId}`;
+        return this._http.delete<void>(url).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err); 
+          })
+        );
+      }
+    
+    public getOrganizerStructure(organizerUuId: string): Observable<IOrganizerItemStructure> {
+        const url = `${this._url}/getOrganizerStructure/${organizerUuId}`;
+        return this._http.get<IOrganizerItemStructure>(url).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => new Error('Erro ao obter a estrutura do organizador'));
+          })
+        );
+      }
+      
+    
 
   }

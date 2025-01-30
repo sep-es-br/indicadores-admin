@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { OrganizerComponent } from './organizer.component';
 import { NewOrganizerComponent } from './new-organizer/new-organizer.component';
+import { EditOrganizerComponent } from './edit-organizer/edit-organizer.component';
 
 
 const routes: Routes = [{
@@ -14,6 +15,10 @@ const routes: Routes = [{
     {
       path: 'new',
       component: NewOrganizerComponent,
+    },
+    {
+      path: 'edit',
+      component: EditOrganizerComponent,
     }
   ]
 }];

@@ -7,47 +7,15 @@
         </div>
 
         <div class="organizer-container w-50">
-          <p>Gestão</p>
-          <table class="table table-bordered">
-            <thead>
-            <tr>
-              <th>Nome gestão</th>
-            </tr>
-          </thead>
-            <tbody>
-              <td>
-                <select class="form-control" [(ngModel)]="selectedOrganizer" (ngModelChange)="onManagementChange($event)" [disabled]="organizerList.length > 0">
-                  <option value="">Selecionar</option>
-                  <option *ngFor="let management of managementList" [value]="management.id">
-                    {{ management.name }}
-                  </option>
-                </select>
-              </td>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="organizer-container">
           <p>Estrutura</p>
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Nome</th>
                 <th>Nome no Plural</th>
-                <th>Ação</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="new-structure-row" *ngIf="structureEditable">
-                <td><input type="text" class="form-control" [(ngModel)]="newStructure.structureName" placeholder="Nome" /></td>
-                <td><input type="text" class="form-control" [(ngModel)]="newStructure.namePlural" placeholder="Nome no Plural" /></td>
-                <td class="text-center" >
-                  <button class="btn btn-success btn-sm" (click)="addNewStructure()" *ngIf="structureList.length === 0">
-                    <i class="fa fa-plus"></i>
-                  </button>
-                </td>
-              </tr>
-        
               <ng-container *ngFor="let item of structureList">
                 <ng-template [ngTemplateOutlet]="renderItemStructure" [ngTemplateOutletContext]="{ item: item, parent: null }"></ng-template>
               </ng-container>
@@ -76,22 +44,10 @@
                   [class.is-invalid]="item.editable && !item.namePlural"
                 />
               </td>
-              <td class="text-center">
-                <button class="btn btn-primary btn-sm" (click)="structureToggleEditable(item)" *ngIf="structureEditable">
-                  <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i>
-                </button>
-          
-                <button class="btn btn-danger btn-sm" (click)="deleteItemStructure(parent || structureList, item)" *ngIf="structureEditable">
-                  <i class="fa fa-trash"></i>
-                </button>
-                <button class="btn btn-success btn-sm" (click)="addChildStructure(item)" *ngIf="item.children.length === 0 && structureEditable">
-                  <i class="fa fa-plus-circle"></i>
-                </button>
-              </td>
             </tr>
           
             <tr *ngIf="item.children && item.children.length">
-              <td colspan="3" class="sub-item no-top-border">
+              <td colspan="2" class="sub-item no-top-border">
                 <table class="table table-striped">
                   <tbody>
                     <ng-container *ngFor="let child of item.children">

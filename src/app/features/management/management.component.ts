@@ -75,14 +75,12 @@ export class ManagementComponent implements OnInit{
 
     this.managementService.getManagements(tempPageConfig).pipe(tap((response) => {
       this._managementList.next(response.content);
-      console.log(response.content)
       this.paginacaoDados = {
-        paginaAtual: response.pageable.pageNumber + 1,
-        itensPorPagina: response.pageable.pageSize,
-        primeiroItemPagina: response.pageable.offset + 1,
-        ultimoItemPagina:
-          response.pageable.offset + response.numberOfElements,
-        totalRegistros: response.totalElements,
+        paginaAtual: response.page.number + 1,  
+        itensPorPagina: response.page.size,
+        primeiroItemPagina: response.page.number * response.page.size + 1,
+        ultimoItemPagina: response.page.number * response.page.size + response.content.length,
+        totalRegistros: response.page.totalElements,
       };
     }),
     finalize(() => (this.loading = false, this.updateBreadcrumb()))
@@ -115,7 +113,7 @@ export class ManagementComponent implements OnInit{
             });
         }
       });
-  }
+    }
   
 
   public filtroPesquisaOutputEvent(filtro: string): void {

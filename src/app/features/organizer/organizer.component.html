@@ -11,53 +11,74 @@
             </div>
           </div>
           <div class="container mt-2">
-            <div *ngFor="let organizer of organizerList | async"
-              class="row p-2 mb-2 align-items-center management-card">
-              <div class="col-sm-4">
-                <span class="fw-bold">{{ organizer.typeOrganizer }}</span>
-                <span>{{ organizer.nameOrganizer }}</span>
-              </div>
-              <div class="col-sm-4" [ngClass]="{'invisible': organizer.children && organizer.children.length === 0}">
-                <div *ngFor="let child of organizer.children" class="child-info">
-                  <span class="fw-bold">{{ child.typeOrganizer }}</span>
-                  <span>{{ child.nameOrganizer }}</span>
+            <div *ngFor="let organizer of organizerList | async">
+              <div class="row p-2 align-items-center organizer-card">
+                <div class="col-sm-4">
+                  <span class="fw-bold">{{ organizer.typeOrganizer }}</span>
+                  <span>{{ organizer.nameOrganizer }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <span class="fw-bold">Nome da Gestão</span>
+                  <span>{{ organizer.nameAdministration }}</span>
+                </div>
+                <div class="col-sm-4 d-flex justify-content-end">
+                  <div ngbDropdown>
+                    <button class="btn button-color" ngbDropdownToggle>
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div ngbDropdownMenu>
+                      <button
+                        ngbDropdownItem
+                        class="d-flex align-items-center"
+                        (click)="editOrganizer(organizer.idOrganizer)"
+                      >
+                        <i class="fas fa-pen-square m-2"></i>
+                        <span>Editar</span>
+                      </button>
+                      <button
+                        ngbDropdownItem
+                        class="d-flex align-items-center"
+                        (click)="deleteOrganizer(organizer.idOrganizer)"
+                      >
+                        <i class="fas fa-trash-alt m-2"></i>
+                        <span>Excluir</span>
+                      </button>
+                    </div>
+                  </div> 
                 </div>
               </div>
-              <div class="col-sm-4">
-                <span class="fw-bold">Nome da Gestão</span>
-                <span>{{ organizer.nameAdministration }}</span>
+          
+              <div *ngIf="organizer.children && organizer.children.length > 0" class="children-card">
+                <div *ngFor="let child of organizer.children" class="row p-2 align-items-center mb-1 organizer-card ">
+                  <div class="col-sm-4"> 
+                    <span class="fw-bold">{{ child.typeOrganizer }}</span>
+                    <span>{{ child.nameOrganizer }}</span>
+                  </div>
+                  <div class="col-sm-8 d-flex justify-content-end">
+                    <div ngbDropdown>
+                      <button class="btn button-color" ngbDropdownToggle>
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <div ngbDropdownMenu>
+                        <button
+                          ngbDropdownItem
+                          class="d-flex align-items-center"
+                          (click)="deleteOrganizer(child.idOrganizer)"
+                        >
+                          <i class="fas fa-trash-alt m-2"></i>
+                          <span>Excluir</span>
+                        </button>
+                      </div>
+                    </div> 
+                  </div>
+                </div>
               </div>
             </div>
-            <!-- <div class="col-sm-1 d-flex justify-content-end">
-                <div ngbDropdown>
-                  <button class="btn button-color" ngbDropdownToggle>
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                  <div ngbDropdownMenu>
-                    <button
-                      ngbDropdownItem
-                      class="d-flex align-items-center"
-                      (click)="editManagement(management)"
-                    >
-                      <i class="fas fa-pen-square m-2"></i>
-                      <span>Editar</span>
-                    </button>
-                    <button
-                      ngbDropdownItem
-                      class="d-flex align-items-center"
-                      (click)="deleteManagement(management.id)"
-                    >
-                      <i class="fas fa-trash-alt m-2"></i>
-                      <span>Excluir</span>
-                    </button>
-                  </div>
-                </div> 
-              </div>-->
           </div>
-        </div>
-        <ngx-pagination [paginacaoDadosInput]="paginacaoDados"
+          <ngx-pagination [paginacaoDadosInput]="paginacaoDados"
           (paginacaoOutput)="paginacaoOutputEvent($event)"></ngx-pagination>
+        </div>
         </ng-container>
-    </div>
+      </div>
   </div>
 </div>

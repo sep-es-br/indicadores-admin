@@ -8,14 +8,19 @@
   }
   
   
-  .management-card {
+  .organizer-card {
     border-left: 4px solid #0098DA; 
     border-right: none; 
     border-top: 1px solid #0098DA; 
     border-bottom: 1px solid #0098DA; 
     border-radius: 5px 0 0 5px; 
     padding: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
+  }
+
+  .children-card {
+    padding-left: 15px;
+    margin-bottom: 10px !important;
   }
 
   .card-create-icon{

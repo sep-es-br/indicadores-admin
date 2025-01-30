@@ -1,20 +1,20 @@
 import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ConfirmationDialogComponent } from '../../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { OrganizerService } from '../../../core/service/organizer.service';
-import { IOrganizerItem, IStructureChild } from '../../../core/interfaces/organizer.interface';
+import { IOrganizerItem, IOrganizerItemStructure, IStructure, IStructureChild } from '../../../core/interfaces/organizer.interface';
 import { IManagement } from '../../../core/interfaces/management.interface';
 import { Icon } from '../../../core/interfaces/iconlist.enum';
 
 
 @Component({
-  selector: 'ngx-new-organizer',
-  templateUrl: './new-organizer.component.html',
-  styleUrls: ['./new-organizer.component.scss']
+  selector: 'ngx-edit-organizer',
+  templateUrl: './edit-organizer.component.html',
+  styleUrls: ['./edit-organizer.component.scss']
 })
-export class NewOrganizerComponent{
+export class EditOrganizerComponent{
 
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
@@ -50,13 +50,66 @@ export class NewOrganizerComponent{
     editable: true,
   };
 
+  organizerStructure: IOrganizerItemStructure | null = null;
+
   iconList: string[] = Object.values(Icon)
 
-  constructor(private organizerService: OrganizerService, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService) { 
+
+  constructor(private organizerService: OrganizerService, private route: ActivatedRoute, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService) { 
     this.updateBreadcrumb()
     this.getManagementList()
+    this.teste()
   }
 
+  teste(): void {
+    this.route.queryParams.subscribe((params) => {
+      const organizerId = params['id'];
+
+      if (organizerId) {
+        this.organizerService.getOrganizerStructure(organizerId).subscribe(
+          (data) => {
+            this.organizerStructure = data;
+            console.log('Estrutura do organizador:', this.organizerStructure);
+
+            this.populateStructureList(data.structureList);
+            this.organizerList.push(data.organizer)
+          },
+          (error) => {
+            console.error('Erro ao carregar a estrutura do organizador', error);
+          }
+        );
+      } else {
+        console.error('ID do organizador não encontrado nos parâmetros.');
+      }
+    });
+  }
+
+  populateStructureList(structureList: IStructure[]){
+    const newStructure: IStructureChild = {
+      structureName: '',
+      namePlural: '',
+      children: [],
+      editable: false
+    };
+
+    structureList.forEach(item => {
+      if (item.relationshipType === 'parent') {
+        newStructure.structureName = item.name;
+        newStructure.namePlural = item.nameInPlural;
+      } else if (item.relationshipType === 'child') {
+        const childStructure: IStructureChild = {
+          structureName: item.name,
+          namePlural: item.nameInPlural,
+          children: [],
+          editable: false
+        };
+        newStructure.children.push(childStructure);
+      }
+    });
+
+    this.structureList.push(newStructure);
+    this.resetNewItem();
+  }
 
   onCancel(): void {
     this.router.navigate(['/pages/organizer']);
@@ -415,43 +468,43 @@ export class NewOrganizerComponent{
   
 
   saveItems(): void {
-    if (this.checkInvalidItems(this.organizerList)) {
-      this.toastrService.show(
-        '', 
-        'Não é possível salvar. Existe um item pai ou filho marcado como editável.', 
-        {
-          status: 'warning',
-          duration: 8000,
-        }
-      );
-      return;
-    }
+    // if (this.checkInvalidItems(this.organizerList)) {
+    //   this.toastrService.show(
+    //     '', 
+    //     'Não é possível salvar. Existe um item pai ou filho marcado como editável.', 
+    //     {
+    //       status: 'warning',
+    //       duration: 8000,
+    //     }
+    //   );
+    //   return;
+    // }
   
-    if (!this.organizerList || this.organizerList.length === 0) {
-      this.toastrService.show(
-        '', 
-        'A lista de organizadores não pode estar vazia.', 
-        {
-          status: 'warning',
-          duration: 8000,
-        }
-      );
-      return;
-    }
+    // if (!this.organizerList || this.organizerList.length === 0) {
+    //   this.toastrService.show(
+    //     '', 
+    //     'A lista de organizadores não pode estar vazia.', 
+    //     {
+    //       status: 'warning',
+    //       duration: 8000,
+    //     }
+    //   );
+    //   return;
+    // }
   
-    this.organizerService.createOrganizer(this.organizerList, this.selectedOrganizer).subscribe({
-      next: () => {
-        this.toastrService.show(
-          '', 
-          'Organizadores salvos com sucesso!', 
-          {
-            status: 'success',
-            duration: 8000,
-          }
-        );
-        this.router.navigate(['/pages/organizer']);
-      },
-    });
+    // this.organizerService.createOrganizer(this.organizerList, this.selectedOrganizer).subscribe({
+    //   next: () => {
+    //     this.toastrService.show(
+    //       '', 
+    //       'Organizadores salvos com sucesso!', 
+    //       {
+    //         status: 'success',
+    //         duration: 8000,
+    //       }
+    //     );
+    //     this.router.navigate(['/pages/organizer']);
+    //   },
+    // });
   }
   
 

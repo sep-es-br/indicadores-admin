@@ -14,23 +14,14 @@ export interface IHttpGetRequestBody {
   search: string;
 }
 
-export interface IHttpGetResponseBody<T> {
+interface IPageable {
+  size: number;
+  number: number;
   totalElements: number;
   totalPages: number;
-  size: number;
-  content: Array<T>;
-  number: number;
-  sort: Array<GetSort>;
-  first: boolean;
-  last: boolean;
-  numberOfElements: number;
-  pageable: {
-    offset: number;
-    sort: Array<GetSort>;
-    unpaged: boolean;
-    paged: boolean;
-    pageSize: number;
-    pageNumber: number;
-  };
-  empty: boolean;
+}
+
+export interface IHttpGetResponseBody<T> {
+  content: T[];
+  page: IPageable;
 }
