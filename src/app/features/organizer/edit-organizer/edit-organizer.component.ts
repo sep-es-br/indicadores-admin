@@ -12,7 +12,6 @@ import { Icon } from '../../../core/interfaces/iconlist.enum';
 @Component({
   selector: 'ngx-edit-organizer',
   templateUrl: './edit-organizer.component.html',
-  styleUrls: ['./edit-organizer.component.scss']
 })
 export class EditOrganizerComponent{
 
