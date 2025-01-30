@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
+import { Component } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
