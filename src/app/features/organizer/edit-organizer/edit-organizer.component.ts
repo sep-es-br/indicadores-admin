@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ConfirmationDialogComponent } from '../../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { OrganizerService } from '../../../core/service/organizer.service';
-import { IOrganizerItem, IOrganizerItemStructure, IStructure, IStructureChild } from '../../../core/interfaces/organizer.interface';
+import { IOrganizerItem, IStructure, IStructureChild } from '../../../core/interfaces/organizer.interface';
 import { IManagement } from '../../../core/interfaces/management.interface';
 import { Icon } from '../../../core/interfaces/iconlist.enum';
 
@@ -50,8 +50,6 @@ export class EditOrganizerComponent{
     editable: true,
   };
 
-  organizerStructure: IOrganizerItemStructure | null = null;
-
   iconList: string[] = Object.values(Icon)
 
 
@@ -68,11 +66,10 @@ export class EditOrganizerComponent{
       if (organizerId) {
         this.organizerService.getOrganizerStructure(organizerId).subscribe(
           (data) => {
-            this.organizerStructure = data;
-            console.log('Estrutura do organizador:', this.organizerStructure);
+            console.log('Estrutura do organizador:', data);
 
-            this.populateStructureList(data.structureList);
-            this.organizerList.push(data.organizer)
+            this.populateStructureList(data);
+            this.organizerList.push(data)
           },
           (error) => {
             console.error('Erro ao carregar a estrutura do organizador', error);
@@ -84,31 +81,37 @@ export class EditOrganizerComponent{
     });
   }
 
-  populateStructureList(structureList: IStructure[]){
-    const newStructure: IStructureChild = {
-      structureName: '',
-      namePlural: '',
-      children: [],
-      editable: false
-    };
+  populateStructureList(structureList: IOrganizerItem){
+    this.structureList = []
 
-    structureList.forEach(item => {
-      if (item.relationshipType === 'parent') {
-        newStructure.structureName = item.name;
-        newStructure.namePlural = item.nameInPlural;
-      } else if (item.relationshipType === 'child') {
-        const childStructure: IStructureChild = {
-          structureName: item.name,
-          namePlural: item.nameInPlural,
-          children: [],
-          editable: false
+        const organizerDto: IStructureChild = {
+          structureName: structureList.structureName, 
+          namePlural: structureList.structureNamePlural,  
+          editable: false, 
+          children: this.buildChildrenTree(structureList) 
         };
-        newStructure.children.push(childStructure);
-      }
-    });
+  
+        this.structureList.push(organizerDto);
+        this.resetNewItem();
 
-    this.structureList.push(newStructure);
-    this.resetNewItem();
+      this.structureEditable = false;
+      
+      
+  }
+
+  buildChildrenTree(item: any): IStructureChild[] {
+    if (item.children && item.children.length > 0) {
+        const firstChild = item.children[0];
+
+        return [{
+            structureName: firstChild.structureName,
+            namePlural: firstChild.structureNamePlural,
+            editable: false,
+            children: firstChild.children?.length > 0 ? this.buildChildrenTree(firstChild) : []
+        }];
+    }
+
+    return [];
   }
 
   onCancel(): void {
@@ -121,60 +124,14 @@ export class EditOrganizerComponent{
       inputElement.value = inputElement.value.slice(0, 4);
     }
   }
-
-  onManagementChange(selectedId: string): void {
-    this.structureList = []
-    if (selectedId !== '') {
-      this.organizerService.getStructureList(selectedId).subscribe(data => {
-
-        if (data.length === 0) {
-          this.structureEditable = true;
-          this.resetNewItem();
-          return; 
-        }
-
-        const newStructure: IStructureChild = {
-          structureName: '',
-          namePlural: '',
-          children: [],
-          editable: false
-        };
-
-        data.forEach(item => {
-          if (item.relationshipType === 'parent') {
-            newStructure.structureName = item.name;
-            newStructure.namePlural = item.nameInPlural;
-          } else if (item.relationshipType === 'child') {
-            const childStructure: IStructureChild = {
-              structureName: item.name,
-              namePlural: item.nameInPlural,
-              children: [],
-              editable: false
-            };
-            newStructure.children.push(childStructure);
-          }
-        });
-
-        this.structureList.push(newStructure);
-        this.structureEditable = false;
-        this.resetNewItem();
-
-      });
-    }else{
-      this.structureEditable = true;
-      this.resetNewItem();
-    }
-  }
-
   
-
   updateBreadcrumb() {
 		this.breadcrumb = [
 			{
 				label: 'Organizador',
 			},
       {
-				label: 'Cadastrar',
+				label: 'Editar',
 			},
 
 		];

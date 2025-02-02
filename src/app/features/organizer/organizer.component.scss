@@ -149,5 +149,12 @@ p {
   margin-top: 20px; 
 }
 
+.invisible-child {
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
   
 

@@ -6,7 +6,7 @@ import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-ge
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
-import { IOrganizerAdmin, IOrganizerItem, IOrganizerItemStructure, IStructure, IStructureChild } from "../interfaces/organizer.interface";
+import { IOrganizerAdmin, IOrganizerItem, IStructure, IStructureChild } from "../interfaces/organizer.interface";
 import { IManagement } from "../interfaces/management.interface";
 
 @Injectable({
@@ -46,8 +46,8 @@ import { IManagement } from "../interfaces/management.interface";
             );
           }
 
-    public getStructureList(administrationId: string): Observable<IStructure[]> {
-        return this._http.get<IStructure[]>(`${this._url}/getStructure/${administrationId}`).pipe(
+    public getStructureList(administrationId: string): Observable<IOrganizerAdmin> {
+        return this._http.get<IOrganizerAdmin>(`${this._url}/getStructure/${administrationId}`).pipe(
         catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
             return throwError(() => err); 
@@ -73,9 +73,9 @@ import { IManagement } from "../interfaces/management.interface";
         );
       }
     
-    public getOrganizerStructure(organizerUuId: string): Observable<IOrganizerItemStructure> {
+    public getOrganizerStructure(organizerUuId: string): Observable<IOrganizerItem> {
         const url = `${this._url}/getOrganizerStructure/${organizerUuId}`;
-        return this._http.get<IOrganizerItemStructure>(url).pipe(
+        return this._http.get<IOrganizerItem>(url).pipe(
           catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
             return throwError(() => new Error('Erro ao obter a estrutura do organizador'));

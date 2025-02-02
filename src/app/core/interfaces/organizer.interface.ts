@@ -2,13 +2,9 @@ export interface IOrganizerAdmin {
     nameAdministration: string;
     nameOrganizer: string;
     typeOrganizer: string;
+    typeOrganizerPlural: string;
     idOrganizer: string;
     children: IOrganizerAdmin[]; 
-  }
-
-  export interface IOrganizerItemStructure {
-    organizer: IOrganizerItem;
-    structureList: IStructure[];
   }
 
   export interface IOrganizerItem {

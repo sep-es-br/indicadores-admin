@@ -72,45 +72,48 @@ export class NewOrganizerComponent{
   onManagementChange(selectedId: string): void {
     this.structureList = []
     if (selectedId !== '') {
-      this.organizerService.getStructureList(selectedId).subscribe(data => {
 
-        if (data.length === 0) {
+      this.organizerService.getStructureList(selectedId).subscribe(item  => {
+
+        if (!item) {  
           this.structureEditable = true;
           this.resetNewItem();
           return; 
         }
 
-        const newStructure: IStructureChild = {
-          structureName: '',
-          namePlural: '',
-          children: [],
-          editable: false
+        const organizerDto: IStructureChild = {
+          structureName: item.typeOrganizer, 
+          namePlural: item.typeOrganizerPlural,  
+          editable: false, 
+          children: this.buildChildrenTree(item) 
         };
-
-        data.forEach(item => {
-          if (item.relationshipType === 'parent') {
-            newStructure.structureName = item.name;
-            newStructure.namePlural = item.nameInPlural;
-          } else if (item.relationshipType === 'child') {
-            const childStructure: IStructureChild = {
-              structureName: item.name,
-              namePlural: item.nameInPlural,
-              children: [],
-              editable: false
-            };
-            newStructure.children.push(childStructure);
-          }
+  
+        this.structureList.push(organizerDto);
+        this.resetNewItem();
         });
 
-        this.structureList.push(newStructure);
-        this.structureEditable = false;
+      this.structureEditable = false;
+      
+      
+      } else {
+        this.structureEditable = true;
         this.resetNewItem();
+      }
+  }
 
-      });
-    }else{
-      this.structureEditable = true;
-      this.resetNewItem();
+  buildChildrenTree(item: any): IStructureChild[] {
+    if (item.children && item.children.length > 0) {
+        const firstChild = item.children[0];
+
+        return [{
+            structureName: firstChild.typeOrganizer,
+            namePlural: firstChild.typeOrganizerPlural,
+            editable: false,
+            children: firstChild.children?.length > 0 ? this.buildChildrenTree(firstChild) : []
+        }];
     }
+
+    return [];
   }
 
   
