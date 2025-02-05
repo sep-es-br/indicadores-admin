@@ -1,158 +1,113 @@
 <div class="container">
   <div class="align-content-center">
-    <!-- Tabela -->
     <div class="row">
       <ng-container>
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
-        <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading && !isEditing && !isViewer">
+        <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading">
           <div class="d-flex justify-content-end">
             <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
             <div class="card-create-icon" [routerLink]="['new']">
               <i class="fas fa-plus-square"></i>
             </div>
           </div>
+
+          <!-- Novo Template Recursivo -->
           <div class="container mt-2">
-            <div
-              *ngFor="let management of managementList | async"
-              class="row p-2 mb-2 align-items-center management-card"
-            >
-              <div class="col-sm-2">
-                <span class="fw-bold">Nome</span>
-                <span>{{ management.name }}</span>
-              </div>
-              <div class="col-sm-4">
-                <span class="fw-bold">Descrição</span>
-                <span>{{ management.description }}</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="fw-bold">Início da Gestão</span>
-                <span>{{ management.startYear }}</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="fw-bold">Final da Gestão</span>
-                <span>{{ management.endYear }}</span>
-              </div>
-              <div class="col-sm-1">
-                <span class="fw-bold">Status:</span>
-                <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
-                  {{ management.active ? 'Ativo' : 'Inativo' }}
-                </span>
-              </div>
-              <div class="col-sm-1 d-flex justify-content-end">
-                <div ngbDropdown>
-                  <button class="btn button-color" ngbDropdownToggle>
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                  <div ngbDropdownMenu>
-                    <button
-                      ngbDropdownItem
-                      class="d-flex align-items-center"
-                      (click)="editManagement(management)"
-                    >
-                      <i class="fas fa-pen-square m-2"></i>
-                      <span>Editar</span>
-                    </button>
-                    <button
-                      ngbDropdownItem
-                      class="d-flex align-items-center"
-                      (click)="deleteManagement(management.id)"
-                    >
-                      <i class="fas fa-trash-alt m-2"></i>
-                      <span>Excluir</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ng-container *ngFor="let management of managementList | async">
+              <ng-container [ngTemplateOutlet]="managementTemplate" [ngTemplateOutletContext]="{ management: management }">
+              </ng-container>
+            </ng-container>
           </div>
-          <ngx-pagination
-            [paginacaoDadosInput]="paginacaoDados"
-            (paginacaoOutput)="paginacaoOutputEvent($event)"
-          ></ngx-pagination>
-        </div>
 
-            <!-- Formulário de Edição -->
-
-  <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="isEditing || isViewer">
-    <p>{{ isEditing ? 'Editar Gestão' : (isViewer ? 'Visualizar Gestão' : 'Gestão') }}</p>
-    <form>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="name" class="form-label">Gestão</label>
-          <input
-            type="text"
-            id="name"
-            class="form-control"
-            [(ngModel)]="selectedManagement.name"
-            name="name"
-            [readonly]="!isEditing && isViewer"
-            placeholder="Digite a gestão"
-          />
+          <ngx-pagination [paginacaoDadosInput]="paginacaoDados" (paginacaoOutput)="paginacaoOutputEvent($event)"></ngx-pagination>
         </div>
-        <div class="col-md-6">
-          <label for="description" class="form-label">Descrição</label>
-          <input
-            type="text"
-            id="description"
-            class="form-control"
-            [(ngModel)]="selectedManagement.description"
-            name="description"
-            [readonly]="!isEditing && isViewer"
-            placeholder="Digite a descrição"
-          />
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="startYear" class="form-label">Início da Gestão</label>
-          <input
-            type="number"
-            id="startYear"
-            class="form-control"
-            [(ngModel)]="selectedManagement.startYear"
-            name="startYear"
-            [readonly]="!isEditing && isViewer"
-            placeholder="Ano"
-          />
-        </div>
-        <div class="col-md-6">
-          <label for="endYear" class="form-label">Final da Gestão</label>
-          <input
-            type="number"
-            id="endYear"
-            class="form-control"
-            [(ngModel)]="selectedManagement.endYear"
-            name="endYear"
-            [readonly]="!isEditing && isViewer"
-            placeholder="Ano"
-          />
-        </div>
-      </div>
-      <div class="d-flex justify-content-end">
-        <button
-          type="button"
-          class="btn btn-secondary me-2 mr-3"
-          *ngIf="isEditing"
-          (click)="cancelEdit()"
-        >
-          Cancelar
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="isEditing ? saveManagement() : toggleEditMode()"
-          *ngIf="isViewer || isEditing"
-        >
-          {{ isEditing ? 'Salvar' : 'Editar' }}
-        </button>
-      </div>
-    </form>
-  </div>
-
       </ng-container>
     </div>
-
-
-
   </div>
 </div>
+
+<!-- Template Recursivo para Management -->
+<ng-template #managementTemplate let-management="management">
+  <div class="row p-1 mb-2 align-items-center management-card justify-content-between">
+    <div class="col-sm-10 d-flex align-items-center gap-1">
+      <button class="btn btn-sm btn-toggle mr-3" (click)="management.isExpanded = !management.isExpanded" [ngClass]="{ 'invisible-child': !management.organizerList?.length }">
+        <i class="fas" [ngClass]="{ 'fa-chevron-right': !management.isExpanded, 'fa-chevron-down': management.isExpanded }"></i>
+      </button>
+      <div>
+        <span class="fw-bold">Gestão Administrativa: </span>
+        <span>{{ management.name }}</span>
+      </div>
+    </div>
+    <div class="col-sm-1">
+      <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
+        {{ management.active ? 'Ativo' : 'Inativo' }}
+      </span>
+    </div>
+    <div class="col-sm-1 d-flex justify-content-end">
+      <div ngbDropdown>
+        <button class="btn button-color" ngbDropdownToggle>
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+        <div ngbDropdownMenu>
+          <button ngbDropdownItem class="d-flex align-items-center" (click)="editManagement(management)">
+            <i class="fas fa-pen-square m-2"></i>
+            <span>Editar</span>
+          </button>
+          <button ngbDropdownItem class="d-flex align-items-center" (click)="deleteManagement(management.id)">
+            <i class="fas fa-trash-alt m-2"></i>
+            <span>Excluir</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Organizadores (Expandível) -->
+  <div *ngIf="management.isExpanded" class="children-card">
+    <ng-container *ngFor="let organizer of management.organizerList">
+      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: organizer, isChild: false }">
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- Template Recursivo para Organizadores -->
+<ng-template #organizerTemplate let-organizer="organizer" let-isChild="isChild">
+  <div class="row p-1 align-items-center organizer-card justify-content-between">
+    <div class="col-sm-4 d-flex align-items-center gap-2">
+      <button class="btn btn-sm btn-toggle mr-3" (click)="organizer.isExpanded = !organizer.isExpanded" [ngClass]="{ 'invisible-child': !organizer.children?.length }">
+        <i class="fas" [ngClass]="{ 'fa-chevron-right': !organizer.isExpanded, 'fa-chevron-down': organizer.isExpanded }"></i>
+      </button>
+      <div>
+        <span class="fw-bold">{{organizer.typeOrganizer}}: </span>
+        <span>{{ organizer.nameOrganizer }}</span>
+      </div>
+    </div>
+
+    <div class="col-sm-4 d-flex justify-content-end">
+      <div ngbDropdown>
+        <button class="btn button-color" ngbDropdownToggle>
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+        <div ngbDropdownMenu>
+          <button *ngIf="!isChild" ngbDropdownItem class="d-flex align-items-center" (click)="editOrganizer(organizer.idOrganizer)">
+            <i class="fas fa-pen-square m-2"></i>
+            <span>Editar</span>
+          </button>
+          <button ngbDropdownItem class="d-flex align-items-center" (click)="deleteOrganizer(organizer.idOrganizer)">
+            <i class="fas fa-trash-alt m-2"></i>
+            <span>Excluir</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Se houver filhos, exibe-os apenas se isExpanded for true -->
+  <div *ngIf="organizer.isExpanded" class="children-card">
+    <ng-container *ngFor="let child of organizer.children">
+      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: child, isChild: true }">
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>

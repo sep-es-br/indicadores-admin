@@ -1,3 +1,5 @@
+import { IOrganizerAdmin } from "./organizer.interface";
+
 export interface IManagement{
     name: string,
     description: string,
@@ -5,5 +7,8 @@ export interface IManagement{
     endYear:number,
     active?:boolean,
     id?:string
+    modelName?: string[]; 
+    modelNameInPlural?: string[];
+    organizerList?: IOrganizerAdmin[]; 
 }
 

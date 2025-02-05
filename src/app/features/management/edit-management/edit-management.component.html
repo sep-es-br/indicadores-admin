@@ -88,21 +88,111 @@
                   ></nb-toggle>
                 </div>
               </div>
-              <div class="form-actions">
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  (click)="onCancel()"
-                >
-                  Cancelar
-                </button>
-                <button type="submit" class="btn btn-primary">Salvar</button>
-              </div>
             </form>
           </div>
         </div>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <p>Estrutura</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Nome no Plural</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="new-structure-row" *ngIf="structureList.length === 0">
+                <td>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [(ngModel)]="newStructure.structureName" 
+                    placeholder="Nome" 
+                    [ngClass]="{ 'is-invalid': submitted && !newStructure.structureName && structureList.length === 0 }" />
+                </td>
+                <td>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [(ngModel)]="newStructure.namePlural" 
+                    placeholder="Nome no Plural" 
+                    [ngClass]="{ 'is-invalid': submitted && !newStructure.namePlural && structureList.length === 0 }" />
+                </td>
+                <td class="text-center">
+                  <button 
+                    class="btn btn-success btn-sm" 
+                    (click)="addNewStructure()" 
+                    *ngIf="structureList.length === 0">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </td>
+              </tr>
+              
+              
+              <ng-container *ngFor="let item of structureList" class="children-card">
+                <ng-template [ngTemplateOutlet]="renderItemStructure" [ngTemplateOutletContext]="{ item: item, parent: null }"></ng-template>
+              </ng-container>
+            </tbody>
+          </table>
+      
+          <ng-template #renderItemStructure let-item="item" let-parent="parent" let-level="level">
+            <tr [class.has-children]="item.children && item.children.length" [ngClass]="'child-level-' + level" class="first-item">
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="item.structureName"
+                  placeholder="Nome"
+                  [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.structureName"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="item.namePlural"
+                  placeholder="Nome no Plural"
+                  [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.namePlural"
+                />
+              </td>
+              <td class="text-center">
+                <button class="btn btn-primary btn-sm" (click)="structureToggleEditable(item)" *ngIf="structureEditable">
+                  <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="deleteItemStructure(parent || structureList, item)" *ngIf="structureEditable">
+                  <i class="fa fa-trash"></i>
+                </button>
+                <button class="btn btn-success btn-sm" (click)="addChildStructure(item)" *ngIf="item.children.length === 0 && structureEditable">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+              </td>
+            </tr>
+      
+            <tr *ngIf="item.children && item.children.length">
+              <td colspan="3" class="sub-item no-top-border">
+                <table class="table table-striped">
+                  <tbody>
+                    <ng-container *ngFor="let child of item.children">
+                      <ng-template [ngTemplateOutlet]="renderItemStructure" [ngTemplateOutletContext]="{ item: child, parent: item.children, level: (level || 0) + 1 }"></ng-template>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </ng-template>
+        </div>
+        <div class="col-md-12 col-lg-12 col-xxxl-12 form-actions text-center mt-4">
+          <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
+        </div>
+
         </ng-container>
       </div>
     </div>
   </div>
+
+  
   

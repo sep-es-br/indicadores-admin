@@ -86,12 +86,6 @@ p {
     font-size: 0.875em;
     margin-top: 0.25em;
   }
-
-  
-  .organizer-container {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
   
   .table {
     width: 100%;
@@ -139,6 +133,11 @@ p {
 
   .table tr td:last-child:not(:only-child) {
     border-left: none;
+  }
+
+  .children-card {
+    padding-left: 15px;
+    margin-bottom: 10px !important;
   }
 
   
@@ -238,18 +237,37 @@ p {
   display: inline-block; 
 }
 
-.table .sub-item > table > tbody > tr.child-level-1 > td:first-child {
-  padding-left: 10px; 
+@for $i from 2 through 10 {
+  .table .sub-item > table > tbody > tr.child-level-#{$i} > td:first-child {
+    padding-left: #{$i * 15}px;
+  }
 }
 
-.table .sub-item > table > tbody > tr.child-level-2 > td:first-child {
-  padding-left: 40px; 
+.table {
+  border-radius: 5px;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0; 
 }
 
-.table .sub-item > table > tbody > tr.child-level-3 > td:first-child {
-  padding-left: 60px; 
+.table thead tr:first-child th:first-child {
+  border-top-left-radius: 5px;
+  border-right: none;
 }
 
-.table .sub-item > table > tbody > tr.child-level-4 > td:first-child {
-  padding-left: 80px; 
+.table thead tr:first-child th:last-child {
+  border-top-right-radius: 5px;
+  border-left: none;
+}
+
+.table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 5px;
+}
+
+.table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 5px;
+}
+
+.table thead th {
+  border-bottom: none !important;
 }

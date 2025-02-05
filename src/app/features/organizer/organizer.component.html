@@ -26,12 +26,18 @@
 
 <!-- Template Recursivo -->
 <ng-template #organizerTemplate let-organizer="organizer" let-isChild="isChild">
-  <div class="row p-2 align-items-center organizer-card">
-    <div class="col-sm-4">
-      <span class="fw-bold">{{ organizer.typeOrganizer }}</span>
-      <span>{{ organizer.nameOrganizer }}</span>
+  <div class="row p-2 align-items-center organizer-card justify-content-between">
+    <div class="col-sm-4 d-flex align-items-center gap-2">
+      <button class="btn btn-sm btn-toggle mr-3" (click)="organizer.isExpanded = !organizer.isExpanded" *ngIf="organizer.children?.length">
+        <i class="fas" [ngClass]="{ 'fa-chevron-right': !organizer.isExpanded, 'fa-chevron-down': organizer.isExpanded }"></i>
+      </button>
+      <div>
+        <span class="fw-bold">{{ organizer.typeOrganizer }}</span>
+        <span>{{ organizer.nameOrganizer }}</span>
+      </div>
     </div>
     
+
     <!-- Aplica a classe "invisible-child" se for um filho -->
     <div class="col-sm-4" [ngClass]="{ 'invisible-child': isChild }">
       <span class="fw-bold">Nome da Gestão</span>
@@ -57,7 +63,8 @@
     </div>
   </div>
 
-  <div *ngIf="organizer.children && organizer.children.length > 0" class="children-card">
+  <!-- Se houver filhos, exibe-os apenas se isExpanded for true -->
+  <div *ngIf="organizer.isExpanded" class="children-card">
     <ng-container *ngFor="let child of organizer.children">
       <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: child, isChild: true }">
       </ng-container>

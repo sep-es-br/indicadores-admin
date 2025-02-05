@@ -10,6 +10,7 @@ import { finalize, tap } from 'rxjs/operators';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
+import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
 
 
 @Component({
@@ -33,9 +34,6 @@ export class ManagementComponent implements OnInit{
     return this._managementList;
   }
 
-  public isEditing: boolean = false;
-  public isViewer: boolean = false; 
-
   selectedManagement: IManagement = {
     id: '',
     name: '',
@@ -50,6 +48,8 @@ export class ManagementComponent implements OnInit{
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
   public managements: IManagement;
+
+  expandedManagement: any = null;
 
   public paginacaoDados: IPaginacaoDados = {
     paginaAtual: 1,
@@ -87,6 +87,10 @@ export class ManagementComponent implements OnInit{
   )
   .subscribe();
 
+  }
+
+  toggleManagement(management: any) {
+    this.expandedManagement = this.expandedManagement === management ? null : management;
   }
 
   public deleteManagement(managementId: string): void {
@@ -149,54 +153,6 @@ export class ManagementComponent implements OnInit{
 
   editManagement(management: IManagement): void {
     this.router.navigate(['/pages/management/edit'], { queryParams: management });
-  }
-
-  viewManagement(management: IManagement): void {
-    this.selectedManagement = { ...management };
-    this.isViewer = true; 
-    this.isEditing = false;
-    this.breadcrumb = [
-			{
-				label: 'Gestão Administrativa',
-			},
-      {
-				label: 'Visualizar',
-			},
-		];
-  }
-  
-  cancelEdit(): void {
-    this.isEditing = false;
-    this.isViewer = true;
-    this.breadcrumb = [
-			{
-				label: 'Gestão Administrativa',
-			},
-      {
-				label: 'Visualizar',
-			},
-		];
-  }
-
-  toggleEditMode() {
-    this.isEditing = !this.isEditing;
-    this.isViewer = !this.isEditing;
-  }
-  
-  saveManagement(): void {
-    if (this.selectedManagement) {
-      // Lógica para salvar a gestão (chamada ao serviço)
-      // this.managementService.updateManagement(this.selectedManagement).subscribe(() => {
-      //   // Atualiza a lista de gestões ou exibe uma mensagem de sucesso
-      this.isEditing = false;
-      this.isViewer = true;
-      // });
-    }
-  }
-  
-  onBreadcrumbClick(data: any) {
-    // Lógica dinâmica dependendo do item clicado
-    console.log('Breadcrumb clicado:', data);
   }
 
 }
