@@ -37,14 +37,26 @@ import { IManagement } from "../interfaces/management.interface";
     }
 
     public createOrganizer(organizers: IOrganizerItem[], managementId: string): Observable<void> {
-
         return this._http.post<void>(`${this._url}/${managementId}`, organizers).pipe(
-              catchError((err: HttpErrorResponse) => {
+            catchError((err: HttpErrorResponse) => {
+              this._errorHandlerService.handleError(err);
+              return throwError(() => err); 
+            })
+        );
+      }
+    
+    public createOrganizerChildren(organizers: IOrganizerItem[], organizerId: string): Observable<void> {
+        const url = `${this._url}/${organizerId}/children`;
+        
+        return this._http.post<void>(url, organizers).pipe(
+            catchError((err: HttpErrorResponse) => {
                 this._errorHandlerService.handleError(err);
-                return throwError(() => err); 
-              })
-            );
-          }
+                return throwError(() => err);
+            })
+        );
+    }
+        
+        
 
     public getStructureList(administrationId: string): Observable<IOrganizerAdmin> {
         return this._http.get<IOrganizerAdmin>(`${this._url}/getStructure/${administrationId}`).pipe(
@@ -73,7 +85,7 @@ import { IManagement } from "../interfaces/management.interface";
         );
       }
     
-    public getOrganizerStructure(organizerUuId: string): Observable<IOrganizerItem> {
+    public getOrganizer(organizerUuId: string): Observable<IOrganizerItem> {
         const url = `${this._url}/getOrganizerStructure/${organizerUuId}`;
         return this._http.get<IOrganizerItem>(url).pipe(
           catchError((err: HttpErrorResponse) => {

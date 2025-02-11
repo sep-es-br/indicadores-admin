@@ -11,6 +11,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
+import { OrganizerService } from '../../core/service/organizer.service';
 
 
 @Component({
@@ -59,7 +60,8 @@ export class ManagementComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private managementService: ManagementService, private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
+  constructor(private managementService: ManagementService, private organizerService: OrganizerService, 
+    private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
   }
 
   ngOnInit(): void {
@@ -104,20 +106,42 @@ export class ManagementComponent implements OnInit{
       .onClose.subscribe((confirmed: boolean) => {
         if (confirmed) {
           this.managementService.deleteManagement(managementId)
-            .pipe(finalize(() => this.fetchPage()))
             .subscribe({
-              next: () => this.toastrService.show(
+              next: () => {this.toastrService.show(
                 '', 'Gestão deletada com sucesso!',
                 { status: 'success', duration: 8000 }
-              ),
-              error: (err) => this.toastrService.show(
-                'Erro ao excluir a gestão: ' + err.message,
-                'Erro', { status: 'danger', duration: 8000 }
-              ),
+              );
+              this.fetchPage(); 
+            }
             });
         }
       });
-    }
+  }
+
+  public deleteOrganizer(organizerId: string): void {
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Confirmação',
+          message: 'Tem certeza de que deseja excluir este organizador?',
+        },
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.organizerService.deleteOrganizer(organizerId)
+            .subscribe({
+              next: () => {
+                this.toastrService.show(
+                  '', 'Organizador deletado com sucesso!',
+                  { status: 'success', duration: 8000 }
+                );
+                this.fetchPage(); 
+              }
+            });
+        }
+      });
+  }
+  
   
 
   public filtroPesquisaOutputEvent(filtro: string): void {
@@ -152,7 +176,44 @@ export class ManagementComponent implements OnInit{
   }
 
   editManagement(management: IManagement): void {
+    if (management.modelName == null || management.modelNameInPlural == null) {
+      this.populateModelName(management);
+    }
     this.router.navigate(['/pages/management/edit'], { queryParams: management });
+  }
+  
+  populateModelName(management: IManagement) {
+    if (!management.organizerList) return;
+  
+    const modelNameSet = new Set<string>();
+    const modelNameInPluralSet = new Set<string>();
+  
+    function traverseOrganizers(organizers: IOrganizerAdmin[]) {
+      for (const organizer of organizers) {
+        modelNameSet.add(organizer.typeOrganizer);
+        modelNameInPluralSet.add(organizer.typeOrganizerPlural);
+        if (organizer.children && organizer.children.length > 0) {
+          traverseOrganizers(organizer.children);
+        }
+      }
+    }
+  
+    traverseOrganizers(management.organizerList);
+  
+    management.modelName = Array.from(modelNameSet);
+    management.modelNameInPlural = Array.from(modelNameInPluralSet);
+  }
+
+  editOrganizer(organizerId: string): void {
+    this.router.navigate(['/pages/management/edit-organizer'], { queryParams: { id: organizerId } });
+  }
+
+  newOrganizer(administrationId: string, administrationName: string, modelName: string, parentOrganizerId?: string): void {
+    if(modelName == 'Desafio'){
+      this.router.navigate(['/pages/management/new-challenge'], { queryParams: { id: administrationId, name: administrationName, modelName: modelName, parentOrganizerId: parentOrganizerId } });
+    }else{
+      this.router.navigate(['/pages/management/new-organizer'], { queryParams: { id: administrationId, name: administrationName, modelName: modelName, parentOrganizerId: parentOrganizerId } });
+    }
   }
 
 }

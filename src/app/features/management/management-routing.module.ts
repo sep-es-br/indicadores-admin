@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { ManagementComponent } from './management.component';
 import { NewManagementComponent } from './new-management/new-management.component';
 import { EditManagementComponent } from './edit-management/edit-management.component';
+import { EditOrganizerComponent } from './edit-organizer/edit-organizer.component';
+import { NewOrganizerComponent } from './new-organizer/new-organizer.component';
+import { NewChallengeComponent } from './new-challenge/new-challenge.component';
 
 
 const routes: Routes = [{
@@ -19,7 +22,20 @@ const routes: Routes = [{
     {
       path: 'edit',
       component: EditManagementComponent,
+    },
+    {
+      path: 'new-organizer',
+      component: NewOrganizerComponent,
+    },
+    {
+      path: 'new-challenge',
+      component: NewChallengeComponent,
+    },
+    {
+      path: 'edit-organizer',
+      component: EditOrganizerComponent
     }
+
   ]
 }];
 

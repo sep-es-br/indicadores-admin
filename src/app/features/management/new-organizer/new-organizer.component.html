@@ -1,0 +1,100 @@
+<div class="container"> 
+  <div class="align-content-center">
+    <div class="row">
+      <ng-container>
+        <div class="w-100">
+          <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+        </div>
+        <div class="organizer-container">
+          <p>
+            <span>{{ managementInfo?.modelName }}</span>
+          </p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Ícone</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" class="form-control" [(ngModel)]="newItem.name" placeholder="Nome"/></td>
+                <td><input type="textArea" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição" /></td>
+                <td>
+                  <select class="form-control" [(ngModel)]="newItem.icon">
+                    <option value="">Selecionar</option>
+                    <option [ngValue]="null">Sem Ícone</option>
+                    <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
+                  </select>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-success btn-sm" (click)="addNewItem()">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </td>
+              </tr>
+              <ng-container *ngFor="let item of organizerList">
+                <ng-template [ngTemplateOutlet]="renderItem" [ngTemplateOutletContext]="{ item: item }"></ng-template>
+              </ng-container>
+            </tbody>
+          </table>
+          <ng-template #renderItem let-item="item">
+            <tr class="first-item">
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="item.name"
+                  placeholder="Nome"
+                  [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.name" />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="item.description"
+                  placeholder="Descrição"
+                  [disabled]="!item.editable"
+                  [class.is-invalid]="item.editable && !item.description" />
+              </td>
+              <td>
+                <select class="form-control" [(ngModel)]="item.icon" [disabled]="!item.editable">
+                  <option value="">Selecionar</option>
+                  <option [ngValue]="null">Sem Ícone</option>
+                  <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
+                </select>
+              </td>
+              <td class="text-center"> 
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="toggleEditable(item)"
+                  [title]="item.editable ? 'Salvar' : 'Editar'">
+                  <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i> 
+                </button>
+                <button
+                  class="btn btn-danger btn-sm"
+                  (click)="deleteItem(parent || organizerList, item)"
+                  title="Excluir">
+                  <i class="fa fa-trash"></i> 
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="onCancel()"
+            >
+              Cancelar
+            </button>
+            <button class="btn btn-primary" (click)="saveItems()">Salvar</button>
+          </div>
+        </div> 
+      </ng-container> 
+    </div>
+  </div>
+</div>

@@ -1,19 +1,19 @@
+import { IChallenge } from "./challenge.interface";
+
 export interface IOrganizerAdmin {
     nameAdministration: string;
     nameOrganizer: string;
     typeOrganizer: string;
     typeOrganizerPlural: string;
     idOrganizer: string;
-    children: IOrganizerAdmin[]; 
+    children: IOrganizerAdmin[];
+    challengeList?: IChallenge[]; 
   }
 
   export interface IOrganizerItem {
     name: string;
     description: string;
-    structureName: string;
-    structureNamePlural: string;
     icon: string;
-    children: IOrganizerItem[];
     editable: boolean;
   }
 
@@ -28,9 +28,4 @@ export interface IOrganizerAdmin {
     name: string;
     nameInPlural: string;
     relationshipType: string;
-  }
-
-
-
-
-  
+  } 

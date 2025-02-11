@@ -14,23 +14,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
     
   },
   {
-    title: 'Organizador',
-    icon: 'shuffle-2-outline',
-    link: '/pages/organizer',
-  },
-  {
-    title: 'Áreas Temáticas',
-    icon: 'loader-outline',
-    link: '/pages/area',
-    
-  },
-  {
-    title: 'Desafios',
-    icon: 'shuffle-outline',
-    link: '/pages/challenge',
-    
-  },
-  {
     title: 'Indicadores',
     icon: 'trending-up-outline',
     link: '/pages/indicators',

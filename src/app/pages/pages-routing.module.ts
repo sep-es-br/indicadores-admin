@@ -20,10 +20,6 @@ const routes: Routes = [{
       loadChildren: () => import('../features/management/management.module').then(m => m.ManagementModule),
     },
     {
-      path: 'organizer',
-      loadChildren: () => import('../features/organizer/organizer.module').then(m => m.OrganizerModule),
-    },
-    {
       path: 'dashboard',
       component: ECommerceComponent,
     },

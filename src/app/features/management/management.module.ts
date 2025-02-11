@@ -9,13 +9,19 @@ import { NewManagementComponent } from './new-management/new-management.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BreadcrumbComponent } from '../../@theme/components/breadcrumb/breadcrumb.component';
 import { EditManagementComponent } from './edit-management/edit-management.component';
+import { NewOrganizerComponent } from './new-organizer/new-organizer.component';
+import { EditOrganizerComponent } from './edit-organizer/edit-organizer.component';
+import { NewChallengeComponent } from './new-challenge/new-challenge.component';
 
 
 @NgModule({
   declarations: [
     ManagementComponent,
     NewManagementComponent,
-    EditManagementComponent
+    EditManagementComponent,
+    NewOrganizerComponent,
+    EditOrganizerComponent,
+    NewChallengeComponent
   ],
   imports: [
     CommonModule,

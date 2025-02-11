@@ -43,12 +43,16 @@
         {{ management.active ? 'Ativo' : 'Inativo' }}
       </span>
     </div>
-    <div class="col-sm-1 d-flex justify-content-end">
+    <div class="col-sm-1 d-flex justify-content-end mt-0">
       <div ngbDropdown>
         <button class="btn button-color" ngbDropdownToggle>
           <i class="fas fa-ellipsis-h"></i>
         </button>
         <div ngbDropdownMenu>
+          <button *ngIf="management.modelName?.length" ngbDropdownItem class="d-flex align-items-center" (click)="newOrganizer(management.id, management.name, management.modelName[0])">
+            <i class="fas fa-plus-circle m-2"></i>
+            <span>Criar {{ management.modelName && management.modelName.length ? management.modelName[0] : '' }}</span>
+          </button>
           <button ngbDropdownItem class="d-flex align-items-center" (click)="editManagement(management)">
             <i class="fas fa-pen-square m-2"></i>
             <span>Editar</span>
@@ -65,17 +69,18 @@
   <!-- Lista de Organizadores (Expandível) -->
   <div *ngIf="management.isExpanded" class="children-card">
     <ng-container *ngFor="let organizer of management.organizerList">
-      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: organizer, isChild: false }">
+      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: organizer, management: management, isChild: false }">
       </ng-container>
     </ng-container>
   </div>
 </ng-template>
 
-<!-- Template Recursivo para Organizadores -->
-<ng-template #organizerTemplate let-organizer="organizer" let-isChild="isChild">
+<ng-template #organizerTemplate let-organizer="organizer" let-management="management" let-isChild="isChild">
   <div class="row p-1 align-items-center organizer-card justify-content-between">
-    <div class="col-sm-4 d-flex align-items-center gap-2">
-      <button class="btn btn-sm btn-toggle mr-3" (click)="organizer.isExpanded = !organizer.isExpanded" [ngClass]="{ 'invisible-child': !organizer.children?.length }">
+    <div class="col-sm-11 d-flex align-items-center gap-2">
+      <!-- Botão para Expandir se houver filhos -->
+      <button class="btn btn-sm btn-toggle mr-3" (click)="organizer.isExpanded = !organizer.isExpanded" 
+              [ngClass]="{ 'invisible-child': (!organizer.children?.length && !organizer.challengeList?.length) }">
         <i class="fas" [ngClass]="{ 'fa-chevron-right': !organizer.isExpanded, 'fa-chevron-down': organizer.isExpanded }"></i>
       </button>
       <div>
@@ -84,7 +89,74 @@
       </div>
     </div>
 
-    <div class="col-sm-4 d-flex justify-content-end">
+    <div class="col-sm-1 d-flex justify-content-end mt-0">
+      <div ngbDropdown>
+        <button class="btn button-color" ngbDropdownToggle>
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+        <div ngbDropdownMenu>
+          <button
+            ngbDropdownItem 
+            class="d-flex align-items-center" 
+            (click)="newOrganizer(
+                    management?.id, 
+                    management?.name, 
+                    management?.modelName?.includes(organizer.typeOrganizer) &&
+                    (management.modelName.indexOf(organizer.typeOrganizer) + 1 < management.modelName.length) 
+                      ? management.modelName[management.modelName.indexOf(organizer.typeOrganizer) + 1] 
+                      : 'Desafio',
+                    organizer.idOrganizer
+                  )">
+            <i class="fas fa-plus-circle m-2"></i>
+            <span>
+              Criar {{
+                management?.modelName?.includes(organizer.typeOrganizer) &&
+                (management.modelName.indexOf(organizer.typeOrganizer) + 1 < management.modelName.length) 
+                  ? management.modelName[management.modelName.indexOf(organizer.typeOrganizer) + 1] 
+                  : 'Desafio'
+              }}
+            </span>
+          </button>
+          <button ngbDropdownItem class="d-flex align-items-center" (click)="editOrganizer(organizer.idOrganizer)">
+            <i class="fas fa-pen-square m-2"></i>
+            <span>Editar</span>
+          </button>
+          <button ngbDropdownItem class="d-flex align-items-center" (click)="deleteOrganizer(organizer.idOrganizer)">
+            <i class="fas fa-trash-alt m-2"></i>
+            <span>Excluir</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Se o organizer tiver filhos, renderiza recursivamente -->
+  <div *ngIf="organizer.isExpanded" class="children-card">
+    <ng-container *ngFor="let child of organizer.children">
+      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: child, management: management, isChild: true }">
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- Renderiza Challenges -->
+  <div *ngIf="organizer.isExpanded && organizer.challengeList?.length > 0" class="children-card">
+    <ng-container *ngFor="let challenge of organizer.challengeList">
+      <ng-container [ngTemplateOutlet]="challengeTemplate" [ngTemplateOutletContext]="{ challenge: challenge }">
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- Template para Challenges -->
+<ng-template #challengeTemplate let-challenge="challenge">
+  <div class="row p-1 align-items-center challenge-card justify-content-between">
+    <div class="col-sm-11 d-flex align-items-center gap-2">
+      <div class="ml-5">
+        <span class="fw-bold">Desafio: </span>
+        <span>{{ challenge.name }}</span>
+      </div>
+    </div>
+    <div class="col-sm-1 d-flex justify-content-end mt-0">
       <div ngbDropdown>
         <button class="btn button-color" ngbDropdownToggle>
           <i class="fas fa-ellipsis-h"></i>
@@ -102,12 +174,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Se houver filhos, exibe-os apenas se isExpanded for true -->
-  <div *ngIf="organizer.isExpanded" class="children-card">
-    <ng-container *ngFor="let child of organizer.children">
-      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: child, isChild: true }">
-      </ng-container>
-    </ng-container>
-  </div>
 </ng-template>
+
+

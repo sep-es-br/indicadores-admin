@@ -12,3 +12,11 @@ export interface IManagement{
     organizerList?: IOrganizerAdmin[]; 
 }
 
+export interface IManagementInfo{
+    name: string,
+    id: string,
+    modelName: string,
+    parentOrganizerId?: string,
+    parentOrganizerName?: string
+}
+

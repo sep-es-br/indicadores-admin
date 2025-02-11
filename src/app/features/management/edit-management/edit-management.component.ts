@@ -1,4 +1,4 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
 
 import { IManagement } from '../../../core/interfaces/management.interface';
@@ -15,7 +15,7 @@ import { ConfirmationDialogComponent } from '../../../@theme/components/confirma
   templateUrl: './edit-management.component.html',
   styleUrls: ['./edit-management.component.scss']
 })
-export class EditManagementComponent{
+export class EditManagementComponent implements OnInit{
 
   form: FormGroup;
   submitted = false;
@@ -26,17 +26,16 @@ export class EditManagementComponent{
 
   public managements: IManagement;
 
+  hasOrganizerList: boolean = true;
+
+  structureList: IStructureChild[] = [];
   
-    structureList: IStructureChild[] = [];
-  
-    structureEditable: boolean = true;
-  
-    newStructure: IStructureChild = {
-      structureName: '',
-      namePlural: '',
-      children: [],
-      editable: true,
-    };
+  newStructure: IStructureChild = {
+    structureName: '',
+    namePlural: '',
+    children: [],
+    editable: true,
+  };
 
 
   constructor(private managementService: ManagementService, private fb: FormBuilder,  private dialogService: NbDialogService, private router: Router, private route: ActivatedRoute, private toastrService: NbToastrService) { 
@@ -54,7 +53,9 @@ export class EditManagementComponent{
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
 
-      const { name, active, startYear, endYear, description, id, modelName, modelNameInPlural } = params;
+      const { name, active, startYear, endYear, description, id, modelName, modelNameInPlural, organizerList } = params;
+
+      this.hasOrganizerList = organizerList ? true : false;
 
       if (name && active && startYear && endYear && description && id) {
         this.form.patchValue(params);
@@ -63,7 +64,6 @@ export class EditManagementComponent{
         const namesPlural: string[] = Array.isArray(modelNameInPlural) ? modelNameInPlural : modelNameInPlural?.split(',') || [];
   
         this.structureList = this.buildHierarchy(names, namesPlural);
-        console.log(this.structureList)
       } else {
         this.router.navigate(['/pages/management']);
       }
