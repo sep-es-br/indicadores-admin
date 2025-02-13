@@ -56,25 +56,6 @@ import { IManagement } from "../interfaces/management.interface";
         );
     }
         
-        
-
-    public getStructureList(administrationId: string): Observable<IOrganizerAdmin> {
-        return this._http.get<IOrganizerAdmin>(`${this._url}/getStructure/${administrationId}`).pipe(
-        catchError((err: HttpErrorResponse) => {
-            this._errorHandlerService.handleError(err);
-            return throwError(() => err); 
-        })
-        );
-    }
-
-    public administrationList():  Observable<IManagement[]>{
-        return this._http.get<IManagement[]>(`${environment.apiUrl}/home-info/administrations`).pipe(
-            catchError((err: HttpErrorResponse) => {
-                this._errorHandlerService.handleError(err);
-                return throwError(() => err);
-        }));
-    }
-
     public deleteOrganizer(organizerId: string): Observable<void> {
         const url = `${this._url}/${organizerId}`;
         return this._http.delete<void>(url).pipe(
@@ -86,7 +67,7 @@ import { IManagement } from "../interfaces/management.interface";
       }
     
     public getOrganizer(organizerUuId: string): Observable<IOrganizerItem> {
-        const url = `${this._url}/getOrganizerStructure/${organizerUuId}`;
+        const url = `${this._url}/getOrganizer/${organizerUuId}`;
         return this._http.get<IOrganizerItem>(url).pipe(
           catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
@@ -95,6 +76,13 @@ import { IManagement } from "../interfaces/management.interface";
         );
       }
       
-    
+    public updateOrganizer(organizer: IOrganizerItem): Observable<void> {
+      return this._http.put<void>(this._url, organizer).pipe(
+        catchError((err: HttpErrorResponse) => {
+          this._errorHandlerService.handleError(err);
+          return throwError(() => err); 
+        })
+      );
+    }
 
   }

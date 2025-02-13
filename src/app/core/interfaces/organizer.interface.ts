@@ -11,6 +11,7 @@ export interface IOrganizerAdmin {
   }
 
   export interface IOrganizerItem {
+    id?: string;
     name: string;
     description: string;
     icon: string;

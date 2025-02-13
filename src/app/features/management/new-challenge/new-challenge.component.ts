@@ -6,7 +6,6 @@ import { ConfirmationDialogComponent } from '../../../@theme/components/confirma
 import { OrganizerService } from '../../../core/service/organizer.service';
 import { IOrganizerItem, IStructureChild } from '../../../core/interfaces/organizer.interface';
 import { IManagement, IManagementInfo } from '../../../core/interfaces/management.interface';
-import { Icon } from '../../../core/interfaces/iconlist.enum';
 import { IChallenge } from '../../../core/interfaces/challenge.interface';
 import { ChallengeService } from '../../../core/service/challenge.service';
 

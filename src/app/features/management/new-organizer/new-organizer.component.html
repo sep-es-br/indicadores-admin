@@ -13,7 +13,7 @@
             <thead>
               <tr>
                 <th>Nome</th>
-                <th>Descrição</th>
+                <th class="border-right-none">Descrição</th>
                 <th>Ícone</th>
                 <th>Ação</th>
               </tr>
@@ -21,13 +21,19 @@
             <tbody>
               <tr>
                 <td><input type="text" class="form-control" [(ngModel)]="newItem.name" placeholder="Nome"/></td>
-                <td><input type="textArea" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição" /></td>
+                <td class="border-right-none"><input type="text" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição" /></td>
                 <td>
-                  <select class="form-control" [(ngModel)]="newItem.icon">
-                    <option value="">Selecionar</option>
-                    <option [ngValue]="null">Sem Ícone</option>
-                    <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
-                  </select>
+                  <div class="d-flex align-items-center ">
+                    <div class="p-2 mr-1 card-icon">
+                      <i  [class]="'fas ' + newItem.icon"></i>
+                    </div>
+                  <nb-select [(ngModel)]="newItem.icon" id="icon" class="w-100 d-block">
+                    <nb-option value="">Selecione</nb-option>
+                    <nb-option *ngFor="let icon of iconList" [value]="icon.value">
+                      <div class="w-100"><i [class]="'fas ' + icon.value " class="icon-spacing"></i>{{ icon.label }}</div>
+                    </nb-option>
+                  </nb-select>
+                  </div>
                 </td>
                 <td class="text-center">
                   <button class="btn btn-success btn-sm" (click)="addNewItem()">
@@ -51,7 +57,7 @@
                   [disabled]="!item.editable"
                   [class.is-invalid]="item.editable && !item.name" />
               </td>
-              <td>
+              <td class="border-right-none">
                 <input
                   type="text"
                   class="form-control"
@@ -61,11 +67,17 @@
                   [class.is-invalid]="item.editable && !item.description" />
               </td>
               <td>
-                <select class="form-control" [(ngModel)]="item.icon" [disabled]="!item.editable">
-                  <option value="">Selecionar</option>
-                  <option [ngValue]="null">Sem Ícone</option>
-                  <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
-                </select>
+                <div class="d-flex align-items-center ">
+                    <div class="p-2 mr-1 card-icon">
+                      <i  [class]="'fas ' + item.icon"></i>
+                    </div>
+                  <nb-select [(ngModel)]="item.icon" id="icon" class="w-100 d-block">
+                    <nb-option value="">Selecione</nb-option>
+                    <nb-option *ngFor="let icon of iconList" [value]="icon.value">
+                      <div class="w-100"><i [class]="'fas ' + icon.value " class="icon-spacing"></i>{{ icon.label }}</div>
+                    </nb-option>
+                  </nb-select>
+                </div>
               </td>
               <td class="text-center"> 
                 <button

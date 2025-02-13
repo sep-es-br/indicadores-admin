@@ -2,18 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { OrganizerService } from '../../../core/service/organizer.service';
-import { IOrganizerItem, IStructureChild } from '../../../core/interfaces/organizer.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { iconList } from '../../../core/interfaces/iconlist';
+import { IChallenge } from '../../../core/interfaces/challenge.interface';
+import { ChallengeService } from '../../../core/service/challenge.service';
 
 
 @Component({
-  selector: 'ngx-edit-organizer',
-  templateUrl: './edit-organizer.component.html',
-  styleUrls: ['./edit-organizer.component.scss']
+  selector: 'ngx-edit-challenge',
+  templateUrl: './edit-challenge.component.html',
+  styleUrls: ['./edit-challenge.component.scss']
 })
-export class EditOrganizerComponent implements OnInit{
+export class EditChallengeComponent implements OnInit{
 
  form: FormGroup;
  
@@ -21,34 +20,25 @@ export class EditOrganizerComponent implements OnInit{
  
    public breadcrumb: Array<IBreadcrumbItem> = [];
  
-   public organizer: IOrganizerItem;
-
-   iconList = iconList.map(icon => ({
-    value: icon.nome,
-    label: icon.palavras_chave[0]
-  }));
+   public challenge: IChallenge;
  
-   constructor(private organizerService: OrganizerService, private fb: FormBuilder,  private dialogService: NbDialogService, private router: Router, private route: ActivatedRoute, private toastrService: NbToastrService) { 
+   constructor(private challengeService: ChallengeService, private fb: FormBuilder,  private dialogService: NbDialogService, private router: Router, private route: ActivatedRoute, private toastrService: NbToastrService) { 
      this.form = this.fb.group({
            id: [''],
            name: ['', [Validators.required]], 
-           description: ['', [Validators.required]], 
-           icon: ['']
          });
          this.updateBreadcrumb()
    }
  
    ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      const organizerId = params['id'];
+      const challengeId = params['id'];
 
-      if (organizerId) {
-        this.organizerService.getOrganizer(organizerId).subscribe(
+      if (challengeId) {
+        this.challengeService.getChallenge(challengeId).subscribe(
           (data) => {
 
-            const iconValue = data.icon === null ? '' : data.icon;
-
-            this.form.patchValue({ id: organizerId, name: data.name, description: data.description, icon: iconValue });
+            this.form.patchValue({ id: challengeId, name: data.name });
           }
         );
       } else {
@@ -73,8 +63,6 @@ export class EditOrganizerComponent implements OnInit{
  
     ];
   }
- 
- 
    
    onCancel(): void {
      this.form.reset();
@@ -88,19 +76,16 @@ export class EditOrganizerComponent implements OnInit{
       return;
     }
   
-    this.organizer = {
-      ...this.organizer, 
+    this.challenge = {
+      ...this.challenge, 
       id: this.form.get('id')?.value,
       name: this.form.get('name')?.value,
-      description: this.form.get('description')?.value,
-      icon: this.form.get('icon')?.value,
-      editable: this.organizer?.editable ?? false
     };
   
-    this.organizerService.updateOrganizer(this.organizer).subscribe({
+    this.challengeService.updateChallenge(this.challenge).subscribe({
       next: () => {
         this.toastrService.show(
-          '', 'Organizador atualizado com sucesso!',
+          '', 'Desafio atualizado com sucesso!',
           { status: 'success', duration: 8000 }
         );
         this.router.navigate(['/pages/management']);

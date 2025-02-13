@@ -15,11 +15,11 @@
                     id="name"
                     class="form-control"
                     formControlName="name"
-                    [class.is-invalid]="form.get('name')?.invalid && (form.get('name')?.touched || submitted)"
+                    [class.is-invalid]="form.get('name')?.invalid &&  submitted"
                     placeholder="Digite o nome"
                   />
                   <div
-                    *ngIf="form.get('name')?.invalid && (form.get('name')?.touched || submitted)"
+                    *ngIf="form.get('name')?.invalid &&  submitted"
                     class="error-message"
                   >
                     Nome é obrigatório.
@@ -27,13 +27,17 @@
                 </div>
                 <div class="col-md-6">
                   <label for="icon" class="form-label">Ícone</label>
-                  <select
-                    id="icon"
-                    class="form-control"
-                    formControlName="icon"
-                  >
-                    <option *ngFor="let icon of iconList" [value]="icon">{{ icon }}</option>
-                  </select>
+                  <div class="d-flex align-items-center ">
+                    <div class="p-2 mr-1 card-icon">
+                      <i  [class]="'fas ' + form.get('icon')?.value"></i>
+                    </div>
+                    <nb-select formControlName="icon" id="icon" class="w-100 d-block">
+                      <nb-option value="">Selecione</nb-option>
+                      <nb-option *ngFor="let icon of iconList" [value]='icon.value'>
+                        <div class="w-100"><i [class]="'fas ' + icon.value " class="icon-spacing"></i>{{ icon.label }}</div>
+                      </nb-option>
+                    </nb-select>
+                  </div>
                 </div>
 
                 <div class="col-md-12 mt-3">
@@ -42,12 +46,12 @@
                     id="description"
                     class="form-control"
                     formControlName="description"
-                    [class.is-invalid]="form.get('description')?.invalid && (form.get('description')?.touched || submitted)"
+                    [class.is-invalid]="form.get('description')?.invalid &&  submitted"
                     placeholder="Digite a descrição"
                     rows="4"
                   ></textarea>
                   <div
-                    *ngIf="form.get('description')?.invalid && (form.get('description')?.touched || submitted)"
+                    *ngIf="form.get('description')?.invalid && submitted"
                     class="error-message"
                   >
                     Descrição é obrigatória.

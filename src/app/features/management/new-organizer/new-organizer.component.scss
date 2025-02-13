@@ -174,5 +174,107 @@ p {
   margin-right: 8px; 
 }
 
+.table {
+  border-radius: 5px;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0; 
+}
 
+.table thead tr:first-child th:first-child {
+  border-top-left-radius: 5px;
+  border-right: none;
+}
+
+.table thead tr:first-child th:last-child {
+  border-top-right-radius: 5px;
+  border-left: none;
+}
+
+.table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 5px;
+}
+
+.table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 5px;
+}
+
+.table thead th {
+  border-bottom: none !important;
+}
+
+.table tr td:first-child:not(:only-child) {
+  border-right: none;
+}
+
+.first-item td {
+  border-top: none;
+}
+
+.border-right-none {
+  border-right: none !important;
+}
+
+.table tr td:last-child:not(:only-child) {
+  border-left: none;
+}
+
+
+nb-select.size-medium:not(.full-width) {
+  max-width: 100% !important;
+}
+
+nb-option-list.size-medium nb-option {
+  color :#495057;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+::ng-deep nb-option-list.size-medium nb-option {
+    color :#495057;
+    font-size: 1rem;
+    font-weight: 400;
+
+}
+
+::ng-deep nb-option.selected{
+  background-color: #0098DA !important;
+  color:#f9f9f9 !important;  
+}
+
+::ng-deep nb-select.size-medium button {
+  padding: 0.28rem 1rem 0.28rem 0.6rem !important;
+}
+
+::ng-deep nb-select .select-button {
+  background-color: #f9f9f9 !important;  
+  border-color: #ccc !important;     
+  color: #333 !important;
+  
+  span{
+  color :#495057;
+  font-size: 0.9rem;
+  font-weight: 400;
+  }
+
+  &:focus {
+    border-color: #0098DA !important;  
+  }
+
+}
+
+.icon-spacing {
+  width: 30px;
+}
+
+.card-icon{
+  background-color: #F9F9F9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 35px;
+  min-height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 

@@ -6,7 +6,7 @@ import { ConfirmationDialogComponent } from '../../../@theme/components/confirma
 import { OrganizerService } from '../../../core/service/organizer.service';
 import { IOrganizerItem, IStructureChild } from '../../../core/interfaces/organizer.interface';
 import { IManagement, IManagementInfo } from '../../../core/interfaces/management.interface';
-import { Icon } from '../../../core/interfaces/iconlist.enum';
+import { iconList } from '../../../core/interfaces/iconlist';
 
 
 @Component({
@@ -37,7 +37,10 @@ export class NewOrganizerComponent implements OnInit{
     editable: true,
   };
 
-  iconList: string[] = Object.values(Icon)
+  iconList = iconList.map(icon => ({
+    value: icon.nome,
+    label: icon.palavras_chave[0] 
+  }));
 
   constructor(private organizerService: OrganizerService, private route: ActivatedRoute,  private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService) { 
     

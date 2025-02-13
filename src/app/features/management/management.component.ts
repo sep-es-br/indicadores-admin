@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
 import { OrganizerService } from '../../core/service/organizer.service';
+import { ChallengeService } from '../../core/service/challenge.service';
 
 
 @Component({
@@ -60,7 +61,7 @@ export class ManagementComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private managementService: ManagementService, private organizerService: OrganizerService, 
+  constructor(private managementService: ManagementService, private organizerService: OrganizerService, private challengeService: ChallengeService,
     private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
   }
 
@@ -141,6 +142,30 @@ export class ManagementComponent implements OnInit{
         }
       });
   }
+
+  public deleteChallenge(challengeId: string): void {
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Confirmação',
+          message: 'Tem certeza de que deseja excluir este desafio?',
+        },
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.challengeService.deleteChallenge(challengeId)
+            .subscribe({
+              next: () => {
+                this.toastrService.show(
+                  '', 'Desafio deletado com sucesso!',
+                  { status: 'success', duration: 8000 }
+                );
+                this.fetchPage(); 
+              }
+            });
+        }
+      });
+  }
   
   
 
@@ -206,6 +231,10 @@ export class ManagementComponent implements OnInit{
 
   editOrganizer(organizerId: string): void {
     this.router.navigate(['/pages/management/edit-organizer'], { queryParams: { id: organizerId } });
+  }
+
+  editChallenge(challengeId: string): void {
+    this.router.navigate(['/pages/management/edit-challenge'], { queryParams: { id: challengeId } });
   }
 
   newOrganizer(administrationId: string, administrationName: string, modelName: string, parentOrganizerId?: string): void {

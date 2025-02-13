@@ -162,11 +162,11 @@
           <i class="fas fa-ellipsis-h"></i>
         </button>
         <div ngbDropdownMenu>
-          <button *ngIf="!isChild" ngbDropdownItem class="d-flex align-items-center" (click)="editOrganizer(organizer.idOrganizer)">
+          <button *ngIf="!isChild" ngbDropdownItem class="d-flex align-items-center" (click)="editChallenge(challenge.id)">
             <i class="fas fa-pen-square m-2"></i>
             <span>Editar</span>
           </button>
-          <button ngbDropdownItem class="d-flex align-items-center" (click)="deleteOrganizer(organizer.idOrganizer)">
+          <button ngbDropdownItem class="d-flex align-items-center" (click)="deleteChallenge(challenge.id)">
             <i class="fas fa-trash-alt m-2"></i>
             <span>Excluir</span>
           </button>
