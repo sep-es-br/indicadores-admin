@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit  {
     if (state?.authError) {
       this.toastrService.show(state.authError, 'Atenção', { status: 'warning', duration: 8000 });
     }
-    window.history.replaceState({}, '', this.router.url);
+    //window.history.replaceState({}, '', this.router.url);
   }
 
   login(){
