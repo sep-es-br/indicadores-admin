@@ -13,8 +13,8 @@
     width: calc(#{nb-theme(sidebar-width)} - #{nb-theme(header-padding)});
   }
 
-  .icone-info-plan{
-	  width: 120px;
+  .icone-indicadores{
+	  width: 180px;
   }
 
   .context-menu{
@@ -77,7 +77,7 @@
 ::ng-deep .nb-theme-default{
   .user-picture{
     background-color: white;
-    color: #0098DA;
+    color: #04122F;
   }
   .user-name{
     color: white;
