@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 import { HomeComponent } from '../features/home/home.component';
+import { IndicatorModule } from '../features/indicator/indicator.module';
+import { IndicatorComponent } from '../features/indicator/indicator.component';
 
 const routes: Routes = [{
   path: '',
@@ -16,6 +18,10 @@ const routes: Routes = [{
     {
       path: 'management',
       loadChildren: () => import('../features/management/management.module').then(m => m.ManagementModule),
+    },
+    {
+      path: 'indicators',
+      loadChildren: () => import('../features/indicator/indicator.module').then(m => m.IndicatorModule),
     },
     {
       path: '',

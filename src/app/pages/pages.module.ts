@@ -8,6 +8,7 @@ import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import { HomeModule } from '../features/home/home.module';
 import { LoginModule } from '../features/login/login.module';
 import { ManagementModule } from '../features/management/management.module';
+import { IndicatorModule } from '../features/indicator/indicator.module';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { ManagementModule } from '../features/management/management.module';
     NbMenuModule,
     MiscellaneousModule,
     HomeModule,
+    IndicatorModule,
     ManagementModule,
     LoginModule,
   ],
