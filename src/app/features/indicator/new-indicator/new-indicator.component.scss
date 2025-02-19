@@ -1,0 +1,148 @@
+p {
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #0098DA;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #0098DA; 
+  border-radius: 5px; 
+  padding: 20px; 
+  margin: 20px auto; 
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #0098DA;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #0098DA;
+  box-shadow: 0 0 5px rgba(0, 152, 218, 0.5)
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.btn-danger:hover {
+  background-color: #c82333;
+}
+
+button.btn-primary {
+  background-color: #0098DA;
+  color: white;
+}
+
+button.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.is-invalid {
+  border-color: #dc3545 !important;
+  background-color: #f8d7da !important;
+}
+
+
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: 0.25em;
+}
+
+
+.organizer-container {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.text-center {
+text-align: center;
+}
+
+.btn {
+margin-right: 8px; 
+}
+
+.btn:last-child{
+margin-right: 0;
+}
+
+.custom-header {
+  font-weight: bold;
+  padding-left: 20px;
+  background-color: #ccc; 
+  color: black;
+}
+
+.custom-option {
+  padding-left: 20px; 
+}
+
+.custom-group{
+  padding: 0;
+}
+
+nb-select.size-medium:not(.full-width) {
+  max-width: 100% !important;
+}
+
+::ng-deep nb-select .select-button {
+  background-color: #fff !important;  
+  border-color: #ccc !important;     
+  color: #333 !important;
+  
+  span{
+  color :#495057;
+  font-size: 1rem;
+  font-weight: 400;
+  }
+
+  &:focus {
+    border-color: #0098DA !important;  
+  }
+
+}
+
+::ng-deep .is-invalid .select-button{
+  border-color: #dc3545 !important;
+  background-color: #f8d7da !important;
+}

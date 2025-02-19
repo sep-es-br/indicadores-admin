@@ -21,7 +21,7 @@
             <tbody>
               <tr>
                 <td><input type="text" class="form-control" [(ngModel)]="newItem.name" placeholder="Nome"/></td>
-                <td class="border-right-none"><input type="text" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição" /></td>
+                <td class="border-right-none"><textarea type="text" class="form-control" [(ngModel)]="newItem.description" placeholder="Descrição"></textarea></td>
                 <td>
                   <div class="d-flex align-items-center ">
                     <div class="p-2 mr-1 card-icon">
@@ -58,13 +58,13 @@
                   [class.is-invalid]="item.editable && !item.name" />
               </td>
               <td class="border-right-none">
-                <input
+                <textarea
                   type="text"
                   class="form-control"
                   [(ngModel)]="item.description"
                   placeholder="Descrição"
                   [disabled]="!item.editable"
-                  [class.is-invalid]="item.editable && !item.description" />
+                  [class.is-invalid]="item.editable && !item.description"></textarea>
               </td>
               <td>
                 <div class="d-flex align-items-center ">

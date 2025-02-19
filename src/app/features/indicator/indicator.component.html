@@ -4,7 +4,7 @@
       <div class="row">
         <ng-container>
           <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
-          <!-- <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading">
+          <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading">
             <div class="d-flex justify-content-end">
               <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
               <div class="card-create-icon" [routerLink]="['new']">
@@ -12,36 +12,28 @@
               </div>
             </div>
             <div class="container mt-2">
-              <ng-container *ngFor="let management of managementList | async">
-                <ng-container [ngTemplateOutlet]="managementTemplate" [ngTemplateOutletContext]="{ management: management }">
+              <ng-container *ngFor="let indicator of indicatorList | async">
+                <ng-container [ngTemplateOutlet]="indicatorTemplate" [ngTemplateOutletContext]="{ indicator: indicator }">
                 </ng-container>
               </ng-container>
             </div>
   
             <ngx-pagination [paginacaoDadosInput]="paginacaoDados" (paginacaoOutput)="paginacaoOutputEvent($event)"></ngx-pagination>
-          </div> -->
+          </div>
         </ng-container>
       </div>
     </div>
 </div>
   
-  <!-- <ng-template #managementTemplate let-management="management">
+  <ng-template #indicatorTemplate let-indicator="indicator">
     <div class="row p-1 mb-2 align-items-center management-card justify-content-between">
       <div class="col-sm-9 d-flex align-items-center">
-        <button class="btn btn-sm btn-toggle mr-3" (click)="management.isExpanded = !management.isExpanded" [ngClass]="{ 'invisible-child': !management.organizerList?.length }">
-          <i class="fas" [ngClass]="{ 'fa-chevron-right': !management.isExpanded, 'fa-chevron-down': management.isExpanded }"></i>
-        </button>
         <div>
-          <span class="fw-bold">Gestão Administrativa: </span>
-          <span>{{ management.name }}</span>
+          <span class="fw-bold">Indicador: </span>
+          <span>{{ indicator.name }}</span>
         </div>
       </div>
-      <div class="col-sm-2 text-left">
-        <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
-          {{ management.active ? 'Ativo' : 'Inativo' }}
-        </span>
-      </div>
-      <div class="col-sm-1 d-flex justify-content-end mt-0">
+      <!-- <div class="col-sm-1 d-flex justify-content-end mt-0">
         <button *ngIf="management.modelName?.length" class="btn btn-sm btn-primary d-flex align-items-center tooltip-container" 
           (click)="newOrganizer(management.id, management.name, management.modelName[0])">
           <i class="fas fa-plus-circle m-1"></i>
@@ -63,8 +55,8 @@
             Excluir
           </span>
         </button>
-      </div>
+      </div> -->
     </div>
   
-  </ng-template> -->
+  </ng-template>
   

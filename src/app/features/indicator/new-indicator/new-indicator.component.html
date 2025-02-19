@@ -1,0 +1,117 @@
+<div class="container">
+  <div class="align-content-center">
+    <div class="row">
+      <ng-container>
+        <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <p>Cadastrar</p>
+          <div class="form-container">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="row mb-3">
+
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Nome</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    formControlName="name"
+                    [class.is-invalid]="form.get('name')?.invalid && submitted"
+                    placeholder="Digite o nome"
+                  />
+                  <div *ngIf="form.get('name')?.invalid && submitted" class="error-message">
+                    Nome é obrigatório.
+                  </div>
+                </div>
+
+                <div class="col-md-6 ">
+                  <label for="polarity" class="form-label">Polaridade</label>
+                  <nb-select
+                    formControlName="polarity"
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('polarity')?.invalid && submitted"
+                  >
+                    <nb-option value="positive">Positiva</nb-option>
+                    <nb-option value="negative">Negativa</nb-option>
+                  </nb-select>
+                  <div *ngIf="form.get('polarity')?.invalid && submitted" class="error-message">
+                    A polaridade é obrigatória.
+                  </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                  <label for="unit" class="form-label">Unidade de Medida</label>
+                  <nb-select
+                    formControlName="unit"
+                    (selectionChange)="onUnitChange($event)"
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('unit')?.invalid && submitted"
+                  >
+                    <nb-option value="" disabled>Selecione uma unidade</nb-option>
+                    <nb-option *ngFor="let unit of units" [value]="unit">{{ unit }}</nb-option>
+                    <nb-option value="other">Outra</nb-option>
+                  </nb-select>
+                  <input
+                  *ngIf="form.get('unit')?.value === 'other'"
+                  type="text"
+                  class="form-control mt-2"
+                  placeholder="Digite a unidade"
+                  formControlName="customUnit"
+                />
+
+                  <input
+                    *ngIf="isOtherUnit"
+                    type="text"
+                    class="form-control mt-2"
+                    placeholder="Digite a unidade"
+                    formControlName="customUnit"
+                  />
+                  <div *ngIf="form.get('unit')?.invalid && submitted" class="error-message">
+                    Selecione uma unidade ou digite uma nova.
+                  </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
+                  <label for="desafio" class="form-label">Desafio</label>
+                  <nb-select 
+                    placeholder="Selecione um ou mais desafios" 
+                    formControlName="desafio" 
+                    [multiple]="true"
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('desafio')?.invalid && submitted"
+                  >
+                    <nb-option-group *ngFor="let management of challengeList" class="custom-group">
+                      <ng-container *ngFor="let organizer of management.organizers">
+                        <nb-option [disabled]="true" class="custom-header">
+                          <strong>{{management.managementName}} - {{ organizer.name }}</strong>
+                        </nb-option>
+                        <nb-option 
+                          *ngFor="let challenge of organizer.challenges"
+                          [value]="challenge.id"
+                          class="custom-option"
+                        >
+                          <div class="w-100">
+                            <strong>{{ challenge.name }}</strong>
+                          </div>
+                        </nb-option>
+                      </ng-container>
+                    </nb-option-group>
+                  </nb-select>
+                  <div *ngIf="form.get('desafio')?.invalid && submitted" class="error-message">
+                    Selecione um desafio.
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-actions text-center mt-4">
+                <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
