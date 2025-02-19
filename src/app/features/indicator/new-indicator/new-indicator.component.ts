@@ -33,8 +33,6 @@ export class NewIndicatorComponent implements OnInit{
 
   challengeList: IManagementOrganizerChallenge[] = []
 
-  flatChallenges: IChallengeNameId[] = [];
-
   constructor(private fb: FormBuilder, private dialogService: NbDialogService, private router: Router, private indicatorService: IndicatorService,private toastrService: NbToastrService) { 
     this.form = this.fb.group({
       name: ['', [Validators.required]], 
@@ -50,7 +48,6 @@ export class NewIndicatorComponent implements OnInit{
     this.indicatorService.getManagementOrganizerChallenges().subscribe(
       (data) => {
         this.challengeList = data
-        this.flattenChallenges();
       }
     );
   }
