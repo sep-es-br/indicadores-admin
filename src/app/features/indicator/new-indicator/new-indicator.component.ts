@@ -89,14 +89,5 @@ export class NewIndicatorComponent implements OnInit{
       console.log(this.form.value)
     }
   }
-
-  flattenChallenges() {
-    this.flatChallenges = this.challengeList.flatMap(management => 
-      management.organizers.flatMap(organizer =>
-        organizer.challenges
-      )
-    );
-  }
   
-
 }
