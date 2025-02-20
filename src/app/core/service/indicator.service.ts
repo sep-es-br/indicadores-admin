@@ -41,4 +41,24 @@ export class IndicatorService {
     );
   }
 
+  public getDistinctMeasureUnits(): Observable<string[]> {
+    const url = `${this._url}/measure-units`;
+    return this._http.get<string[]>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => new Error('Erro ao obter as unidade de medidas'));
+      })
+    );
+  }
+
+  public getDistinctOrganizationAcronyms(): Observable<string[]> {
+    const url = `${this._url}/organization-acronym`;
+    return this._http.get<string[]>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => new Error('Erro ao obter as siglas de orgãos'));
+      })
+    );
+  }
+  
 }

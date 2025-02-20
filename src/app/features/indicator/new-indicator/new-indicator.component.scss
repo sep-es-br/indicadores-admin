@@ -108,18 +108,13 @@ margin-right: 0;
 
 .custom-header {
   font-weight: bold;
-  padding-left: 20px;
-  background-color: #ccc; 
   color: black;
 }
 
 .custom-option {
-  padding-left: 20px; 
+  font-weight: 100;
 }
 
-.custom-group{
-  padding: 0;
-}
 
 nb-select.size-medium:not(.full-width) {
   max-width: 100% !important;
