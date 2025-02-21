@@ -68,22 +68,27 @@ export class NewIndicatorComponent implements OnInit{
   updateChallengesOrgans(selectedChallenges: string[]): void {
     const currentChallengesOrgans = this.challengesOrgans.controls;
   
-    const currentSelectedChallenges = this.form.get('challenges')?.value || [];
-  
     for (let i = currentChallengesOrgans.length - 1; i >= 0; i--) {
-      const challengeId = currentSelectedChallenges[i];
+      const challengeId = currentChallengesOrgans[i].get('challengeId')?.value;
+
       if (!selectedChallenges.includes(challengeId)) {
-        console.log(challengeId)
         this.challengesOrgans.removeAt(i);
       }
     }
   
-    // Adiciona controles ao FormArray para novos desafios selecionados
-    if (selectedChallenges.length > currentChallengesOrgans.length) {
-      for (let i = currentChallengesOrgans.length; i < selectedChallenges.length; i++) {
-        this.challengesOrgans.push(this.fb.control('', Validators.required));
+    selectedChallenges.forEach((challengeId) => {
+      const exists = currentChallengesOrgans.some(
+        (control) => control.get('challengeId')?.value === challengeId
+      );
+      if (!exists) {
+        this.challengesOrgans.push(
+          this.fb.group({
+            challengeId: [challengeId, Validators.required],
+            organ: ['', Validators.required],
+          })
+        );
       }
-    }
+    });
   }
 
   get challengesOrgans() {

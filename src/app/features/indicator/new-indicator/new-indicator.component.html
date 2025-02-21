@@ -24,7 +24,30 @@
                   </div>
                 </div>
 
-                <div class="col-md-6 ">
+                <div class="col-md-6">
+                  <label for="unit" class="form-label">Unidade de Medida</label>
+                  <nb-select
+                    formControlName="unit"
+                    placeholder="Selecione uma unidade" 
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('unit')?.invalid && submitted"
+                  >
+                    <nb-option *ngFor="let unit of units" [value]="unit">{{ unit }}</nb-option>
+                    <nb-option value="other">Outra</nb-option>
+                  </nb-select>
+                  <input
+                  *ngIf="form.get('unit')?.value === 'other'"
+                  type="text"
+                  class="form-control mt-2"
+                  placeholder="Digite a unidade"
+                  formControlName="customUnit"
+                  />
+                  <div *ngIf="form.get('unit')?.invalid && submitted" class="error-message">
+                    Selecione uma unidade ou digite uma nova.
+                  </div>
+                </div>
+
+                <div class="col-md-6 mt-3">
                   <label for="polarity" class="form-label">Polaridade</label>
                   <nb-select
                     formControlName="polarity"
@@ -86,54 +109,33 @@
                   </div>
                 </div>
 
-                <div class="col-md-6 mt-3">
-                  <label for="unit" class="form-label">Unidade de Medida</label>
-                  <nb-select
-                    formControlName="unit"
-                    placeholder="Selecione uma unidade" 
-                    class="w-100 d-block"
-                    [class.is-invalid]="form.get('unit')?.invalid && submitted"
-                  >
-                    <nb-option *ngFor="let unit of units" [value]="unit">{{ unit }}</nb-option>
-                    <nb-option value="other">Outra</nb-option>
-                  </nb-select>
-                  <input
-                  *ngIf="form.get('unit')?.value === 'other'"
-                  type="text"
-                  class="form-control mt-2"
-                  placeholder="Digite a unidade"
-                  formControlName="customUnit"
-                  />
-                  <div *ngIf="form.get('unit')?.invalid && submitted" class="error-message">
-                    Selecione uma unidade ou digite uma nova.
-                  </div>
-                </div>
+
 
                 <!-- Campos dinâmicos para desafios -->
-                <div class="col-md-12 mt-3" *ngFor="let challengeId of form.get('challenges')?.value; let i = index">
-                  <div class="row align-items-center">
+                <div class="col-md-12 mt-3" *ngFor="let control of challengesOrgans.controls">
+                  <div class="row">
                     <div class="col-md-6">
                       <label class="form-label">Desafio</label>
-                      <input 
+                      <input
                         type="text"
                         class="form-control"
-                        [value]="getChallengeNameById(challengeId)"
+                        [value]="getChallengeNameById(control.get('challengeId')?.value)"
                         readonly
                       />
                     </div>
                     <div class="col-md-6">
                       <label class="form-label">Órgão</label>
-                      <nb-select 
-                          placeholder="Selecione um órgão"
-                          class="w-100 d-block"
-                          [formControl]="challengesOrgans.controls[i]"
-                          [class.is-invalid]="challengesOrgans.controls[i].invalid && submitted"
-                        >
-                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="challengeId + ' - ' + organ">
+                      <nb-select
+                        placeholder="Selecione um órgão"
+                        class="w-100 d-block"
+                        [formControl]="control.get('organ')"
+                        [class.is-invalid]="control.get('organ')?.invalid && submitted"
+                      >
+                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ">
                           {{ organ }}
                         </nb-option>
                       </nb-select>
-                      <div *ngIf="challengesOrgans.controls[i].invalid && submitted" class="error-message">
+                      <div *ngIf="control.get('organ')?.invalid && submitted" class="error-message">
                         Selecione um órgão.
                       </div>
                     </div>
