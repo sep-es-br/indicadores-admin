@@ -5,8 +5,8 @@
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
         <div class="col-md-12 col-lg-12 col-xxxl-12">
           <p>Cadastrar</p>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="form-container">
-            <form [formGroup]="form" (ngSubmit)="onSubmit()">
               <div class="row mb-3">
 
                 <div class="col-md-6">
@@ -62,9 +62,13 @@
                     A polaridade é obrigatória.
                   </div>
                 </div>
-
+              </div>
+            </div>
+              
+            <div class="form-container">
+              <div class="row mb-3">
                  <!-- Select para escolher a gestão -->
-                 <div class="col-md-6 mt-3">
+                 <div class="col-md-6">
                   <label for="management" class="form-label">Gestão</label>
                   <nb-select
                     placeholder="Selecione uma ou mais gestões"
@@ -82,8 +86,7 @@
                   </div>
                 </div>
 
-                <!-- Select para escolher os desafios -->
-                <div class="col-md-6 mt-3">
+                <div class="col-md-6">
                   <label for="challenges" class="form-label">Desafio</label>
                   <nb-select 
                     placeholder="Selecione um ou mais desafios"
@@ -109,13 +112,16 @@
                   </div>
                 </div>
 
-
-
-                <!-- Campos dinâmicos para desafios -->
-                <div class="col-md-12 mt-3" *ngFor="let control of challengesOrgans.controls">
+                <div class="col-md-12 mt-3" *ngIf="challengesOrgans.controls.length">
                   <div class="row">
                     <div class="col-md-6">
                       <label class="form-label">Desafio</label>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Órgão</label>
+                    </div>
+                    <ng-container *ngFor="let control of challengesOrgans.controls">
+                    <div class="col-md-6 mb-2">
                       <input
                         type="text"
                         class="form-control"
@@ -123,8 +129,7 @@
                         readonly
                       />
                     </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Órgão</label>
+                    <div class="col-md-6 mb-2">
                       <nb-select
                         placeholder="Selecione um órgão"
                         class="w-100 d-block"
@@ -139,6 +144,7 @@
                         Selecione um órgão.
                       </div>
                     </div>
+                  </ng-container>
                   </div>
                 </div>
 
@@ -150,8 +156,8 @@
                 <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Salvar</button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </ng-container>
     </div>
