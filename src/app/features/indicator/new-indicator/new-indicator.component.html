@@ -5,7 +5,7 @@
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
         <div class="col-md-12 col-lg-12 col-xxxl-12">
           <p>Cadastrar</p>
-          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <form [formGroup]="form">
           <div class="form-container">
               <div class="row mb-3">
 
@@ -19,9 +19,6 @@
                     [class.is-invalid]="form.get('name')?.invalid && submitted"
                     placeholder="Digite o nome"
                   />
-                  <div *ngIf="form.get('name')?.invalid && submitted" class="error-message">
-                    Nome é obrigatório.
-                  </div>
                 </div>
 
                 <div class="col-md-6">
@@ -42,9 +39,6 @@
                   placeholder="Digite a unidade"
                   formControlName="customUnit"
                   />
-                  <div *ngIf="form.get('unit')?.invalid && submitted" class="error-message">
-                    Selecione uma unidade ou digite uma nova.
-                  </div>
                 </div>
 
                 <div class="col-md-6 mt-3">
@@ -58,16 +52,28 @@
                     <nb-option value="positive">Positiva</nb-option>
                     <nb-option value="negative">Negativa</nb-option>
                   </nb-select>
-                  <div *ngIf="form.get('polarity')?.invalid && submitted" class="error-message">
-                    A polaridade é obrigatória.
-                  </div>
                 </div>
+                <div class="col-md-6 mt-3">
+                  <label for="ods" class="form-label">ODS</label>
+                  <nb-select
+                    formControlName="ods"
+                    placeholder="Selecione os ODS, caso tenha"
+                    [multiple]="true"
+                    class="w-100 d-block"
+                  >
+                    <nb-option-group *ngFor="let ods of odsList" [title]="ods.order + ' - ' + ods.name">
+                      <nb-option *ngFor="let goal of ods.odsGoals" [value]="goal.order">
+                        {{ goal.order }}
+                      </nb-option>
+                    </nb-option-group>
+                  </nb-select>
+                </div>
+                
               </div>
             </div>
               
             <div class="form-container">
               <div class="row mb-3">
-                 <!-- Select para escolher a gestão -->
                  <div class="col-md-6">
                   <label for="management" class="form-label">Gestão</label>
                   <nb-select
@@ -81,9 +87,6 @@
                       {{ management.managementName }}
                     </nb-option>
                   </nb-select>
-                  <div *ngIf="form.get('management')?.invalid && submitted" class="error-message">
-                    Selecione uma gestão.
-                  </div>
                 </div>
 
                 <div class="col-md-6">
@@ -107,9 +110,6 @@
                       </nb-option>
                     </nb-option-group>
                   </nb-select>
-                  <div *ngIf="form.get('challenges')?.invalid && submitted" class="error-message">
-                    Selecione um desafio.
-                  </div>
                 </div>
 
                 <div class="col-md-12 mt-3" *ngIf="challengesOrgans.controls.length">
@@ -117,10 +117,13 @@
                     <div class="col-md-6">
                       <label class="form-label">Desafio</label>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                       <label class="form-label">Órgão</label>
                     </div>
-                    <ng-container *ngFor="let control of challengesOrgans.controls">
+                    <div class="col-md-1">
+                      <label class="form-label">Ação</label>
+                    </div>
+                    <ng-container *ngFor="let control of challengesOrgans.controls; let i = index">
                     <div class="col-md-6 mb-2">
                       <input
                         type="text"
@@ -129,7 +132,7 @@
                         readonly
                       />
                     </div>
-                    <div class="col-md-6 mb-2">
+                    <div class="col-md-5 mb-2">
                       <nb-select
                         placeholder="Selecione um órgão"
                         class="w-100 d-block"
@@ -140,9 +143,11 @@
                           {{ organ }}
                         </nb-option>
                       </nb-select>
-                      <div *ngIf="control.get('organ')?.invalid && submitted" class="error-message">
-                        Selecione um órgão.
-                      </div>
+                    </div>
+                    <div class="col-md-1 mb-2">
+                      <button nbButton status="danger" (click)="removeOrganRow(i)">
+                        <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                      </button>
                     </div>
                   </ng-container>
                   </div>
@@ -151,12 +156,110 @@
 
 
               </div>
+            </div>
 
-              <div class="form-actions text-center mt-4">
-                <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Salvar</button>
+            <div class="form-container">
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <button nbButton (click)="addNewYearRow()" class="w-100 d-block input-like-btn">
+                    + Adicionar Ano
+                  </button>
+                </div>
+            
+                <div class="col-md-12 mt-3" *ngIf="yearResultTargets.controls.length">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label class="form-label">Ano</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Meta</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Meta de exibição</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Resultado</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Resultado de exibição</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Ação</label>
+                    </div>
+            
+                    <ng-container *ngFor="let control of yearResultTargets.controls; let i = index">
+
+                        <div class="col-md-2 mb-2">
+                          <div *ngIf="!control.get('yearSelectVisible')">
+                            <button nbButton status="primary" (click)="control.get('yearSelectVisible').setValue(true)">
+                              Selecionar Ano
+                            </button>
+                          </div>
+                          <div *ngIf="control.get('yearSelectVisible')">
+                            <nb-select
+                              placeholder="Selecione o ano"
+                              (selectedChange)="onYearSelected(i, $event)"
+                              class="w-100"
+                              [class.is-invalid]="control.get('year')?.invalid && submitted"
+                            >
+                              <nb-option *ngFor="let year of years" [value]="year">
+                                {{ year }}
+                              </nb-option>
+                            </nb-select>
+                          </div>
+                        </div>
+            
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="number"
+                            class="form-control"
+                            [formControl]="control.get('target')" 
+                            placeholder="Digite a meta"
+                            [class.is-invalid]="control.get('target')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="text"
+                            class="form-control"
+                            [formControl]="control.get('showTarget')" 
+                            placeholder="Digite a valor de exibição"
+                            [class.is-invalid]="control.get('showTarget')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="number"
+                            class="form-control"
+                            [formControl]="control.get('result')" 
+                            placeholder="Digite o resultado"
+                            [class.is-invalid]="control.get('result')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="text"
+                            class="form-control"
+                            [formControl]="control.get('showResult')" 
+                            placeholder="Digite o valor de exibição"
+                            [class.is-invalid]="control.get('showResult')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <button nbButton status="danger" (click)="removeYearRow(i)">
+                            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                          </button>
+                        </div>
+                    </ng-container>
+                  </div>
+                </div>
               </div>
             </div>
+            <div class="form-actions text-center mt-4">
+              <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
+            </div>
+            
           </form>
         </div>
       </ng-container>

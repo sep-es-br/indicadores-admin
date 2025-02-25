@@ -9,6 +9,7 @@ import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-ge
 import { IIndicator } from "../interfaces/indicator.interface";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
 import { IManagementOrganizerChallenge } from "../interfaces/managament-organizer-challente.interface";
+import { IOds } from "../interfaces/ods.interface";
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +58,26 @@ export class IndicatorService {
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => new Error('Erro ao obter as siglas de orgãos'));
+      })
+    );
+  }
+
+  public getYears(): Observable<number[]> {
+    const url = `${this._url}/year-list`;
+    return this._http.get<number[]>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => new Error('Erro ao obter os anos'));
+      })
+    );
+  }
+
+  public getOdsList(): Observable<IOds[]> {
+    const url = `${this._url}/ods-list`;
+    return this._http.get<IOds[]>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => new Error('Erro ao obter os anos'));
       })
     );
   }

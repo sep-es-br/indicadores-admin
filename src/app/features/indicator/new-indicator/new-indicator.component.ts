@@ -1,11 +1,12 @@
 import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { IIndicator } from '../../../core/interfaces/indicator.interface';
+import { IIndicator, INewIndicator } from '../../../core/interfaces/indicator.interface';
 import { IManagementOrganizerChallenge, IOrganizerChallenge } from '../../../core/interfaces/managament-organizer-challente.interface';
 import { IndicatorService } from '../../../core/service/indicator.service';
+import { IOds } from '../../../core/interfaces/ods.interface';
 
 
 @Component({
@@ -26,6 +27,10 @@ export class NewIndicatorComponent implements OnInit{
 
   organizationAcronyms: string[] = [];
 
+  years: number[] = [];
+
+  odsList: IOds[] = [];
+
   isOtherUnit = false;
 
   challengeList: IManagementOrganizerChallenge[] = []
@@ -36,11 +41,13 @@ export class NewIndicatorComponent implements OnInit{
     this.form = this.fb.group({
       name: ['', Validators.required], 
       polarity: ['', Validators.required],
+      ods: [[]],
       management: [[]],
       challenges: [[], Validators.required],
       unit: ['', Validators.required],
       customUnit: [''] ,
-      challengesOrgans: this.fb.array([], Validators.required)
+      challengesOrgans: this.fb.array([], Validators.required),
+      yearResultTargets: this.fb.array([])
     });
     this.updateBreadcrumb()
     
@@ -62,9 +69,57 @@ export class NewIndicatorComponent implements OnInit{
     this.getManagementOrganizerChallenges()
     this.getDistinctMeasureUnits()
     this.getDistinctOrganizationAcronyms()
+    this.getYears()
+    this.getOdsList()
   }
 
-  //ajustar
+  get yearResultTargets() {
+    return this.form.get('yearResultTargets') as FormArray;
+  }
+
+  addNewYearRow(): void {
+    this.yearResultTargets.push(
+      this.fb.group({
+        year: ['', Validators.required],
+        result: [null, ],
+        showResult: [''],
+        target: [null, Validators.required],
+        showTarget: ['', Validators.required],
+        yearSelectVisible: [false]  
+      })
+    );
+  } 
+  
+
+  onYearSelected(index: number, selectedYear: number): void {
+    const control = this.yearResultTargets.at(index);
+    const previousYear = control.get('year')?.value;
+  
+    if (previousYear && previousYear !== selectedYear) {
+      this.years.push(previousYear);
+    }
+  
+    this.years = this.years.filter(year => year !== selectedYear);
+  
+    control.get('year')?.setValue(selectedYear);
+    control.get('yearSelectVisible')?.setValue(false);
+  
+    this.years.sort((a, b) => a - b);
+  }
+  
+
+  removeYearRow(index: number) {
+  const yearToRemove = this.yearResultTargets.at(index).get('year').value;
+  
+  this.years.push(yearToRemove);
+
+  this.yearResultTargets.removeAt(index);
+
+  this.years = [...new Set(this.years)];
+  
+  this.years.sort((a, b) => b - a);
+  }
+
   updateChallengesOrgans(selectedChallenges: string[]): void {
     const currentChallengesOrgans = this.challengesOrgans.controls;
   
@@ -91,6 +146,27 @@ export class NewIndicatorComponent implements OnInit{
     });
   }
 
+  removeOrganRow(index: number): void {
+    const challengeIdToRemove = this.challengesOrgans.at(index).get('challengeId')?.value;
+  
+    if (challengeIdToRemove) {
+      let selectedChallenges: string[] = this.form.get('challenges')?.value || [];
+  
+      selectedChallenges = selectedChallenges.filter(id => id !== challengeIdToRemove);
+  
+      this.form.get('challenges')?.setValue(selectedChallenges);
+  
+      for (let i = this.challengesOrgans.length - 1; i >= 0; i--) {
+        if (this.challengesOrgans.at(i).get('challengeId')?.value === challengeIdToRemove) {
+          this.challengesOrgans.removeAt(i);
+        }
+      }
+    }
+  }
+  
+  
+  
+
   get challengesOrgans() {
     return this.form.get('challengesOrgans') as FormArray;
   }
@@ -112,6 +188,22 @@ export class NewIndicatorComponent implements OnInit{
     );
   }
 
+  getYears() {
+    this.indicatorService.getYears().subscribe(
+      (data) => {
+        this.years = data
+      }
+    );
+  }
+
+  getOdsList() {
+    this.indicatorService.getOdsList().subscribe(
+      (data) => {
+        this.odsList = data
+      }
+    );
+  }
+
   getDistinctOrganizationAcronyms(){
     this.indicatorService.getDistinctOrganizationAcronyms().subscribe(
       (data) => {
@@ -122,7 +214,6 @@ export class NewIndicatorComponent implements OnInit{
 
 
   onCancel(): void {
-    this.form.reset();
     this.router.navigate(['/pages/indicators']);
   }
 
@@ -185,10 +276,34 @@ export class NewIndicatorComponent implements OnInit{
     }
   }
 
-  onSubmit(){
-    this.submitted = true;
-    if (this.challengesOrgans.valid) {
-      console.log(this.form.value)
+  onSubmit() {
+      this.submitted = true;
+    
+      if (this.form.valid) {
+        const formValue = this.form.value;
+    
+        const newIndicator: INewIndicator = {
+          name: formValue.name,
+          polarity: formValue.polarity,
+          measureUnit: this.isOtherUnit ? formValue.customUnit : formValue.unit,
+          ods: formValue.ods,
+          organizationAcronym: formValue.challengesOrgans.map((challenge: any) => ({
+            challengeId: challenge.challengeId,
+            organ: challenge.organ,
+          })),
+          targetsFor: formValue.yearResultTargets.map((target: any) => ({
+            year: target.year,
+            showValue: target.showTarget,
+            value: target.target,
+          })),
+          resultedIn: formValue.yearResultTargets.map((result: any) => ({
+            year: result.year,
+            showValue: result.showResult,
+            value: result.result,
+          })),
+        };
+    
+        console.log('Novo Indicador:', newIndicator);
     }
   }
   
