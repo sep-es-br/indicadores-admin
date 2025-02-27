@@ -90,5 +90,14 @@ export class IndicatorService {
       })
     );
   }
-  
-}
+
+  public getOrganizer(organizerUuId: string): Observable<INewIndicator> {
+      const url = `${this._url}/getOrganizer/${organizerUuId}`;
+      return this._http.get<INewIndicator>(url).pipe(
+        catchError((err: HttpErrorResponse) => {
+          this._errorHandlerService.handleError(err);
+          return throwError(() => new Error('Erro ao obter a estrutura do organizador'));
+        })
+      );
+    }
+  }

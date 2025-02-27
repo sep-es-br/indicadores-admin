@@ -10,9 +10,6 @@ import { finalize, tap } from 'rxjs/operators';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
-import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
-import { OrganizerService } from '../../core/service/organizer.service';
-import { ChallengeService } from '../../core/service/challenge.service';
 import { IIndicator } from '../../core/interfaces/indicator.interface';
 import { IndicatorService } from '../../core/service/indicator.service';
 
@@ -50,7 +47,8 @@ export class IndicatorComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private indicatorService: IndicatorService, private _r2: Renderer2, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
+  constructor(private indicatorService: IndicatorService, private _r2: Renderer2, private toastrService: NbToastrService, private dialogService: NbDialogService,
+    private router: Router) { 
   }
     
   
@@ -109,5 +107,33 @@ export class IndicatorComponent implements OnInit{
 
 		];
 	}
+
+  public deleteIndicator(indicatorId: string): void {
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Atenção!',
+          message: 'Se você excluir este indicador, perderá permanentemente todos os dados de metas e resultados de todos os anos, além das ligações com desafios. Esta ação não pode ser desfeita. Tem certeza de que deseja continuar?',
+        }
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          // this.managementService.deleteManagement(managementId)
+          //   .subscribe({
+          //     next: () => {this.toastrService.show(
+          //       '', 'Gestão deletada com sucesso!',
+          //       { status: 'success', duration: 8000 }
+          //     );
+              this.fetchPage(); 
+            }
+            // });
+        // }
+      });
+  }
+
+  editIndicator(indicatorId: string): void {
+    this.router.navigate(['/pages/indicators/edit'], { queryParams: { id: indicatorId } });
+  }
+
 
 }

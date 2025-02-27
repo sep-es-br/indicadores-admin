@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="align-content-center">
+    <div class="row">
+      <ng-container>
+        <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <p>Editar Organizador</p>
+          <div class="form-container">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Nome</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    formControlName="name"
+                    [class.is-invalid]="form.get('name')?.invalid &&  submitted"
+                    placeholder="Digite o nome"
+                  />
+                </div>
+              </div>
+
+              <div class="form-actions text-center mt-4">
+                <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

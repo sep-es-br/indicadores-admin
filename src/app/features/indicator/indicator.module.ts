@@ -7,13 +7,15 @@ import { FormsModule, NgSelectOption, ReactiveFormsModule } from '@angular/forms
 import { IndicatorComponent } from './indicator.component';
 import { IndicatorRoutingModule } from './indicator-routing.module';
 import { NewIndicatorComponent } from './new-indicator/new-indicator.component';
+import { EditIndicatorComponent } from './edit-indicator/edit-indicator.component';
 
 
 
 @NgModule({
   declarations: [
     IndicatorComponent,
-    NewIndicatorComponent
+    NewIndicatorComponent,
+    EditIndicatorComponent
   ],
   imports: [
     CommonModule,
