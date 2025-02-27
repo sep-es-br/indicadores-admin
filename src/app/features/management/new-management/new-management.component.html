@@ -4,19 +4,19 @@
       <ng-container>
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
         <div class="col-md-12 col-lg-12 col-xxxl-12">
-          <p>Cadastrar</p>
+          <p>Ficha da gestão</p>
           <div class="form-container">
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <label for="name" class="form-label">Gestão</label>
+                  <label for="name" class="form-label">Nome</label>
                   <input
                     type="text"
                     id="name"
                     class="form-control"
                     formControlName="name"
                     [class.is-invalid]="form.get('name')?.invalid && (form.get('name')?.touched || submitted)"
-                    placeholder="Digite a gestão"
+                    placeholder="Digite o nome"
                   />
                   <div *ngIf="form.get('name')?.invalid && (form.get('name')?.touched || submitted)" class="error-message">
                     Nome é obrigatório.

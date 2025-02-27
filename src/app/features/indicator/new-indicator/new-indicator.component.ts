@@ -63,6 +63,16 @@ export class NewIndicatorComponent implements OnInit{
       this.updateChallengesOrgans(selectedChallenges);
     });
 
+    this.form.get('unit')?.valueChanges.subscribe(value => {
+      const customUnitControl = this.form.get('customUnit');
+      if (value === 'other') {
+        customUnitControl?.setValidators([Validators.required]);
+      } else {
+        customUnitControl?.clearValidators();
+      }
+      customUnitControl?.updateValueAndValidity();
+    });
+
   }
 
   ngOnInit(): void {
@@ -303,7 +313,22 @@ export class NewIndicatorComponent implements OnInit{
           })),
         };
     
-        console.log('Novo Indicador:', newIndicator);
+        this.indicatorService.createIndicator(newIndicator).subscribe({
+          next: (response) => {
+            this.toastrService.show(
+              '' , 'Indicador criado com sucesso!',
+              { status: 'success', duration: 8000 }
+            );
+            this.router.navigate(['/pages/indicators']);
+          },
+          error: (error) => {
+            this.toastrService.show(
+              error , 'Erro ao criar o indicador ',
+              { status: 'danger', duration: 8000 }
+            );
+            this.router.navigate(['/pages/indicators']);
+          },
+        });
     }
   }
   

@@ -6,7 +6,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { IChallenge } from "../interfaces/challenge.interface";
 import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-get.interface";
-import { IIndicator } from "../interfaces/indicator.interface";
+import { IIndicator, INewIndicator } from "../interfaces/indicator.interface";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
 import { IManagementOrganizerChallenge } from "../interfaces/managament-organizer-challente.interface";
 import { IOds } from "../interfaces/ods.interface";
@@ -77,7 +77,16 @@ export class IndicatorService {
     return this._http.get<IOds[]>(url).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
-        return throwError(() => new Error('Erro ao obter os anos'));
+        return throwError(() => new Error('Erro ao obter Ods'));
+      })
+    );
+  }
+
+  public createIndicator(indicator: INewIndicator): Observable<INewIndicator> {
+    return this._http.post<INewIndicator>(this._url, indicator).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => err);
       })
     );
   }
