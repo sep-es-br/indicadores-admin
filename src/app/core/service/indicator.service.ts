@@ -91,12 +91,12 @@ export class IndicatorService {
     );
   }
 
-  public getOrganizer(organizerUuId: string): Observable<INewIndicator> {
-      const url = `${this._url}/getOrganizer/${organizerUuId}`;
+  public getIndicator(indicatorUuId: string): Observable<INewIndicator> {
+      const url = `${this._url}/getIndicator/${indicatorUuId}`;
       return this._http.get<INewIndicator>(url).pipe(
         catchError((err: HttpErrorResponse) => {
           this._errorHandlerService.handleError(err);
-          return throwError(() => new Error('Erro ao obter a estrutura do organizador'));
+          return throwError(() => new Error('Erro ao obter a estrutura do indicador'));
         })
       );
     }

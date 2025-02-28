@@ -24,6 +24,7 @@ export interface IChallengeOrgan {
 }
   
 export interface INewIndicator{
+    id?: string
     name: string
     polarity: string
     measureUnit: string
