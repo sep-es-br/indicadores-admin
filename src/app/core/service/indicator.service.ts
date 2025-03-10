@@ -109,4 +109,14 @@ export class IndicatorService {
       })
     );
   }
+
+  public deleteIndicator(indicatorId: string): Observable<void> {
+    const url = `${this._url}/${indicatorId}`;
+    return this._http.delete<void>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => err); 
+      })
+    );
+  }
 }

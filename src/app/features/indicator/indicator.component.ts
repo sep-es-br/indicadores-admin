@@ -118,16 +118,16 @@ export class IndicatorComponent implements OnInit{
       })
       .onClose.subscribe((confirmed: boolean) => {
         if (confirmed) {
-          // this.managementService.deleteManagement(managementId)
-          //   .subscribe({
-          //     next: () => {this.toastrService.show(
-          //       '', 'Gestão deletada com sucesso!',
-          //       { status: 'success', duration: 8000 }
-          //     );
+          this.indicatorService.deleteIndicator(indicatorId)
+            .subscribe({
+              next: () => {this.toastrService.show(
+                '', 'Gestão deletada com sucesso!',
+                { status: 'success', duration: 8000 }
+              );
               this.fetchPage(); 
             }
-            // });
-        // }
+            });
+        }
       });
   }
 
