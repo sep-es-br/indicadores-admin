@@ -6,7 +6,7 @@ import { NbDialogRef, NB_DIALOG_CONFIG } from '@nebular/theme';
   template: `
     <nb-card>
       <nb-card-header>{{ title }}</nb-card-header>
-      <nb-card-body>{{ message }}</nb-card-body>
+       <nb-card-body class="message-container">{{ message }}</nb-card-body>
       <nb-card-footer class="d-flex justify-content-end">
         <button nbButton status="success" (click)="close(true)" class="mr-2 no-focus">Confirmar</button>
         <button nbButton status="danger" (click)="close(false)" class="no-focus">Cancelar</button>
@@ -21,6 +21,13 @@ import { NbDialogRef, NB_DIALOG_CONFIG } from '@nebular/theme';
       .no-focus:focus {
       outline: none;
       box-shadow: none;
+      }
+      .message-container {
+        max-width: 1000px; 
+        max-height: 150px; 
+        overflow: auto; 
+        word-wrap: break-word; 
+        white-space: pre-line; 
       }
     `,
   ],
