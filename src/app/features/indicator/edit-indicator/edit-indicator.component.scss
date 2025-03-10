@@ -81,6 +81,7 @@ button.btn-primary:hover {
   background-color: #f8d7da !important;
 }
 
+
 .invalid-feedback {
   color: #dc3545;
   font-size: 0.875em;
@@ -105,27 +106,18 @@ margin-right: 8px;
 margin-right: 0;
 }
 
+.custom-header {
+  font-weight: bold;
+  color: black;
+}
+
+.custom-option {
+  font-weight: 100;
+}
+
 
 nb-select.size-medium:not(.full-width) {
   max-width: 100% !important;
-}
-
-nb-option-list.size-medium nb-option {
-  color :#495057;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-::ng-deep nb-option-list.size-medium nb-option {
-    color :#495057;
-    font-size: 1rem;
-    font-weight: 400;
-
-}
-
-::ng-deep nb-option.selected{
-  background-color: #0098DA !important;
-  color:#fff !important;  
 }
 
 ::ng-deep nb-select .select-button {
@@ -145,18 +137,17 @@ nb-option-list.size-medium nb-option {
 
 }
 
-.icon-spacing {
-  width: 30px;
+::ng-deep .is-invalid .select-button{
+  border-color: #dc3545 !important;
+  background-color: #f8d7da !important;
 }
 
-.card-icon{
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  min-width: 38px;
-  min-height: 38px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.input-like-btn {
+  background-color: #f8f9fa !important; 
+  border: 1px solid #ced4da !important; 
+  color: #495057;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.375rem 0.75rem; 
+  text-align: center; 
 }
-

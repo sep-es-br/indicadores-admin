@@ -3,7 +3,7 @@ import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interf
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { IIndicator, INewIndicator } from '../../../core/interfaces/indicator.interface';
+import { IIndicator, IIndicatorForm } from '../../../core/interfaces/indicator.interface';
 import { IManagementOrganizerChallenge, IOrganizerChallenge } from '../../../core/interfaces/managament-organizer-challente.interface';
 import { IndicatorService } from '../../../core/service/indicator.service';
 import { IOds } from '../../../core/interfaces/ods.interface';
@@ -292,7 +292,7 @@ export class NewIndicatorComponent implements OnInit{
       if (this.form.valid) {
         const formValue = this.form.value;
     
-        const newIndicator: INewIndicator = {
+        const newIndicator: IIndicatorForm = {
           name: formValue.name,
           polarity: formValue.polarity,
           measureUnit: this.isOtherUnit ? formValue.customUnit : formValue.unit,

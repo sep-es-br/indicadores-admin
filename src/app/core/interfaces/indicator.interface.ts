@@ -1,14 +1,14 @@
-import { IOds } from "./ods.interface"
 
-export interface IIndicator{
-    id?: string
-    name: string
-    polarity: string
-    measureUnit: string
-    organizationAcronym: string
-    targetsFor: IIndicatorValue[]
-    resultedIn: IIndicatorValue[]
-}
+export interface IIndicator {
+    uuId: string;
+    name: string;
+    measureUnit: string;
+    polarity: string;
+    measures: IChallengeOrgan[];
+    odsgoal: IOdsGoal[];
+    targetsFor: IIndicatorValue[];
+    resultedIn: IIndicatorValue[];
+  }
 
 export interface IIndicatorValue {
     period?: number
@@ -18,18 +18,23 @@ export interface IIndicatorValue {
     value: number
 }
 
+export interface IOdsGoal {
+    order: string;
+}
+
+
 export interface IChallengeOrgan {
     challengeId: string;
     organ: string;
 }
   
-export interface INewIndicator{
+export interface IIndicatorForm {
     id?: string
     name: string
     polarity: string
     measureUnit: string
     organizationAcronym: IChallengeOrgan[]
-    ods: number[]
+    ods: string[]
     targetsFor: IIndicatorValue[]
     resultedIn: IIndicatorValue[]
 }

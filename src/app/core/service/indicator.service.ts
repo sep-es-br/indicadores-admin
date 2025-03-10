@@ -6,7 +6,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { IChallenge } from "../interfaces/challenge.interface";
 import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-get.interface";
-import { IIndicator, INewIndicator } from "../interfaces/indicator.interface";
+import { IIndicator, IIndicatorForm } from "../interfaces/indicator.interface";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
 import { IManagementOrganizerChallenge } from "../interfaces/managament-organizer-challente.interface";
 import { IOds } from "../interfaces/ods.interface";
@@ -82,8 +82,8 @@ export class IndicatorService {
     );
   }
 
-  public createIndicator(indicator: INewIndicator): Observable<INewIndicator> {
-    return this._http.post<INewIndicator>(this._url, indicator).pipe(
+  public createIndicator(indicator: IIndicatorForm): Observable<IIndicatorForm> {
+    return this._http.post<IIndicatorForm>(this._url, indicator).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => err);
@@ -91,13 +91,22 @@ export class IndicatorService {
     );
   }
 
-  public getIndicator(indicatorUuId: string): Observable<INewIndicator> {
-      const url = `${this._url}/getIndicator/${indicatorUuId}`;
-      return this._http.get<INewIndicator>(url).pipe(
-        catchError((err: HttpErrorResponse) => {
-          this._errorHandlerService.handleError(err);
-          return throwError(() => new Error('Erro ao obter a estrutura do indicador'));
-        })
-      );
-    }
+  public getIndicator(indicatorUuId: string): Observable<IIndicator> {
+    const url = `${this._url}/getIndicator/${indicatorUuId}`;
+    return this._http.get<IIndicator>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => new Error('Erro ao obter a estrutura do indicador'));
+      })
+    );
   }
+
+  public updateIndicator(indicator: IIndicatorForm): Observable<void> {
+    return this._http.put<void>(this._url, indicator).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => err); 
+      })
+    );
+  }
+}
