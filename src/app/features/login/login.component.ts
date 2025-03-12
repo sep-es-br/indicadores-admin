@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit  {
 
+  showExitButton: boolean = false;
+
   constructor(private authenticationService: AuthenticationService ,private toastrService: NbToastrService, private router: Router) { 
   }
 
@@ -17,12 +19,16 @@ export class LoginComponent implements OnInit  {
     const state = window.history.state as { authError: string };
     if (state?.authError) {
       this.toastrService.show(state.authError, 'Atenção', { status: 'warning', duration: 8000 });
+      this.showExitButton = true;
     }
-    //window.history.replaceState({}, '', this.router.url);
   }
 
   login(){
   this.authenticationService.acessoCidadaoSignIn();
+  }
+
+  logout() {
+    window.location.href = 'https://acessocidadao.es.gov.br/is/logout';
   }
 
 }
