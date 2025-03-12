@@ -48,10 +48,10 @@ export class EditIndicatorComponent implements OnInit {
       polarity: ['', Validators.required],
       ods: [[]],
       management: [[]],
-      challenges: [[], Validators.required],
+      challenges: [[]],
       unit: ['', Validators.required],
       customUnit: [''],
-      challengesOrgans: this.fb.array([], Validators.required),
+      challengesOrgans: this.fb.array([]),
       yearResultTargets: this.fb.array([])
     });
     this.updateBreadcrumb()
@@ -176,7 +176,7 @@ export class EditIndicatorComponent implements OnInit {
     challengeIds.forEach(challengeId => {
       const management = this.challengeList.find(mgmt =>
         mgmt.organizers.some(organizer => 
-          organizer.challenges.some(challenge => challenge.id === challengeId)
+          organizer.challenges.some(challenge => challenge.uuId === challengeId)
         )
       );
   
@@ -216,27 +216,8 @@ export class EditIndicatorComponent implements OnInit {
     );
   }
 
-
-  onYearSelected(index: number, selectedYear: number): void {
-    const control = this.yearResultTargets.at(index);
-
-    control.get('year')?.setValue(selectedYear);
-    control.get('yearSelectVisible')?.setValue(false);
-
-    this.years.sort((a, b) => a - b);
-  }
-
-
   removeYearRow(index: number) {
-    const yearToRemove = this.yearResultTargets.at(index).get('year').value;
-
-    this.years.push(yearToRemove);
-
     this.yearResultTargets.removeAt(index);
-
-    this.years = [...new Set(this.years)];
-
-    this.years.sort((a, b) => b - a);
   }
 
   updateChallengesOrgans(selectedChallenges: string[]): void {
@@ -372,12 +353,12 @@ export class EditIndicatorComponent implements OnInit {
 
   isChallengeInSelectedManagements(challengeId: string): boolean {
     return this.filteredOrganizers.some(organizer =>
-      organizer.challenges.some(challenge => challenge.id === challengeId)
+      organizer.challenges.some(challenge => challenge.uuId === challengeId)
     );
   }
 
   getChallengeNameById(challengeId: string): string {
-    const challenge = this.filteredOrganizers.flatMap(o => o.challenges).find(c => c.id === challengeId);
+    const challenge = this.filteredOrganizers.flatMap(o => o.challenges).find(c => c.uuId === challengeId);
     return challenge ? challenge.name : '';
   }
 
@@ -424,7 +405,7 @@ export class EditIndicatorComponent implements OnInit {
       this.indicatorService.updateIndicator(indicatorData).subscribe({
         next: (response) => {
           this.toastrService.show(
-            '', 'Indicador editar com sucesso!',
+            '', 'Indicador editado com sucesso!',
             { status: 'success', duration: 8000 }
           );
           this.router.navigate(['/pages/indicators']);

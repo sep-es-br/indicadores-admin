@@ -34,8 +34,6 @@ export class NewChallengeComponent implements OnInit{
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.managementInfo.id = params['id'];
-      this.managementInfo.name = params['name'];
       this.managementInfo.modelName = params['modelName'];
       this.managementInfo.parentOrganizerId = params['parentOrganizerId'] || '';
     });

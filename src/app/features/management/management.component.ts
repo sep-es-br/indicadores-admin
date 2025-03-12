@@ -239,7 +239,7 @@ export class ManagementComponent implements OnInit{
 
   newOrganizer(administrationId: string, administrationName: string, modelName: string, parentOrganizerId?: string): void {
     if(modelName == 'Desafio'){
-      this.router.navigate(['/pages/management/new-challenge'], { queryParams: { id: administrationId, name: administrationName, modelName: modelName, parentOrganizerId: parentOrganizerId } });
+      this.router.navigate(['/pages/management/new-challenge'], { queryParams: { modelName: modelName, parentOrganizerId: parentOrganizerId } });
     }else{
       this.router.navigate(['/pages/management/new-organizer'], { queryParams: { id: administrationId, name: administrationName, modelName: modelName, parentOrganizerId: parentOrganizerId } });
     }

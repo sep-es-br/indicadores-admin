@@ -6,7 +6,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { IChallenge } from "../interfaces/challenge.interface";
 import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-get.interface";
-import { IIndicator, IIndicatorForm } from "../interfaces/indicator.interface";
+import { IIndicator, IIndicatorDetails, IIndicatorForm } from "../interfaces/indicator.interface";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
 import { IManagementOrganizerChallenge } from "../interfaces/managament-organizer-challente.interface";
 import { IOds } from "../interfaces/ods.interface";
@@ -97,6 +97,16 @@ export class IndicatorService {
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => new Error('Erro ao obter a estrutura do indicador'));
+      })
+    );
+  }
+
+  public getAllIndicators(): Observable<IIndicatorDetails[]> {
+    const url = `${this._url}/getIndicators`;
+    return this._http.get<IIndicatorDetails[]>(url).pipe(
+      catchError((err: HttpErrorResponse) => {
+        this._errorHandlerService.handleError(err);
+        return throwError(() => new Error('Erro ao obter a lista de indicadores'));
       })
     );
   }

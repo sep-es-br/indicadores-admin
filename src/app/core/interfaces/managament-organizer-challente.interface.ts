@@ -10,6 +10,6 @@ export interface IOrganizerChallenge {
 
 export interface IChallengeNameId {
     name: string;
-    id: string;
+    uuId: string;
     selected?: boolean;
 }

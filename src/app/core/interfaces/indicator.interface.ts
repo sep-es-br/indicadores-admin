@@ -38,3 +38,9 @@ export interface IIndicatorForm {
     targetsFor: IIndicatorValue[]
     resultedIn: IIndicatorValue[]
 }
+
+export interface IIndicatorDetails  {
+    uuId: string
+    name: string
+    organizationAcronym: string
+}

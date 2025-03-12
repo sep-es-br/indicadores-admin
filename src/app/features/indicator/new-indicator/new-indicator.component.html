@@ -104,7 +104,7 @@
                     <nb-option-group *ngFor="let organizer of filteredOrganizers" [title]="organizer.name" class="custom-header">
                       <nb-option 
                         *ngFor="let challenge of organizer.challenges"
-                        [value]="challenge.id"
+                        [value]="challenge.uuId"
                         class="custom-option"
                       >
                         <div class="w-100">
@@ -161,13 +161,8 @@
             <p>Dados de apurações</p>
             <div class="form-container">
               <div class="row mb-3">
-                <div class="col-md-12">
-                  <button nbButton (click)="addNewYearRow()" class="w-100 d-block input-like-btn">
-                    + Adicionar Ano
-                  </button>
-                </div>
             
-                <div class="col-md-12 mt-3" *ngIf="yearResultTargets.controls.length">
+                <div class="col-md-12 mt-1" *ngIf="yearResultTargets.controls.length">
                   <div class="row">
                     <div class="col-md-2">
                       <label class="form-label">Ano</label>
@@ -191,19 +186,14 @@
                     <ng-container *ngFor="let control of yearResultTargets.controls; let i = index">
 
                         <div class="col-md-2 mb-2">
-                          <div *ngIf="!control.get('yearSelectVisible')">
-                            <button nbButton status="primary" (click)="control.get('yearSelectVisible').setValue(true)">
-                              Selecionar Ano
-                            </button>
-                          </div>
-                          <div *ngIf="control.get('yearSelectVisible')">
+                          <div>
                             <nb-select
                               placeholder="Selecione o ano"
-                              (selectedChange)="onYearSelected(i, $event)"
+                              [formControl]="control.get('year')"
                               class="w-100"
                               [class.is-invalid]="control.get('year')?.invalid && submitted"
                             >
-                              <nb-option *ngFor="let year of years" [value]="year">
+                              <nb-option *ngFor="let year of years" [value]="year" [disabled]="isYearAlreadySelected(year)">
                                 {{ year }}
                               </nb-option>
                             </nb-select>
@@ -253,6 +243,11 @@
                         </div>
                     </ng-container>
                   </div>
+                </div>
+                <div class="col-md-12">
+                  <button nbButton (click)="addNewYearRow()" class="w-100 d-block input-like-btn">
+                    + Adicionar Ano
+                  </button>
                 </div>
               </div>
             </div>
