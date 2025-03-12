@@ -51,7 +51,7 @@ export class AuthRedirectComponent {
           if (!userRoles.includes('INDICADORES_ADMIN')) {
             sessionStorage.clear(); 
             this._router.navigate(['/login'], {
-              state: { authError: 'Acesso negado: Você não tem permissão para acessar essa aplicação' }
+              state: { authError: 'Acesso negado: Você não tem autorização para acessar esta aplicação.' }
             });
             return;
           }
