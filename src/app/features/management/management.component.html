@@ -155,15 +155,16 @@
         <span>{{ challenge.name }}</span>
       </div>
     </div>
-    <div class="col-sm-1 d-flex justify-content-end gap-2 tooltip-container mt-0">
-      <button *ngIf="!isChild" class="btn btn-sm btn-warning d-flex align-items-center" (click)="editChallenge(challenge.id)">
+    <div class="col-sm-1 d-flex justify-content-end gap-2 mt-0">
+      
+      <button *ngIf="!isChild" class="btn btn-sm btn-warning d-flex align-items-center tooltip-container" (click)="editChallenge(challenge.id)">
         <i class="fas fa-pen-square m-1"></i>
         <span class="tooltip-text">
           Editar
         </span>
       </button>
     
-      <button class="btn btn-sm btn-danger d-flex align-items-center" (click)="deleteChallenge(challenge.id)">
+      <button class="btn btn-sm btn-danger d-flex align-items-center tooltip-container" (click)="deleteChallenge(challenge.id)">
         <i class="fas fa-trash-alt m-1"></i>
         <span class="tooltip-text">
           Excluir
