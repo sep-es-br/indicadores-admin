@@ -1,64 +1,176 @@
-<div class="container">
+<div class="container-fluid">
   <div class="align-content-center">
-    <div class="row" *ngIf="!loading">
+    <div class="row">
       <ng-container>
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
-        <div class="col-md-12 col-lg-12 col-xxxl-12">
+        <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading">
           <div class="d-flex justify-content-end">
             <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
             <div class="card-create-icon" [routerLink]="['new']">
               <i class="fas fa-plus-square"></i>
             </div>
           </div>
+
+          <!-- Novo Template Recursivo -->
           <div class="container mt-2">
-            <div *ngFor="let management of managementList | async" class="row p-2 mb-2 align-items-center management-card">
-              <div class="col-sm-2">
-                <span class="fw-bold">Nome</span>
-                <span>{{ management.name }}</span>
-              </div>
-              <div class="col-sm-4">
-                <span class="fw-bold">Descrição</span>
-                <span>{{ management.description }}</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="fw-bold">Início da Gestão</span>
-                <span>{{ management.startYear }}</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="fw-bold">Final da Gestão</span>
-                <span>{{ management.endYear }}</span>
-              </div>
-              <div class="col-sm-1">
-                <span class="fw-bold">Status:</span>
-                <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
-                  {{ management.active ? 'Ativo' : 'Inativo' }}
-                </span>
-              </div>
-              <div class="col-sm-1 d-flex justify-content-end">
-                <div ngbDropdown>
-                  <button class="btn button-color" ngbDropdownToggle>
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                  <div ngbDropdownMenu>
-                    <button ngbDropdownItem class="d-flex align-items-center">
-                      <i class="fas fa-pen-square m-2"></i>
-                      <span>Editar</span>
-                    </button>
-                    <button ngbDropdownItem class="d-flex align-items-center">
-                      <i class="fas fa-trash-alt m-2"></i>
-                      <span>Excluir</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ng-container *ngFor="let management of managementList | async">
+              <ng-container [ngTemplateOutlet]="managementTemplate" [ngTemplateOutletContext]="{ management: management }">
+              </ng-container>
+            </ng-container>
           </div>
-          <ngx-pagination
-      [paginacaoDadosInput]="paginacaoDados"
-      (paginacaoOutput)="paginacaoOutputEvent($event)"
-    ></ngx-pagination>
+
+          <ngx-pagination [paginacaoDadosInput]="paginacaoDados" (paginacaoOutput)="paginacaoOutputEvent($event)"></ngx-pagination>
         </div>
       </ng-container>
     </div>
   </div>
 </div>
+
+<!-- Template Recursivo para Management -->
+<ng-template #managementTemplate let-management="management">
+  <div class="row p-1 mb-2 align-items-center management-card justify-content-between">
+    <div class="col-sm-9 d-flex align-items-center">
+      <button class="btn btn-sm btn-toggle mr-3" (click)="management.isExpanded = !management.isExpanded" [ngClass]="{ 'invisible-child': !management.organizerList?.length }">
+        <i class="fas" [ngClass]="{ 'fa-chevron-right': !management.isExpanded, 'fa-chevron-down': management.isExpanded }"></i>
+      </button>
+      <div>
+        <span class="fw-bold">Gestão Administrativa: </span>
+        <span>{{ management.name }}</span>
+      </div>
+    </div>
+    <div class="col-sm-2 text-left">
+      <span [ngClass]="management.active ? 'text-success' : 'text-danger'">
+        {{ management.active ? 'Ativo' : 'Inativo' }}
+      </span>
+    </div>
+    <div class="col-sm-1 d-flex justify-content-end mt-0">
+      <button *ngIf="management.modelName?.length" class="btn btn-sm btn-primary d-flex align-items-center tooltip-container" 
+        (click)="newOrganizer(management.id, management.name, management.modelName[0])">
+        <i class="fas fa-plus-circle m-1"></i>
+        <span class="tooltip-text">
+          Criar {{management.modelName[0]}}
+        </span>
+      </button>
+      
+      <button class="btn btn-sm btn-warning d-flex align-items-center tooltip-container" (click)="editManagement(management)">
+        <i class="fas fa-pen-square m-1"></i>
+        <span class="tooltip-text">
+          Editar
+        </span>
+      </button>
+    
+      <button class="btn btn-sm btn-danger d-flex align-items-center tooltip-container" (click)="deleteManagement(management.id)">
+        <i class="fas fa-trash-alt m-1"></i>
+        <span class="tooltip-text">
+          Excluir
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Lista de Organizadores (Expandível) -->
+  <div *ngIf="management.isExpanded" class="children-card">
+    <ng-container *ngFor="let organizer of management.organizerList">
+      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: organizer, management: management, isChild: false }">
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #organizerTemplate let-organizer="organizer" let-management="management" let-isChild="isChild">
+  <div class="row p-1 align-items-center organizer-card justify-content-between">
+    <div class="col-sm-11 d-flex align-items-center gap-2">
+      <!-- Botão para Expandir se houver filhos -->
+      <button class="btn btn-sm btn-toggle mr-3" (click)="organizer.isExpanded = !organizer.isExpanded" 
+              [ngClass]="{ 'invisible-child': (!organizer.children?.length && !organizer.challengeList?.length) }">
+        <i class="fas" [ngClass]="{ 'fa-chevron-right': !organizer.isExpanded, 'fa-chevron-down': organizer.isExpanded }"></i>
+      </button>
+      <div>
+        <span class="fw-bold">{{organizer.typeOrganizer}}: </span>
+        <span>{{ organizer.nameOrganizer }}</span>
+      </div>
+    </div>
+
+    <div class="col-sm-1 d-flex justify-content-end gap-2 mt-0">
+      <button class="btn btn-sm btn-primary d-flex align-items-center tooltip-container" 
+        (click)="newOrganizer(
+                management?.id, 
+                management?.name, 
+                management?.modelName?.includes(organizer.typeOrganizer) &&
+                (management.modelName.indexOf(organizer.typeOrganizer) + 1 < management.modelName.length) 
+                  ? management.modelName[management.modelName.indexOf(organizer.typeOrganizer) + 1] 
+                  : 'Desafio',
+                organizer.idOrganizer
+              )">
+        <i class="fas fa-plus-circle m-1"></i>
+        <span class="tooltip-text">
+          Criar {{
+            management?.modelName?.includes(organizer.typeOrganizer) &&
+            (management.modelName.indexOf(organizer.typeOrganizer) + 1 < management.modelName.length) 
+              ? management.modelName[management.modelName.indexOf(organizer.typeOrganizer) + 1] 
+              : 'Desafio'
+          }}
+        </span>
+      </button>
+    
+      <button class="btn btn-sm btn-warning d-flex align-items-center tooltip-container" (click)="editOrganizer(organizer.idOrganizer)">
+        <i class="fas fa-pen-square m-1"></i>
+        <span class="tooltip-text">
+          Editar
+        </span>
+      </button>
+    
+      <button class="btn btn-sm btn-danger d-flex align-items-center tooltip-container" (click)="deleteOrganizer(organizer.idOrganizer)">
+        <i class="fas fa-trash-alt m-1"></i>
+        <span class="tooltip-text">
+          Excluir
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Se o organizer tiver filhos, renderiza recursivamente -->
+  <div *ngIf="organizer.isExpanded" class="children-card">
+    <ng-container *ngFor="let child of organizer.children">
+      <ng-container [ngTemplateOutlet]="organizerTemplate" [ngTemplateOutletContext]="{ organizer: child, management: management, isChild: true }">
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- Renderiza Challenges -->
+  <div *ngIf="organizer.isExpanded && organizer.challengeList?.length > 0" class="children-card">
+    <ng-container *ngFor="let challenge of organizer.challengeList">
+      <ng-container [ngTemplateOutlet]="challengeTemplate" [ngTemplateOutletContext]="{ challenge: challenge }">
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- Template para Challenges -->
+<ng-template #challengeTemplate let-challenge="challenge">
+  <div class="row p-1 align-items-center challenge-card justify-content-between">
+    <div class="col-sm-11 d-flex align-items-center gap-2">
+      <div class="ml-5">
+        <span class="fw-bold">Desafio: </span>
+        <span>{{ challenge.name }}</span>
+      </div>
+    </div>
+    <div class="col-sm-1 d-flex justify-content-end gap-2 tooltip-container mt-0">
+      <button *ngIf="!isChild" class="btn btn-sm btn-warning d-flex align-items-center" (click)="editChallenge(challenge.id)">
+        <i class="fas fa-pen-square m-1"></i>
+        <span class="tooltip-text">
+          Editar
+        </span>
+      </button>
+    
+      <button class="btn btn-sm btn-danger d-flex align-items-center" (click)="deleteChallenge(challenge.id)">
+        <i class="fas fa-trash-alt m-1"></i>
+        <span class="tooltip-text">
+          Excluir
+        </span>
+      </button>
+    </div>    
+  </div>
+</ng-template>
+
+

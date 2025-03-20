@@ -43,16 +43,16 @@ export class AuthRedirectComponent {
           const userProfile = {
             name: response.name,
             email: response.email,
-            roles: response.role,
+            roles: response.role ?? []
           };
-          if (!response.role.includes('INDICADORES_ADMIN')) {
-            this.toastrService.show(
-              'Acesso negado: Você não tem permissão para acessar essa aplicação',
-              'Atenção',
-              { status: 'warning', duration: 8000 }
-            );
+
+          const userRoles = response.role ?? [];
+          
+          if (!userRoles.includes('INDICADORES_ADMIN')) {
             sessionStorage.clear(); 
-            this._router.navigate(['/login']); 
+            this._router.navigate(['/login'], {
+              state: { authError: 'Acesso negado: Você não tem autorização para acessar esta aplicação.' }
+            });
             return;
           }
 
@@ -62,7 +62,9 @@ export class AuthRedirectComponent {
         catchError((error) => {
           console.error('Erro ao obter informações do perfil:', error);
           sessionStorage.clear();
-          this._router.navigate(['/login']);
+          this._router.navigate(['/login'], {
+            state: { authError: 'Acesso negado ou erro na autenticação.' }
+          });
           return of(null);
         })
       )

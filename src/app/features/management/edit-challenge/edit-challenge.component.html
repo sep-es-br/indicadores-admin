@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="align-content-center">
+    <div class="row">
+      <ng-container>
+        <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <form [formGroup]="form">
+          <p>Editar Desafio</p>
+          <div class="form-container">
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <label for="name" class="form-label">Nome</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    formControlName="name"
+                    [class.is-invalid]="form.get('name')?.invalid &&  submitted"
+                    placeholder="Digite o nome"
+                  />
+                  <div
+                    *ngIf="form.get('name')?.invalid &&  submitted"
+                    class="error-message"
+                  >
+                    Nome é obrigatório.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p>Indicadores</p>
+            <div class="form-container">
+              <div class="row mb-3">
+                <div class="col-md-12 mt-1" *ngIf="indicatorList.controls.length">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <label class="form-label">Indicador</label>
+                    </div>
+                    <div class="col-md-5">
+                      <label class="form-label">Órgão</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Ação</label>
+                    </div>
+            
+                    <ng-container *ngFor="let control of indicatorList.controls; let i = index">
+                      <div class="col-md-5 mb-2">
+                        <nb-select
+                        placeholder="Selecione um indicador"
+                        class="w-100 d-block"
+                        [formControl]="control.get('name')"
+                        [class.is-invalid]="control.get('name')?.invalid && submitted"
+                      >
+                      <nb-option *ngFor="let indicador of allIndicator" 
+                      [value]="indicador.name" 
+                      [disabled]="isIndicatorAlreadySelected(indicador)">
+                        {{ indicador.name }}
+                      </nb-option>
+                      </nb-select>
+                      </div>
+            
+                      <div class="col-md-5 mb-2">
+                        <nb-select
+                        placeholder="Selecione um órgão"
+                        class="w-100 d-block"
+                        [formControl]="control.get('organizationAcronym')"
+                        [class.is-invalid]="control.get('organizationAcronym')?.invalid && submitted"
+                      >
+                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ">
+                          {{ organ }}
+                        </nb-option>
+                      </nb-select>
+                      </div>
+            
+                      <div class="col-md-2 mb-2">
+                        <button nbButton status="danger" (click)="removeIndicatorRow(i)">
+                          <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                        </button>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <button nbButton (click)="addIndicatorRow()" class="w-100 d-block input-like-btn">
+                    + Adicionar Indicador
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions text-center mt-4">
+              <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

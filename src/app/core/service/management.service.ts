@@ -29,4 +29,32 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
         );
       }
 
+      public createManagement(management: IManagement): Observable<IManagement> {
+        return this._http.post<IManagement>(this._url, management).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err);
+          })
+        );
+      }
+
+      public deleteManagement(managementId: string): Observable<void> {
+        const url = `${this._url}/${managementId}`;
+        return this._http.delete<void>(url).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err); 
+          })
+        );
+      }
+
+      public updateManagement(management: IManagement): Observable<void> {
+        return this._http.put<void>(this._url, management).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err); 
+          })
+        );
+      }
+      
   }

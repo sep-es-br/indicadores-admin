@@ -1,0 +1,54 @@
+
+<div class="container">
+    <div class="align-content-center">
+      <div class="row">
+        <ng-container>
+          <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+          <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!loading">
+            <div class="d-flex justify-content-end">
+              <ngx-table-search (filtroPesquisaOutput)="filtroPesquisaOutputEvent($event)"></ngx-table-search>
+              <div class="card-create-icon" [routerLink]="['new']">
+                <i class="fas fa-plus-square"></i>
+              </div>
+            </div>
+            <div class="container mt-2">
+              <ng-container *ngFor="let indicator of indicatorList | async">
+                <ng-container [ngTemplateOutlet]="indicatorTemplate" [ngTemplateOutletContext]="{ indicator: indicator }">
+                </ng-container>
+              </ng-container>
+            </div>
+  
+            <ngx-pagination [paginacaoDadosInput]="paginacaoDados" (paginacaoOutput)="paginacaoOutputEvent($event)"></ngx-pagination>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+</div>
+  
+  <ng-template #indicatorTemplate let-indicator="indicator">
+    <div class="row p-1 mb-2 align-items-center management-card justify-content-between">
+      <div class="col-sm-9 d-flex align-items-center">
+        <div>
+          <span class="fw-bold">Indicador: </span>
+          <span>{{ indicator.name }}</span>
+        </div>
+      </div>
+      <div class="col-sm-1 d-flex justify-content-end mt-0">
+        <button class="btn btn-sm btn-warning d-flex align-items-center tooltip-container" (click)="editIndicator(indicator.uuId)">
+          <i class="fas fa-pen-square m-1"></i>
+          <span class="tooltip-text">
+            Editar
+          </span>
+        </button>
+      
+        <button class="btn btn-sm btn-danger d-flex align-items-center tooltip-container" (click)="deleteIndicator(indicator.uuId)">
+          <i class="fas fa-trash-alt m-1"></i>
+          <span class="tooltip-text">
+            Excluir
+          </span>
+        </button>
+      </div>
+    </div>
+  
+  </ng-template>
+  

@@ -4,6 +4,7 @@
   nb-card {
     margin: 0;
     height: calc(100vh - 2 * #{$auth-layout-padding});
+    background-color: #04122F;
   }
 
 }
@@ -12,7 +13,6 @@
     display: flex;
     flex-wrap: wrap;
     align-content: center;
-    
 }
 
 .login-btn {
@@ -27,5 +27,16 @@
 
 h2{
     margin-top: 1rem;
+    color: #fff;
+}
+
+.footer{
+  color: #fff;
+}
+
+.logout-link {
+  color: #EA172F !important; 
+  cursor: pointer !important;
+  font-weight: bold !important;
 }
 

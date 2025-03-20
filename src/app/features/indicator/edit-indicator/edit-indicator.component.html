@@ -1,0 +1,265 @@
+<div class="container">
+  <div class="align-content-center">
+    <div class="row">
+      <ng-container>
+        <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <p>Ficha de indicadores</p>
+          <form [formGroup]="form">
+          <div class="form-container">
+              <div class="row mb-3">
+
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Nome</label>
+                  <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    formControlName="name"
+                    [class.is-invalid]="form.get('name')?.invalid && submitted"
+                    placeholder="Digite o nome"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="unit" class="form-label">Unidade de Medida</label>
+                  <div class="d-flex align-items-center gap-2">
+                    <nb-select
+                      formControlName="unit"
+                      placeholder="Selecione uma unidade" 
+                      class="w-100"
+                      [class.is-invalid]="form.get('unit')?.invalid && submitted"
+                    >
+                      <nb-option *ngFor="let unit of units" [value]="unit">{{ unit }}</nb-option>
+                      <nb-option value="other">Outra</nb-option>
+                    </nb-select>
+                
+                    <input
+                      *ngIf="form.get('unit')?.value === 'other'"
+                      type="text"
+                      class="form-control ml-1"
+                      placeholder="Digite a unidade"
+                      formControlName="customUnit"
+                      [class.is-invalid]="form.get('customUnit')?.invalid && submitted"
+                    />
+                  </div>
+                </div>
+                
+
+                <div class="col-md-6 mt-3">
+                  <label for="polarity" class="form-label">Polaridade</label>
+                  <nb-select
+                    formControlName="polarity"
+                    placeholder="Selecione uma polaridade" 
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('polarity')?.invalid && submitted"
+                  >
+                    <nb-option value="Positiva">Positiva</nb-option>
+                    <nb-option value="Negativa">Negativa</nb-option>
+                  </nb-select>
+                </div>
+                <div class="col-md-6 mt-3">
+                  <label for="ods" class="form-label">ODS</label>
+                  <nb-select
+                    formControlName="ods"
+                    placeholder="Selecione um ou mais ODS"
+                    [multiple]="true"
+                    class="w-100 d-block"
+                  >
+                    <nb-option-group *ngFor="let ods of odsList" [title]="ods.order + ' - ' + ods.name">
+                      <nb-option *ngFor="let goal of ods.odsGoals" [value]="goal.order">
+                        {{ goal.order }}
+                      </nb-option>
+                    </nb-option-group>
+                  </nb-select>
+                </div>
+                
+              </div>
+
+              <div class="row mb-3">
+                 <div class="col-md-6">
+                  <label for="management" class="form-label">Gestão</label>
+                  <nb-select
+                    placeholder="Selecione uma ou mais gestões"
+                    formControlName="management"
+                    [multiple]="true"
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('management')?.invalid && submitted"
+                  >
+                    <nb-option *ngFor="let management of challengeList" [value]="management.managementName">
+                      {{ management.managementName }}
+                    </nb-option>
+                  </nb-select>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="challenges" class="form-label">Desafio</label>
+                  <nb-select 
+                    placeholder="Selecione um ou mais desafios"
+                    formControlName="challenges" 
+                    [multiple]="true"
+                    class="w-100 d-block"
+                    [class.is-invalid]="form.get('challenges')?.invalid && submitted"
+                  >
+                    <nb-option-group *ngFor="let organizer of filteredOrganizers" [title]="organizer.name" class="custom-header">
+                      <nb-option 
+                        *ngFor="let challenge of organizer.challenges"
+                        [value]="challenge.uuId"
+                        class="custom-option"
+                      >
+                        <div class="w-100">
+                          <strong>{{ challenge.name }}</strong>
+                        </div>
+                      </nb-option>
+                    </nb-option-group>
+                  </nb-select>
+                </div>
+
+                <div class="col-md-12 mt-3" *ngIf="challengesOrgans.controls.length">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="form-label">Desafio</label>
+                    </div>
+                    <div class="col-md-5">
+                      <label class="form-label">Órgão</label>
+                    </div>
+                    <div class="col-md-1">
+                      <label class="form-label">Ação</label>
+                    </div>
+                    <ng-container *ngFor="let control of challengesOrgans.controls; let i = index">
+                    <div class="col-md-6 mb-2">
+                      <input
+                        type="text"
+                        class="form-control"
+                        [value]="getChallengeNameById(control.get('challengeId')?.value)"
+                        readonly
+                      />
+                    </div>
+                    <div class="col-md-5 mb-2">
+                      <nb-select
+                        placeholder="Selecione um órgão"
+                        class="w-100 d-block"
+                        [formControl]="control.get('organ')"
+                        [class.is-invalid]="control.get('organ')?.invalid && submitted"
+                      >
+                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ">
+                          {{ organ }}
+                        </nb-option>
+                      </nb-select>
+                    </div>
+                    <div class="col-md-1 mb-2">
+                      <button nbButton status="danger" (click)="removeOrganRow(i)">
+                        <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                      </button>
+                    </div>
+                  </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p>Dados de apurações</p>
+            <div class="form-container">
+              <div class="row mb-3">
+            
+                <div class="col-md-12 mt-1" *ngIf="yearResultTargets.controls.length">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label class="form-label">Ano</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Meta</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Meta de exibição</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Resultado</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Resultado de exibição</label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label">Ação</label>
+                    </div>
+            
+                    <ng-container *ngFor="let control of yearResultTargets.controls; let i = index">
+
+                        <div class="col-md-2 mb-2">
+                          <div>
+                            <nb-select
+                              placeholder="Selecione o ano"
+                              class="w-100"
+                              [formControl]="control.get('year')"
+                              [class.is-invalid]="control.get('year')?.invalid && submitted"
+                            >
+                            
+                              <nb-option *ngFor="let year of years" [value]="year" [disabled]="isYearAlreadySelected(year)">
+                                {{ year }}
+                              </nb-option>
+                            </nb-select>
+                          </div>
+                        </div>
+            
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="number"
+                            class="form-control"
+                            [formControl]="control.get('target')" 
+                            placeholder="Digite a meta"
+                            [class.is-invalid]="control.get('target')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="text"
+                            class="form-control"
+                            [formControl]="control.get('showTarget')" 
+                            placeholder="Digite a valor de exibição"
+                            [class.is-invalid]="control.get('showTarget')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="number"
+                            class="form-control"
+                            [formControl]="control.get('result')" 
+                            placeholder="Digite o resultado"
+                            [class.is-invalid]="control.get('result')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <input
+                            type="text"
+                            class="form-control"
+                            [formControl]="control.get('showResult')" 
+                            placeholder="Digite o valor de exibição"
+                            [class.is-invalid]="control.get('showResult')?.invalid && submitted"
+                          />
+                        </div>
+                        <div class="col-md-2 mb-2">
+                          <button nbButton status="danger" (click)="removeYearRow(i)">
+                            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                          </button>
+                        </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <button nbButton (click)="addNewYearRow()" class="w-100 d-block input-like-btn">
+                    + Adicionar Ano
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions text-center mt-4">
+              <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
+            </div>
+            
+          </form>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

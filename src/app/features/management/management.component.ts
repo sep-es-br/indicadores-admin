@@ -7,6 +7,12 @@ import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs-compat';
 import { finalize, tap } from 'rxjs/operators';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
+import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
+import { OrganizerService } from '../../core/service/organizer.service';
+import { ChallengeService } from '../../core/service/challenge.service';
 
 
 @Component({
@@ -30,11 +36,22 @@ export class ManagementComponent implements OnInit{
     return this._managementList;
   }
 
+  selectedManagement: IManagement = {
+    id: '',
+    name: '',
+    description: '',
+    startYear: 0,
+    endYear: 0,
+    active: false,
+  };
+
   public loading: boolean = true;
 
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
   public managements: IManagement;
+
+  expandedManagement: any = null;
 
   public paginacaoDados: IPaginacaoDados = {
     paginaAtual: 1,
@@ -44,7 +61,8 @@ export class ManagementComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private managementService: ManagementService, private _r2: Renderer2) { 
+  constructor(private managementService: ManagementService, private organizerService: OrganizerService, private challengeService: ChallengeService,
+    private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
   }
 
   ngOnInit(): void {
@@ -60,14 +78,12 @@ export class ManagementComponent implements OnInit{
 
     this.managementService.getManagements(tempPageConfig).pipe(tap((response) => {
       this._managementList.next(response.content);
-
       this.paginacaoDados = {
-        paginaAtual: response.pageable.pageNumber + 1,
-        itensPorPagina: response.pageable.pageSize,
-        primeiroItemPagina: response.pageable.offset + 1,
-        ultimoItemPagina:
-          response.pageable.offset + response.numberOfElements,
-        totalRegistros: response.totalElements,
+        paginaAtual: response.page.number + 1,  
+        itensPorPagina: response.page.size,
+        primeiroItemPagina: response.page.number * response.page.size + 1,
+        ultimoItemPagina: response.page.number * response.page.size + response.content.length,
+        totalRegistros: response.page.totalElements,
       };
     }),
     finalize(() => (this.loading = false, this.updateBreadcrumb()))
@@ -75,6 +91,83 @@ export class ManagementComponent implements OnInit{
   .subscribe();
 
   }
+
+  toggleManagement(management: any) {
+    this.expandedManagement = this.expandedManagement === management ? null : management;
+  }
+
+  public deleteManagement(managementId: string): void {
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Confirmação', 
+          message: 'Tem certeza de que deseja excluir esta gestão?', 
+        },
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.managementService.deleteManagement(managementId)
+            .subscribe({
+              next: () => {this.toastrService.show(
+                '', 'Gestão deletada com sucesso!',
+                { status: 'success', duration: 8000 }
+              );
+              this.fetchPage(); 
+            }
+            });
+        }
+      });
+  }
+
+  public deleteOrganizer(organizerId: string): void {
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Confirmação',
+          message: 'Tem certeza de que deseja excluir este organizador?',
+        },
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.organizerService.deleteOrganizer(organizerId)
+            .subscribe({
+              next: () => {
+                this.toastrService.show(
+                  '', 'Organizador deletado com sucesso!',
+                  { status: 'success', duration: 8000 }
+                );
+                this.fetchPage(); 
+              }
+            });
+        }
+      });
+  }
+
+  public deleteChallenge(challengeId: string): void {
+    this.dialogService
+      .open(ConfirmationDialogComponent, {
+        context: {
+          title: 'Confirmação',
+          message: 'Tem certeza de que deseja excluir este desafio?',
+        },
+      })
+      .onClose.subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.challengeService.deleteChallenge(challengeId)
+            .subscribe({
+              next: () => {
+                this.toastrService.show(
+                  '', 'Desafio deletado com sucesso!',
+                  { status: 'success', duration: 8000 }
+                );
+                this.fetchPage(); 
+              }
+            });
+        }
+      });
+  }
+  
+  
 
   public filtroPesquisaOutputEvent(filtro: string): void {
     this._pageConfig.search = filtro;
@@ -105,6 +198,51 @@ export class ManagementComponent implements OnInit{
       this._r2.removeClass(el, 'asc');
       this._r2.removeClass(el, 'desc');
     });
+  }
+
+  editManagement(management: IManagement): void {
+    if (management.modelName == null || management.modelNameInPlural == null) {
+      this.populateModelName(management);
+    }
+    this.router.navigate(['/pages/management/edit'], { queryParams: management });
+  }
+  
+  populateModelName(management: IManagement) {
+    if (!management.organizerList) return;
+  
+    const modelNameSet = new Set<string>();
+    const modelNameInPluralSet = new Set<string>();
+  
+    function traverseOrganizers(organizers: IOrganizerAdmin[]) {
+      for (const organizer of organizers) {
+        modelNameSet.add(organizer.typeOrganizer);
+        modelNameInPluralSet.add(organizer.typeOrganizerPlural);
+        if (organizer.children && organizer.children.length > 0) {
+          traverseOrganizers(organizer.children);
+        }
+      }
+    }
+  
+    traverseOrganizers(management.organizerList);
+  
+    management.modelName = Array.from(modelNameSet);
+    management.modelNameInPlural = Array.from(modelNameInPluralSet);
+  }
+
+  editOrganizer(organizerId: string): void {
+    this.router.navigate(['/pages/management/edit-organizer'], { queryParams: { id: organizerId } });
+  }
+
+  editChallenge(challengeId: string): void {
+    this.router.navigate(['/pages/management/edit-challenge'], { queryParams: { id: challengeId } });
+  }
+
+  newOrganizer(administrationId: string, administrationName: string, modelName: string, parentOrganizerId?: string): void {
+    if(modelName == 'Desafio'){
+      this.router.navigate(['/pages/management/new-challenge'], { queryParams: { modelName: modelName, parentOrganizerId: parentOrganizerId } });
+    }else{
+      this.router.navigate(['/pages/management/new-organizer'], { queryParams: { id: administrationId, name: administrationName, modelName: modelName, parentOrganizerId: parentOrganizerId } });
+    }
   }
 
 }

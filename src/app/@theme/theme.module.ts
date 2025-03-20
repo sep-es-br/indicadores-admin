@@ -9,6 +9,7 @@ import {
   NbUserModule,
   NbContextMenuModule,
   NbButtonModule,
+  NbCardModule,
   NbSelectModule,
   NbIconModule,
   NbThemeModule,
@@ -44,11 +45,13 @@ import { TableSearchComponent } from './components/table-search/table-search.com
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/ConfirmationDialog.component';
 
 const NB_MODULES = [
   NbLayoutModule,
   NbMenuModule,
   NbUserModule,
+  NbCardModule,
   NbActionsModule,
   NbSearchModule,
   NbSidebarModule,
@@ -63,6 +66,7 @@ const NB_MODULES = [
 const COMPONENTS = [
   HeaderComponent,
   FooterComponent,
+  ConfirmationDialogComponent,
   BreadcrumbComponent,
   TableSearchComponent,
   PaginationComponent,
