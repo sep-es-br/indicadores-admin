@@ -3,7 +3,7 @@ import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interf
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { OrganizerService } from '../../../core/service/organizer.service';
-import { IOrganizerItem, IStructureChild } from '../../../core/interfaces/organizer.interface';
+import { IOrganizerItem, IStructureChild, organizerList } from '../../../core/interfaces/organizer.interface';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { iconList } from '../../../core/interfaces/iconlist';
 import { IndicatorService } from '../../../core/service/indicator.service';
@@ -21,15 +21,20 @@ import { finalize } from 'rxjs/operators';
 export class EditIndicatorComponent implements OnInit {
 
   submitted = false;
+  isSubmitting = false;
+  isLoading: boolean = false;
   form: FormGroup;
 
   public breadcrumb: Array<IBreadcrumbItem> = []
 
-  indicator: IIndicator;
+  selectedPdfFile: File | null = null;
+  existingPdfFileName: string | null = null;
+  shouldRemovePdf: boolean = false;
+  hadOriginalPdf = false;
 
   units: string[] = [];
 
-  organizationAcronyms: string[] = [];
+  organizationAcronyms: organizerList[] = [];
 
   years: number[] = [];
 
@@ -52,7 +57,10 @@ export class EditIndicatorComponent implements OnInit {
       unit: ['', Validators.required],
       customUnit: [''],
       challengesOrgans: this.fb.array([]),
-      yearResultTargets: this.fb.array([])
+      yearResultTargets: this.fb.array([]),
+      justificationBase: [''],
+      justificationGoal: [''],
+      observations: [''],
     });
     this.updateBreadcrumb()
 
@@ -80,6 +88,7 @@ export class EditIndicatorComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.isLoading = true;
 
     this.getManagementOrganizerChallenges()
     this.getDistinctMeasureUnits()
@@ -92,18 +101,25 @@ export class EditIndicatorComponent implements OnInit {
 
       if (indicatorId) {
         this.indicatorService.getIndicator(indicatorId).pipe(
-        ).subscribe(
+        ).subscribe({next:
           (data: IIndicator) => {
 
-            this.indicator = data;
             this.form.patchValue({
               id: data.uuId,
               name: data.name,
               polarity: data.polarity,
               unit: data.measureUnit,
+              justificationBase: data.justificationBase,
+              justificationGoal: data.justificationGoal,
+              observations: data.observations,
               ods: this.extractOdsOrders(data.odsgoal),
               challenges: data.measures.map(m => m.challengeId)
             });
+
+            if (data.originalFileName) {
+              this.existingPdfFileName = data.originalFileName;
+              this.hadOriginalPdf = true;
+            }
 
             const selectedChallengeIds = data.measures.map(m => m.challengeId);
             const managementNames = this.getManagementNamesByChallengeIds(selectedChallengeIds)
@@ -163,7 +179,14 @@ export class EditIndicatorComponent implements OnInit {
             }
             );
             yearTargetsArray.controls.sort((a, b) => a.get('year')?.value - b.get('year')?.value);
-          })
+          },
+          error: () => {
+            this.router.navigate(['/pages/indicators']);
+          },
+          complete: () => {
+            this.isLoading = false;
+          }
+        });
       } else {
         this.router.navigate(['/pages/indicators']);
       }
@@ -358,8 +381,18 @@ export class EditIndicatorComponent implements OnInit {
   }
 
   getChallengeNameById(challengeId: string): string {
-    const challenge = this.filteredOrganizers.flatMap(o => o.challenges).find(c => c.uuId === challengeId);
-    return challenge ? challenge.name : '';
+    for (const organizer of this.filteredOrganizers) {
+      const challenge = organizer.challenges.find(c => c.uuId === challengeId);
+      if (challenge) {
+        const managementPrefix = organizer.name.split(' - ')[0].trim();
+  
+        const management = this.challengeList.find(m => m.managementName.includes(managementPrefix));
+  
+        const managementName = management ? management.managementName : managementPrefix;
+  
+        return `${managementName} - ${challenge.name}`;
+      }
+    }
   }
 
   onUnitChange(selectedValue: string) {
@@ -377,13 +410,16 @@ export class EditIndicatorComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.form.valid) {
+    if (this.form.valid && !this.isSubmitting) {
+
+      this.isSubmitting = true; 
       const formValue = this.form.value;
 
       const indicatorData: IIndicatorForm = {
         id: formValue.id,
         name: formValue.name,
         polarity: formValue.polarity,
+        removePdf: this.shouldRemovePdf,
         measureUnit: this.isOtherUnit ? formValue.customUnit : formValue.unit,
         ods: formValue.ods,
         organizationAcronym: formValue.challengesOrgans.map((challenge: any) => ({
@@ -400,9 +436,12 @@ export class EditIndicatorComponent implements OnInit {
           showValue: result.showResult,
           value: result.result,
         })),
+        justificationBase: formValue.justificationBase, 
+        justificationGoal: formValue.justificationGoal,
+        observations: formValue.observations
       };
 
-      this.indicatorService.updateIndicator(indicatorData).subscribe({
+      this.indicatorService.updateIndicator(indicatorData, this.selectedPdfFile).subscribe({
         next: (response) => {
           this.toastrService.show(
             '', 'Indicador editado com sucesso!',
@@ -417,9 +456,33 @@ export class EditIndicatorComponent implements OnInit {
           );
           this.router.navigate(['/pages/indicators']);
         },
+        complete: () => {
+          this.isSubmitting = false; 
+        }
       });
     }
   }
 
+  onPdfSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedPdfFile = input.files[0];
+  
+      if (this.hadOriginalPdf) {
+        this.shouldRemovePdf = true;
+      }
+  
+      this.existingPdfFileName = null;
+    }
+  }
+  
+  removePdf(fileInput: HTMLInputElement): void {
+    this.selectedPdfFile = null;
+    this.existingPdfFileName = null;
+    if (this.hadOriginalPdf) {
+      this.shouldRemovePdf = true;
+    }
+    fileInput.value = ''; 
+  }
 
 }

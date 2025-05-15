@@ -9,6 +9,7 @@ import { IIndicatorDetails } from '../../../core/interfaces/indicator.interface'
 import { IOrganizerChallenge } from '../../../core/interfaces/managament-organizer-challente.interface';
 import { IndicatorService } from '../../../core/service/indicator.service';
 import { ConfirmationDialogComponent } from '../../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
+import { organizerList } from '../../../core/interfaces/organizer.interface';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class EditChallengeComponent implements OnInit{
  
    public challenge: IChallenge;
 
-   organizationAcronyms: string[] = [];
+   organizationAcronyms: organizerList[] = [];
 
    allIndicator: IIndicatorDetails[] = [];
  
