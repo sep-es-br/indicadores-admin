@@ -27,7 +27,7 @@
   
   <ng-template #indicatorTemplate let-indicator="indicator">
     <div class="row p-1 mb-2 align-items-center management-card justify-content-between">
-      <div class="col-sm-9 d-flex align-items-center">
+      <div class="col-sm-11 d-flex align-items-center"  style="cursor: pointer;" (click)="editIndicator(indicator.uuId)">
         <div>
           <span class="fw-bold">Indicador: </span>
           <span>{{ indicator.name }}</span>

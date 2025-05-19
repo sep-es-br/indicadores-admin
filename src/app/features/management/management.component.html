@@ -29,11 +29,11 @@
 <!-- Template Recursivo para Management -->
 <ng-template #managementTemplate let-management="management">
   <div class="row p-1 mb-2 align-items-center management-card justify-content-between">
-    <div class="col-sm-9 d-flex align-items-center">
-      <button class="btn btn-sm btn-toggle mr-3" (click)="management.isExpanded = !management.isExpanded" [ngClass]="{ 'invisible-child': !management.organizerList?.length }">
+    <div class="col-sm-9 d-flex align-items-center pl-0" style="cursor: pointer;" (click)="editManagement(management)">
+      <button class="btn btn-sm btn-toggle pl-3 pr-3" (click)="toggleExpand($event, management)" [ngClass]="{ 'invisible-child': !management.organizerList?.length }">
         <i class="fas" [ngClass]="{ 'fa-chevron-right': !management.isExpanded, 'fa-chevron-down': management.isExpanded }"></i>
       </button>
-      <div>
+      <div >
         <span class="fw-bold">Gestão Administrativa: </span>
         <span>{{ management.name }}</span>
       </div>
@@ -79,9 +79,9 @@
 
 <ng-template #organizerTemplate let-organizer="organizer" let-management="management" let-isChild="isChild">
   <div class="row p-1 align-items-center organizer-card justify-content-between">
-    <div class="col-sm-11 d-flex align-items-center gap-2">
+    <div class="col-sm-11 d-flex align-items-center gap-2 pl-0" style="cursor: pointer;" (click)="editOrganizer(organizer.idOrganizer)">
       <!-- Botão para Expandir se houver filhos -->
-      <button class="btn btn-sm btn-toggle mr-3" (click)="organizer.isExpanded = !organizer.isExpanded" 
+      <button class="btn btn-sm btn-toggle pl-3 pr-3" (click)="toggleExpand($event, organizer)" 
               [ngClass]="{ 'invisible-child': (!organizer.children?.length && !organizer.challengeList?.length) }">
         <i class="fas" [ngClass]="{ 'fa-chevron-right': !organizer.isExpanded, 'fa-chevron-down': organizer.isExpanded }"></i>
       </button>
@@ -149,8 +149,8 @@
 <!-- Template para Challenges -->
 <ng-template #challengeTemplate let-challenge="challenge">
   <div class="row p-1 align-items-center challenge-card justify-content-between">
-    <div class="col-sm-11 d-flex align-items-center gap-2">
-      <div class="ml-5">
+    <div class="col-sm-11 d-flex align-items-center gap-2" style="cursor: pointer;" (click)="editChallenge(challenge.id)">
+      <div>
         <span class="fw-bold">Desafio: </span>
         <span>{{ challenge.name }}</span>
       </div>

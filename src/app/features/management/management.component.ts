@@ -245,4 +245,9 @@ export class ManagementComponent implements OnInit{
     }
   }
 
+  toggleExpand(event: MouseEvent, item: { isExpanded: boolean }) {
+    event.stopPropagation();
+    item.isExpanded = !item.isExpanded;
+  }
+
 }

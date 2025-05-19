@@ -11,10 +11,10 @@ const routes: Routes = [{
   path: '',
   component: PagesComponent,
   children: [
-    {
-      path: 'home',
-      component: HomeComponent,
-    },
+    // {
+    //   path: 'home',
+    //   component: HomeComponent,
+    // },
     {
       path: 'management',
       loadChildren: () => import('../features/management/management.module').then(m => m.ManagementModule),
@@ -25,7 +25,7 @@ const routes: Routes = [{
     },
     {
       path: '',
-      redirectTo: 'home',
+      redirectTo: 'management',
       pathMatch: 'full',
     },
     {
