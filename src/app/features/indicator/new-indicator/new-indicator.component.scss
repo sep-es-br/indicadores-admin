@@ -45,6 +45,29 @@ input:focus {
   box-shadow: 0 0 5px rgba(0, 152, 218, 0.5)
 }
 
+.btn-outline-danger{
+  background-color: #ED356C !important;
+  color: white !important;
+}
+
+.btn-outline-primary{
+  background-color: #0098DA !important;
+  color: white !important;
+  
+}
+
+.file-input-wrapper {
+  position: relative;
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  margin-right: 5px;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

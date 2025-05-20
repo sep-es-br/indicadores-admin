@@ -66,8 +66,8 @@
                         [formControl]="control.get('organizationAcronym')"
                         [class.is-invalid]="control.get('organizationAcronym')?.invalid && submitted"
                       >
-                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ">
-                          {{ organ }}
+                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ.sigla">
+                          {{ organ.sigla }} - {{ organ.nomeFantasia }}
                         </nb-option>
                       </nb-select>
                       </div>

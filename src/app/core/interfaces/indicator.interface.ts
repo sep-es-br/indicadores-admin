@@ -8,6 +8,10 @@ export interface IIndicator {
     odsgoal: IOdsGoal[];
     targetsFor: IIndicatorValue[];
     resultedIn: IIndicatorValue[];
+    justificationBase?: string,
+    justificationGoal?: string,
+    observations?: string,
+    originalFileName?: string
   }
 
 export interface IIndicatorValue {
@@ -37,6 +41,10 @@ export interface IIndicatorForm {
     ods: string[]
     targetsFor: IIndicatorValue[]
     resultedIn: IIndicatorValue[]
+    justificationBase?: string
+    justificationGoal?: string
+    observations?: string
+    removePdf?: boolean
 }
 
 export interface IIndicatorDetails  {

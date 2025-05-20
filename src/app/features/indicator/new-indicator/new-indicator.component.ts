@@ -7,6 +7,7 @@ import { IIndicator, IIndicatorForm } from '../../../core/interfaces/indicator.i
 import { IManagementOrganizerChallenge, IOrganizerChallenge } from '../../../core/interfaces/managament-organizer-challente.interface';
 import { IndicatorService } from '../../../core/service/indicator.service';
 import { IOds } from '../../../core/interfaces/ods.interface';
+import { organizerList } from '../../../core/interfaces/organizer.interface';
 
 
 @Component({
@@ -17,15 +18,18 @@ import { IOds } from '../../../core/interfaces/ods.interface';
 export class NewIndicatorComponent implements OnInit{
 
   submitted = false;
+  isSubmitting = false;
   form: FormGroup;
 
   public breadcrumb: Array<IBreadcrumbItem> = []
 
   indicator: IIndicator;
+
+  selectedPdfFile: File | null = null;
   
   units: string[] = [];
 
-  organizationAcronyms: string[] = [];
+  organizationAcronyms: organizerList[] = [];
 
   years: number[] = [];
 
@@ -47,7 +51,10 @@ export class NewIndicatorComponent implements OnInit{
       unit: ['', Validators.required],
       customUnit: [''] ,
       challengesOrgans: this.fb.array([]),
-      yearResultTargets: this.fb.array([])
+      yearResultTargets: this.fb.array([]),
+      justificationBase: [''],
+      justificationGoal: [''],
+      observations: ['']
     });
     this.updateBreadcrumb()
     
@@ -255,8 +262,18 @@ export class NewIndicatorComponent implements OnInit{
   }
 
   getChallengeNameById(challengeId: string): string {
-    const challenge = this.filteredOrganizers.flatMap(o => o.challenges).find(c => c.uuId === challengeId);
-    return challenge ? challenge.name : '';
+    for (const organizer of this.filteredOrganizers) {
+      const challenge = organizer.challenges.find(c => c.uuId === challengeId);
+      if (challenge) {
+        const managementPrefix = organizer.name.split(' - ')[0].trim();
+  
+        const management = this.challengeList.find(m => m.managementName.includes(managementPrefix));
+  
+        const managementName = management ? management.managementName : managementPrefix;
+  
+        return `${managementName} - ${challenge.name}`;
+      }
+    }
   }
 
   onUnitChange(selectedValue: string) {
@@ -270,6 +287,7 @@ export class NewIndicatorComponent implements OnInit{
       this.submitted = true;
     
       if (this.form.valid) {
+        this.isSubmitting = true; 
         const formValue = this.form.value;
     
         const newIndicator: IIndicatorForm = {
@@ -291,9 +309,12 @@ export class NewIndicatorComponent implements OnInit{
             showValue: result.showResult,
             value: result.result,
           })),
+          justificationBase: formValue.justificationBase, 
+          justificationGoal: formValue.justificationGoal,
+          observations: formValue.observations
         };
     
-        this.indicatorService.createIndicator(newIndicator).subscribe({
+        this.indicatorService.createIndicator(newIndicator, this.selectedPdfFile).subscribe({
           next: (response) => {
             this.toastrService.show(
               '' , 'Indicador criado com sucesso!',
@@ -308,8 +329,23 @@ export class NewIndicatorComponent implements OnInit{
             );
             this.router.navigate(['/pages/indicators']);
           },
+          complete: () => {
+            this.isSubmitting = false; 
+          }
         });
     }
+  }
+
+  onPdfSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedPdfFile = input.files[0];
+    }
+  }
+  
+  removePdf(fileInput: HTMLInputElement): void {
+    fileInput.value = '';
+    this.selectedPdfFile = null;
   }
   
 }

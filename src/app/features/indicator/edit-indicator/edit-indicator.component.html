@@ -1,11 +1,20 @@
 <div class="container">
-  <div class="align-content-center">
+  <div class="align-content-center" >
     <div class="row">
       <ng-container>
         <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
-        <div class="col-md-12 col-lg-12 col-xxxl-12">
+        <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="isLoading">
+          <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+            <nb-spinner
+              message=""
+              size="giant"
+              class="custom-big-spinner">
+            </nb-spinner>
+          </div>
+        </div>
+        <div class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="!isLoading">
           <p>Ficha de indicadores</p>
-          <form [formGroup]="form">
+          <form [formGroup]="form" >
           <div class="form-container">
               <div class="row mb-3">
 
@@ -44,8 +53,6 @@
                     />
                   </div>
                 </div>
-                
-
                 <div class="col-md-6 mt-3">
                   <label for="polarity" class="form-label">Polaridade</label>
                   <nb-select
@@ -73,7 +80,44 @@
                     </nb-option-group>
                   </nb-select>
                 </div>
+                  <div class="col-md-6 mt-3">
+                    <label for="justificationBase" class="form-label">Justificativa da Base de Referência</label>
+                    <textarea
+                      id="justificationBase"
+                      class="form-control"
+                      rows="2"
+                      placeholder="Digite a justificativa da base de referência"
+                      formControlName="justificationBase"
+                      maxlength="2000"
+                      [class.is-invalid]="form.get('justificationBase')?.invalid && submitted"
+                    ></textarea>
+                  </div>
                 
+                  <div class="col-md-6 mt-3">
+                    <label for="justificationGoal" class="form-label">Justificativa da Meta</label>
+                    <textarea
+                      id="justificationGoal"
+                      class="form-control"
+                      rows="2"
+                      placeholder="Digite a justificativa da meta"
+                      formControlName="justificationGoal"
+                      maxlength="2000"
+                      [class.is-invalid]="form.get('justificationGoal')?.invalid && submitted"
+                    ></textarea>
+                  </div>
+                <div class="col-md-12 mt-3">
+                  <label for="observations" class="form-label">Observações</label>
+                  <textarea
+                    id="observations"
+                    class="form-control"
+                    rows="2"
+                    placeholder="Digite suas observações"
+                    formControlName="observations"
+                    maxlength="2000"
+                    [class.is-invalid]="form.get('observations')?.invalid && submitted"
+                  ></textarea>
+                </div>
+
               </div>
 
               <div class="row mb-3">
@@ -142,8 +186,8 @@
                         [formControl]="control.get('organ')"
                         [class.is-invalid]="control.get('organ')?.invalid && submitted"
                       >
-                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ">
-                          {{ organ }}
+                        <nb-option *ngFor="let organ of organizationAcronyms" [value]="organ.sigla">
+                          {{ organ.sigla }} - {{ organ.nomeFantasia }}
                         </nb-option>
                       </nb-select>
                     </div>
@@ -153,6 +197,33 @@
                       </button>
                     </div>
                   </ng-container>
+                  </div>
+                </div>
+                <div class="col-md-6 mt-3">
+                  <label for="pdfFile" class="form-label">Anexar PDF</label>
+                
+                  <div class="file-input-wrapper d-flex align-items-center gap-2">
+                    <input
+                      type="file"
+                      id="pdfFile"
+                      class="d-none"
+                      accept="application/pdf"
+                      (change)="onPdfSelected($event)"
+                      #fileInput
+                    />
+                
+                    <button type="button" class="btn btn-outline-primary" (click)="fileInput.click()">
+                      Escolher arquivo
+                    </button>
+                
+                    <div class="file-display d-flex align-items-center" *ngIf="selectedPdfFile || existingPdfFileName">
+                      <span class="file-name me-2">
+                        {{ selectedPdfFile?.name || existingPdfFileName }}
+                      </span>
+                      <button type="button" class="btn btn-sm btn-outline-danger px-2 py-0" (click)="removePdf(fileInput)">
+                        &times;
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -254,7 +325,16 @@
             </div>
             <div class="form-actions text-center mt-4">
               <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
-              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                (click)="onSubmit()" 
+                [nbSpinner]="isSubmitting" 
+                nbSpinnerSize="large" 
+                nbSpinnerMessage=""
+                [disabled]="isSubmitting">
+                <span>Salvar</span>
+              </button>
             </div>
             
           </form>

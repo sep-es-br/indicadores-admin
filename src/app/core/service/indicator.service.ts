@@ -10,6 +10,7 @@ import { IIndicator, IIndicatorDetails, IIndicatorForm } from "../interfaces/ind
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
 import { IManagementOrganizerChallenge } from "../interfaces/managament-organizer-challente.interface";
 import { IOds } from "../interfaces/ods.interface";
+import { organizerList } from "../interfaces/organizer.interface";
 
 @Injectable({
   providedIn: 'root',
@@ -52,9 +53,9 @@ export class IndicatorService {
     );
   }
 
-  public getDistinctOrganizationAcronyms(): Observable<string[]> {
+  public getDistinctOrganizationAcronyms(): Observable<organizerList[]> {
     const url = `${this._url}/organization-acronym`;
-    return this._http.get<string[]>(url).pipe(
+    return this._http.get<organizerList[]>(url).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => new Error('Erro ao obter as siglas de orgãos'));
@@ -82,14 +83,26 @@ export class IndicatorService {
     );
   }
 
-  public createIndicator(indicator: IIndicatorForm): Observable<IIndicatorForm> {
-    return this._http.post<IIndicatorForm>(this._url, indicator).pipe(
+  public createIndicator(indicator: IIndicatorForm, pdfFile?: File): Observable<IIndicatorForm> {
+    const formData = new FormData();
+  
+    formData.append('indicator', new Blob(
+      [JSON.stringify(indicator)],
+      { type: 'application/json' }
+    ));
+  
+    if (pdfFile) {
+      formData.append('file', pdfFile, pdfFile.name);
+    }
+  
+    return this._http.post<IIndicatorForm>(this._url, formData).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => err);
       })
     );
   }
+  
 
   public getIndicator(indicatorUuId: string): Observable<IIndicator> {
     const url = `${this._url}/getIndicator/${indicatorUuId}`;
@@ -111,8 +124,19 @@ export class IndicatorService {
     );
   }
 
-  public updateIndicator(indicator: IIndicatorForm): Observable<void> {
-    return this._http.put<void>(this._url, indicator).pipe(
+  public updateIndicator(indicator: IIndicatorForm, pdfFile?: File): Observable<void> {
+    const formData = new FormData();
+  
+    const jsonBlob = new Blob([JSON.stringify(indicator)], {
+      type: 'application/json',
+    });
+    formData.append('indicator', jsonBlob);
+  
+    if (pdfFile) {
+      formData.append('file', pdfFile);
+    }
+  
+    return this._http.put<void>(this._url, formData).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => err); 

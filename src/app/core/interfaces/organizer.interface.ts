@@ -30,3 +30,8 @@ export interface IOrganizerAdmin {
     nameInPlural: string;
     relationshipType: string;
   } 
+
+  export interface organizerList{
+    nomeFantasia: string;
+    sigla: string;
+  }

@@ -5,6 +5,16 @@ p {
   color: #0098DA;
 }
 
+::ng-deep nb-spinner.custom-big-spinner  {
+  font-size: 5rem;
+  background-color: transparent !important;
+  span{
+    border-top-color: #0098DA !important;
+    border-bottom-color: #0098DA !important;
+    border-left-color: #0098DA !important;
+  }
+}
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -43,6 +53,29 @@ input:focus {
   outline: none;
   border-color: #0098DA;
   box-shadow: 0 0 5px rgba(0, 152, 218, 0.5)
+}
+
+.btn-outline-danger{
+  background-color: #ED356C !important;
+  color: white !important;
+}
+
+.btn-outline-primary{
+  background-color: #0098DA !important;
+  color: white !important;
+  
+}
+
+.file-input-wrapper {
+  position: relative;
+}
+
+.file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  margin-right: 5px;
 }
 
 .form-actions {
