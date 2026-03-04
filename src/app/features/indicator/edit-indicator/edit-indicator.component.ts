@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { OrganizerService } from '../../../core/service/organizer.service';
 import { IOrganizerItem, IStructureChild, organizerList } from '../../../core/interfaces/organizer.interface';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators, FormsModule, FormControl } from '@angular/forms';
 import { iconList } from '../../../core/interfaces/iconlist';
 import { IndicatorService } from '../../../core/service/indicator.service';
 import { IOds } from '../../../core/interfaces/ods.interface';
@@ -59,16 +59,17 @@ export class EditIndicatorComponent implements OnInit {
       challengesOrgans: this.fb.array([]),
       yearResultTargets: this.fb.array([]),
       justificationBase: [''],
-      justificationGoal: [''],
+      // justificationGoal: new FormControl('', [Validators.required, Validators.maxLength(500)]),
       observations: [''],
     });
+
     this.updateBreadcrumb()
 
-    this.form.get('management').valueChanges.subscribe((selectedManagement) => {
+    this.form.get('management')?.valueChanges.subscribe((selectedManagement) => {
       this.onManagementChange(selectedManagement);
     });
 
-    this.form.get('unit').valueChanges.subscribe((event) => {
+    this.form.get('unit')?.valueChanges.subscribe((event) => {
       this.onUnitChange(event);
     });
 
@@ -87,6 +88,11 @@ export class EditIndicatorComponent implements OnInit {
     });
 
   }
+
+  getJustifaction () {
+    return this.form.get('justificationGoal')?.value?.length
+  }
+
   ngOnInit(): void {
     this.isLoading = true;
 
@@ -110,7 +116,6 @@ export class EditIndicatorComponent implements OnInit {
               polarity: data.polarity,
               unit: data.measureUnit,
               justificationBase: data.justificationBase,
-              justificationGoal: data.justificationGoal,
               observations: data.observations,
               ods: this.extractOdsOrders(data.odsgoal),
               challenges: data.measures.map(m => m.challengeId)
@@ -149,7 +154,8 @@ export class EditIndicatorComponent implements OnInit {
                   showResult: [''],
                   target: [target.value],
                   showTarget: [target.showValue],
-                  yearSelectVisible: [false]
+                  yearSelectVisible: [false],
+                  justificationGoal: [target.justificationGoal]
                 })
               );
             });
@@ -195,19 +201,19 @@ export class EditIndicatorComponent implements OnInit {
 
   getManagementNamesByChallengeIds(challengeIds: string[]): string[] {
     const managementNames: string[] = [];
-  
+
     challengeIds.forEach(challengeId => {
       const management = this.challengeList.find(mgmt =>
-        mgmt.organizers.some(organizer => 
+        mgmt.organizers.some(organizer =>
           organizer.challenges.some(challenge => challenge.uuId === challengeId)
         )
       );
-  
+
       if (management && !managementNames.includes(management.managementName)) {
         managementNames.push(management.managementName);
       }
     });
-  
+
     return managementNames;
   }
 
@@ -234,7 +240,8 @@ export class EditIndicatorComponent implements OnInit {
         showResult: [''],
         target: [null],
         showTarget: [''],
-        yearSelectVisible: [false]
+        yearSelectVisible: [false],
+        justificationGoal: new FormControl('', [Validators.required, Validators.maxLength(500)])
       })
     );
   }
@@ -385,11 +392,11 @@ export class EditIndicatorComponent implements OnInit {
       const challenge = organizer.challenges.find(c => c.uuId === challengeId);
       if (challenge) {
         const managementPrefix = organizer.name.split(' - ')[0].trim();
-  
+
         const management = this.challengeList.find(m => m.managementName.includes(managementPrefix));
-  
+
         const managementName = management ? management.managementName : managementPrefix;
-  
+
         return `${managementName} - ${challenge.name}`;
       }
     }
@@ -412,7 +419,7 @@ export class EditIndicatorComponent implements OnInit {
 
     if (this.form.valid && !this.isSubmitting) {
 
-      this.isSubmitting = true; 
+      this.isSubmitting = true;
       const formValue = this.form.value;
 
       const indicatorData: IIndicatorForm = {
@@ -430,17 +437,18 @@ export class EditIndicatorComponent implements OnInit {
           year: target.year,
           showValue: target.showTarget,
           value: target.target,
+          justificationGoal: target.justificationGoal
         })),
         resultedIn: formValue.yearResultTargets.map((result: any) => ({
           year: result.year,
           showValue: result.showResult,
           value: result.result,
         })),
-        justificationBase: formValue.justificationBase, 
-        justificationGoal: formValue.justificationGoal,
+        justificationBase: formValue.justificationBase,
         observations: formValue.observations
       };
 
+      console.log("Resultado do formulario", indicatorData)
       this.indicatorService.updateIndicator(indicatorData, this.selectedPdfFile).subscribe({
         next: (response) => {
           this.toastrService.show(
@@ -457,7 +465,7 @@ export class EditIndicatorComponent implements OnInit {
           this.router.navigate(['/pages/indicators']);
         },
         complete: () => {
-          this.isSubmitting = false; 
+          this.isSubmitting = false;
         }
       });
     }
@@ -467,22 +475,22 @@ export class EditIndicatorComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedPdfFile = input.files[0];
-  
+
       if (this.hadOriginalPdf) {
         this.shouldRemovePdf = true;
       }
-  
+
       this.existingPdfFileName = null;
     }
   }
-  
+
   removePdf(fileInput: HTMLInputElement): void {
     this.selectedPdfFile = null;
     this.existingPdfFileName = null;
     if (this.hadOriginalPdf) {
       this.shouldRemovePdf = true;
     }
-    fileInput.value = ''; 
+    fileInput.value = '';
   }
 
 }

@@ -1,54 +1,52 @@
-
 export interface IIndicator {
-    uuId: string;
-    name: string;
-    measureUnit: string;
-    polarity: string;
-    measures: IChallengeOrgan[];
-    odsgoal: IOdsGoal[];
-    targetsFor: IIndicatorValue[];
-    resultedIn: IIndicatorValue[];
-    justificationBase?: string,
-    justificationGoal?: string,
-    observations?: string,
-    originalFileName?: string
-  }
+  uuId: string;
+  name: string;
+  measureUnit: string;
+  polarity: string;
+  measures: IChallengeOrgan[];
+  odsgoal: IOdsGoal[];
+  targetsFor: IIndicatorValue[];
+  resultedIn: IIndicatorValue[];
+  justificationBase?: string;
+  observations?: string;
+  originalFileName?: string;
+}
 
 export interface IIndicatorValue {
-    period?: number
-    type?: string
-    year: number
-    showValue: string
-    value: number
+  period?: number;
+  type?: string;
+  year: number;
+  showValue: string;
+  value: number;
+  justificationGoal: string;
 }
 
 export interface IOdsGoal {
-    order: string;
+  order: string;
 }
-
 
 export interface IChallengeOrgan {
-    challengeId: string;
-    organ: string;
-}
-  
-export interface IIndicatorForm {
-    id?: string
-    name: string
-    polarity: string
-    measureUnit: string
-    organizationAcronym: IChallengeOrgan[]
-    ods: string[]
-    targetsFor: IIndicatorValue[]
-    resultedIn: IIndicatorValue[]
-    justificationBase?: string
-    justificationGoal?: string
-    observations?: string
-    removePdf?: boolean
+  challengeId: string;
+  organ: string;
 }
 
-export interface IIndicatorDetails  {
-    uuId: string
-    name: string
-    organizationAcronym: string
+export interface IIndicatorForm {
+  id?: string;
+  name: string;
+  polarity: string;
+  measureUnit: string;
+  organizationAcronym: IChallengeOrgan[];
+  ods: string[];
+  targetsFor: IIndicatorValue[];
+  resultedIn: IIndicatorValue[];
+  justificationBase?: string;
+  justificationGoal?: string;
+  observations?: string;
+  removePdf?: boolean;
+}
+
+export interface IIndicatorDetails {
+  uuId: string;
+  name: string;
+  organizationAcronym: string;
 }
