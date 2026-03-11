@@ -241,7 +241,7 @@ export class EditIndicatorComponent implements OnInit {
         target: [null],
         showTarget: [''],
         yearSelectVisible: [false],
-        justificationGoal: new FormControl('', [Validators.required, Validators.maxLength(500)])
+        justificationGoal: new FormControl('', [Validators.maxLength(500)])
       })
     );
   }
