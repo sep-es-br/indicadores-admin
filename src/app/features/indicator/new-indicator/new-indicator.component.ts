@@ -310,7 +310,7 @@ export class NewIndicatorComponent implements OnInit {
             year: target.year,
             showValue: target.showTarget,
             value: target.target,
-            justificationGoal: [target.justificationGoal],
+            justificationGoal: target.justificationGoal,
           })),
           resultedIn: formValue.yearResultTargets.map((result: any) => ({
             year: result.year,

@@ -88,7 +88,6 @@ export class IndicatorComponent implements OnInit{
       //   })
       // )
       this._pageConfig.search = filtro;
-      console.log("dados Passados: ", filtro)
       if (!filtro) {
         this._pageConfig.sort = '';
         this.limparSortColumn();
