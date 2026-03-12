@@ -7,9 +7,10 @@ export interface IManagement{
     endYear:number,
     active?:boolean,
     id?:string
-    modelName?: string[]; 
+    isExpanded?: boolean;
+    modelName?: string[];
     modelNameInPlural?: string[];
-    organizerList?: IOrganizerAdmin[]; 
+    organizerList?: IOrganizerAdmin[];
 }
 
 export interface IManagementInfo{

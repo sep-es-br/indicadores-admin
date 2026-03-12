@@ -1,35 +1,40 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { IManagement } from '../../core/interfaces/management.interface';
-import { ManagementService } from '../../core/service/management.service';
-import { IBreadcrumbItem } from '../../core/interfaces/breadcrumb-item.interface';
-import { IPaginacaoDados } from '../../core/interfaces/paginacao-dados.interface';
-import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { Observable } from 'rxjs-compat';
-import { debounce, debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
-import { IIndicator } from '../../core/interfaces/indicator.interface';
-import { IndicatorService } from '../../core/service/indicator.service';
-
+import { Component, inject, OnInit, Renderer2 } from "@angular/core";
+import { IManagement } from "../../core/interfaces/management.interface";
+import { ManagementService } from "../../core/service/management.service";
+import { IBreadcrumbItem } from "../../core/interfaces/breadcrumb-item.interface";
+import { IPaginacaoDados } from "../../core/interfaces/paginacao-dados.interface";
+import { IHttpGetRequestBody } from "../../core/interfaces/http-get.interface";
+import { BehaviorSubject, of, Subject } from "rxjs";
+import { Observable } from "rxjs-compat";
+import {
+  debounce,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  switchMap,
+  tap,
+} from "rxjs/operators";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
+import { Router } from "@angular/router";
+import { ConfirmationDialogComponent } from "../../@theme/components/confirmation-dialog/ConfirmationDialog.component";
+import { IIndicator } from "../../core/interfaces/indicator.interface";
+import { IndicatorService } from "../../core/service/indicator.service";
 
 @Component({
-  selector: 'ngx-indicator',
-  templateUrl: './indicator.component.html',
-  styleUrls: ['./indicator.component.scss']
+  selector: "ngx-indicator",
+  templateUrl: "./indicator.component.html",
+  styleUrls: ["./indicator.component.scss"],
 })
-export class IndicatorComponent implements OnInit{
-
+export class IndicatorComponent implements OnInit {
   private _pageConfig: IHttpGetRequestBody = {
     page: 0,
-    search: '',
+    search: "",
     size: 12,
-    sort: '',
+    sort: "",
   };
 
   private _indicatorList: BehaviorSubject<Array<IIndicator>> =
-  new BehaviorSubject<Array<IIndicator>>([]);
+    new BehaviorSubject<Array<IIndicator>>([]);
 
   public get indicatorList(): Observable<Array<IIndicator>> {
     return this._indicatorList;
@@ -49,99 +54,108 @@ export class IndicatorComponent implements OnInit{
 
   private searchSubejct = new Subject<string>();
 
-  constructor(private indicatorService: IndicatorService, private _r2: Renderer2, private toastrService: NbToastrService, private dialogService: NbDialogService,
-    private router: Router) {
-  }
-
+  constructor(
+    private indicatorService: IndicatorService,
+    private _r2: Renderer2,
+    private toastrService: NbToastrService,
+    private dialogService: NbDialogService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
+    this.searchSubejct
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((filtro) => {
+          this.filtroPesquisaOutputEvent(filtro);
+          return of(null);
+        }),
+      )
+      .subscribe();
     this.fetchPage();
   }
 
   private fetchPage(pageConfigParam?: {
-      [K in keyof IHttpGetRequestBody]?: IHttpGetRequestBody[K];
-    }): void {
-      const tempPageConfig = { ...this._pageConfig, ...pageConfigParam };
+    [K in keyof IHttpGetRequestBody]?: IHttpGetRequestBody[K];
+  }): void {
+    const tempPageConfig = { ...this._pageConfig, ...pageConfigParam };
 
-      this.indicatorService.getIndicators(tempPageConfig).pipe(tap((response) => {
-        this._indicatorList.next(response.content);
-        this.paginacaoDados = {
-          paginaAtual: response.page.number + 1,
-          itensPorPagina: response.page.size,
-          primeiroItemPagina: response.page.number * response.page.size + 1,
-          ultimoItemPagina: response.page.number * response.page.size + response.content.length,
-          totalRegistros: response.page.totalElements,
-        };
-      }),
-      finalize(() => (this.loading = false, this.updateBreadcrumb()))
-    )
-    .subscribe();
+    this.indicatorService
+      .getIndicators(tempPageConfig)
+      .pipe(
+        tap((response) => {
+          this._indicatorList.next(response.content);
+          this.paginacaoDados = {
+            paginaAtual: response.page.number + 1,
+            itensPorPagina: response.page.size,
+            primeiroItemPagina: response.page.number * response.page.size + 1,
+            ultimoItemPagina:
+              response.page.number * response.page.size +
+              response.content.length,
+            totalRegistros: response.page.totalElements,
+          };
+        }),
+        finalize(() => ((this.loading = false), this.updateBreadcrumb())),
+      )
+      .subscribe();
+  }
 
+  public filtroPesquisaOutputEvent(filtro: string): void {
+    this._pageConfig.search = filtro;
+    if (!filtro) {
+      this._pageConfig.sort = "";
+      this.limparSortColumn();
     }
+    this.fetchPage();
+  }
 
-    public filtroPesquisaOutputEvent(filtro: string): void {
-      // this.searchSubejct.pipe(
-      //   debounceTime(400),
-      //   distinctUntilChanged(),
-      //   switchMap((value) => {
+  public paginacaoOutputEvent(event: number): void {
+    this.fetchPage({ page: event - 1 });
+  }
 
-      //   })
-      // )
-      this._pageConfig.search = filtro;
-      if (!filtro) {
-        this._pageConfig.sort = '';
-        this.limparSortColumn();
-      }
-
-      this.fetchPage();
-    }
-
-    public paginacaoOutputEvent(event: number): void {
-      this.fetchPage({ page: event - 1 });
-    }
-
-    private limparSortColumn(): void {
-      document.querySelectorAll('th[ng-reflect-sortable]').forEach((el) => {
-        this._r2.removeClass(el, 'asc');
-        this._r2.removeClass(el, 'desc');
-      });
-    }
+  private limparSortColumn(): void {
+    document.querySelectorAll("th[ng-reflect-sortable]").forEach((el) => {
+      this._r2.removeClass(el, "asc");
+      this._r2.removeClass(el, "desc");
+    });
+  }
 
   updateBreadcrumb() {
-		this.breadcrumb = [
-			{
-				label: 'Indicadores',
-			},
-
-		];
-	}
+    this.breadcrumb = [
+      {
+        label: "Indicadores",
+      },
+    ];
+  }
 
   public deleteIndicator(indicatorId: string): void {
     this.dialogService
       .open(ConfirmationDialogComponent, {
         context: {
-          title: 'Atenção!',
-          message: 'Se você excluir este indicador, perderá permanentemente todos os dados de metas e resultados de todos os anos, além das ligações com desafios. Esta ação não pode ser desfeita. Tem certeza de que deseja continuar?',
-        }
+          title: "Atenção!",
+          message:
+            "Se você excluir este indicador, perderá permanentemente todos os dados de metas e resultados de todos os anos, além das ligações com desafios. Esta ação não pode ser desfeita. Tem certeza de que deseja continuar?",
+        },
       })
       .onClose.subscribe((confirmed: boolean) => {
         if (confirmed) {
-          this.indicatorService.deleteIndicator(indicatorId)
-            .subscribe({
-              next: () => {this.toastrService.show(
-                '', 'Gestão deletada com sucesso!',
-                { status: 'success', duration: 8000 }
-              );
+          this.indicatorService.deleteIndicator(indicatorId).subscribe({
+            next: () => {
+              this.toastrService.show("", "Gestão deletada com sucesso!", {
+                status: "success",
+                duration: 8000,
+              });
               this.fetchPage();
-            }
-            });
+            },
+          });
         }
       });
   }
 
   editIndicator(indicatorId: string): void {
-    this.router.navigate(['/pages/indicators/edit'], { queryParams: { id: indicatorId } });
+    this.router.navigate(["/pages/indicators/edit"], {
+      queryParams: { id: indicatorId },
+    });
   }
-
-
 }

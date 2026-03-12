@@ -31,7 +31,7 @@ export class ManagementComponent implements OnInit{
 
   private _managementList: BehaviorSubject<Array<IManagement>> =
   new BehaviorSubject<Array<IManagement>>([]);
-  
+
   public get managementList(): Observable<Array<IManagement>> {
     return this._managementList;
   }
@@ -49,7 +49,7 @@ export class ManagementComponent implements OnInit{
 
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
-  public managements: IManagement;
+  public managements!: IManagement;
 
   expandedManagement: any = null;
 
@@ -62,12 +62,12 @@ export class ManagementComponent implements OnInit{
   };
 
   constructor(private managementService: ManagementService, private organizerService: OrganizerService, private challengeService: ChallengeService,
-    private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) { 
+    private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) {
   }
 
   ngOnInit(): void {
     this.fetchPage();
-    
+
   }
 
 
@@ -79,7 +79,7 @@ export class ManagementComponent implements OnInit{
     this.managementService.getManagements(tempPageConfig).pipe(tap((response) => {
       this._managementList.next(response.content);
       this.paginacaoDados = {
-        paginaAtual: response.page.number + 1,  
+        paginaAtual: response.page.number + 1,
         itensPorPagina: response.page.size,
         primeiroItemPagina: response.page.number * response.page.size + 1,
         ultimoItemPagina: response.page.number * response.page.size + response.content.length,
@@ -100,8 +100,8 @@ export class ManagementComponent implements OnInit{
     this.dialogService
       .open(ConfirmationDialogComponent, {
         context: {
-          title: 'Confirmação', 
-          message: 'Tem certeza de que deseja excluir esta gestão?', 
+          title: 'Confirmação',
+          message: 'Tem certeza de que deseja excluir esta gestão?',
         },
       })
       .onClose.subscribe((confirmed: boolean) => {
@@ -112,7 +112,7 @@ export class ManagementComponent implements OnInit{
                 '', 'Gestão deletada com sucesso!',
                 { status: 'success', duration: 8000 }
               );
-              this.fetchPage(); 
+              this.fetchPage();
             }
             });
         }
@@ -136,7 +136,7 @@ export class ManagementComponent implements OnInit{
                   '', 'Organizador deletado com sucesso!',
                   { status: 'success', duration: 8000 }
                 );
-                this.fetchPage(); 
+                this.fetchPage();
               }
             });
         }
@@ -160,14 +160,14 @@ export class ManagementComponent implements OnInit{
                   '', 'Desafio deletado com sucesso!',
                   { status: 'success', duration: 8000 }
                 );
-                this.fetchPage(); 
+                this.fetchPage();
               }
             });
         }
       });
   }
-  
-  
+
+
 
   public filtroPesquisaOutputEvent(filtro: string): void {
     this._pageConfig.search = filtro;
@@ -206,13 +206,13 @@ export class ManagementComponent implements OnInit{
     }
     this.router.navigate(['/pages/management/edit'], { queryParams: management });
   }
-  
+
   populateModelName(management: IManagement) {
     if (!management.organizerList) return;
-  
+
     const modelNameSet = new Set<string>();
     const modelNameInPluralSet = new Set<string>();
-  
+
     function traverseOrganizers(organizers: IOrganizerAdmin[]) {
       for (const organizer of organizers) {
         modelNameSet.add(organizer.typeOrganizer);
@@ -222,9 +222,9 @@ export class ManagementComponent implements OnInit{
         }
       }
     }
-  
+
     traverseOrganizers(management.organizerList);
-  
+
     management.modelName = Array.from(modelNameSet);
     management.modelNameInPlural = Array.from(modelNameInPluralSet);
   }
