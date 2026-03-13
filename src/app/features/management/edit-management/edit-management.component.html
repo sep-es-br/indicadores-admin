@@ -122,8 +122,11 @@
                 <td class="text-center">
                   <button
                     class="btn btn-success btn-sm"
+                    nbButton
+                    status="primary"
                     (click)="addNewStructure()"
-                    *ngIf="structureList.length === 0">
+                    *ngIf="structureList.length === 0"
+                    >
                     <i class="fa fa-plus"></i>
                   </button>
                 </td>

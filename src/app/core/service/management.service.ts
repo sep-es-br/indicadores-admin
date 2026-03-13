@@ -56,5 +56,15 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
           })
         );
       }
+
+     public hasChallenge(id: string): Observable<{ possuiDesafio: boolean }> {
+      const url = `${this._url}/has-challenge/${id}`;
+      return this._http.get<{ possuiDesafio: boolean }>(url).pipe(
+        catchError((err: HttpErrorResponse) => {
+          this._errorHandlerService.handleError(err);
+          return throwError(() => err);
+      })
+    );
+}
       
   }

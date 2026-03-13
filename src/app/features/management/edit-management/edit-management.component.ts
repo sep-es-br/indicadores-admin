@@ -28,6 +28,8 @@ export class EditManagementComponent implements OnInit {
 
   hasOrganizerList: boolean = true;
 
+  hasChallange: boolean = false;        //add 
+
   structureList: IStructureChild[] = [];
 
   newStructure: IStructureChild = {
@@ -62,25 +64,7 @@ export class EditManagementComponent implements OnInit {
     this.updateBreadcrumb();
   }
 
-  // ngOnInit(): void {
-  //   this.route.queryParams.subscribe((params) => {
-  //     console.log("resultado: ", params)
-  //     const { name, active, startYear, endYear, description, id, modelName, modelNameInPlural, organizerList } = params;
 
-  //     this.hasOrganizerList = organizerList ? true : false;
-
-  //     if (name && active && startYear && endYear && description && id) {
-  //       this.form.patchValue(params);
-
-  //       const names: string[] = Array.isArray(modelName) ? modelName : modelName?.split(',') || [];
-  //       const namesPlural: string[] = Array.isArray(modelNameInPlural) ? modelNameInPlural : modelNameInPlural?.split(',') || [];
-
-  //       this.structureList = this.buildHierarchy(names, namesPlural);
-  //     } else {
-  //       this.router.navigate(['/pages/management']);
-  //     }
-  //   });
-  // }
 
   ngOnInit(): void {
     // Lê o state antes do subscribe
@@ -131,6 +115,7 @@ export class EditManagementComponent implements OnInit {
       el?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 300);
   }
+
 
   private buildHierarchy(
     names: string[],
@@ -215,6 +200,15 @@ export class EditManagementComponent implements OnInit {
   }
 
   addNewStructure(): void {
+    if (this.hasChallange) {
+      this.toastrService.show(
+        '',
+        'Não é possivel adicionar outro organizer, pois ele já possui um desafio.',
+        { status: 'warning', duration: 8000 }
+      );
+      return;
+    }      //verficacao
+
     if (this.newStructure.structureName && this.newStructure.namePlural) {
       this.structureList.push({
         ...this.newStructure,
@@ -292,21 +286,37 @@ export class EditManagementComponent implements OnInit {
   }
 
   addChildStructure(item: IStructureChild): void {
-    if (item.structureName && item.namePlural && !item.editable) {
-      item.children = item.children || [];
-      item.children.push({
-        ...this.newStructure,
-        children: [],
-        editable: true,
-      });
-    } else {
-      this.toastrService.show("", "Favor terminar de editar.", {
-        status: "warning",
-        duration: 8000,
-      });
-    }
-  }
+    this.managementService.hasChallenge(this.form.value.id).subscribe({
+      next: (res) => {
+        if (res.possuiDesafio) {
+          this.toastrService.show(
+            '',
+            'Não é possível editar a estrutura, pois já existem desafios vinculados.',
+            { status: 'warning', duration: 8000 }
+          );
+          return;
+        }
 
+        // só executa se NÃO tiver desafio
+        if (item.structureName && item.namePlural && !item.editable) {
+          item.children = item.children || [];
+          item.children.push({
+            ...this.newStructure,
+            children: [],
+            editable: true,
+          });
+        } else {
+          this.toastrService.show("", "Favor terminar de editar.", {
+            status: "warning",
+            duration: 8000,
+          });
+        }
+      },
+      error: (err) => {
+        console.error("Erro ao verificar desafio: ", err);
+      }
+    });
+  }
   deleteItemStructure(targetArray: any[], item: any): void {
     const index = targetArray.indexOf(item);
 
