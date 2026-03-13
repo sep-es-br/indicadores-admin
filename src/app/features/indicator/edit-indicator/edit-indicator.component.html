@@ -246,6 +246,7 @@
                       <div class="col-md-1 mb-2">
                         <button
                           nbButton
+                          size="small"
                           status="danger"
                           (click)="removeOrganRow(i)"
                         >
@@ -286,8 +287,10 @@
                         {{ selectedPdfFile?.name || existingPdfFileName }}
                       </span>
                       <button
+                        nbButton
                         type="button"
-                        class="btn btn-sm btn-outline-danger px-2 py-0"
+                        size="small"
+                        class="btn btn-sm btn-outline-danger "
                         (click)="removePdf(fileInput)"
                       >
                         &times;
@@ -579,13 +582,20 @@
                         <button
                           nbButton
                           size="small"
-                          appearance="ghost"
                           status="danger"
                           nbTooltip="Remover"
                           (click)="removeYearRow(i)"
                         >
                           <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
                         </button>
+
+                                                <!-- <button
+                          nbButton
+                          status="danger"
+                          (click)="removeOrganRow(i)"
+                        >
+                          <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                        </button> -->
                       </div>
                     </div>
                   </ng-container>

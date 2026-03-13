@@ -184,7 +184,7 @@
                       </nb-select>
                     </div>
                     <div class="col-md-1 mb-2">
-                      <button nbButton status="danger" (click)="removeOrganRow(i)">
+                      <button nbButton  status="danger" (click)="removeOrganRow(i)">
                         <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
                       </button>
                     </div>
@@ -211,8 +211,10 @@
                     <div *ngIf="selectedPdfFile" class="file-display d-flex align-items-center">
                       <span class="file-name me-2">{{ selectedPdfFile.name }}</span>
                       <button
+                        nbButton
                         type="button"
-                        class="btn btn-sm btn-outline-danger px-2 py-0"
+                        size="small"
+                        class="btn btn-sm btn-outline-danger"
                         (click)="removePdf(fileInput)"
                       >
                         &times;
@@ -224,101 +226,6 @@
             </div>
 
             <p>Dados de apurações</p>
-
-<!--            <div class="form-container">-->
-<!--              <div class="row mb-3">-->
-
-<!--                <div class="col-md-12 mt-1" *ngIf="yearResultTargets.controls.length">-->
-<!--                  <div class="row">-->
-<!--                    <div class="col-md-2">-->
-<!--                      <label class="form-label">Ano</label>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2">-->
-<!--                      <label class="form-label">Meta</label>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2">-->
-<!--                      <label class="form-label">Meta de exibição</label>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2">-->
-<!--                      <label class="form-label">Resultado</label>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2">-->
-<!--                      <label class="form-label">Resultado de exibição</label>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2">-->
-<!--                      <label class="form-label">Ação</label>-->
-<!--                    </div>-->
-
-<!--                    <ng-container *ngFor="let control of yearResultTargets.controls; let i = index">-->
-
-<!--                        <div class="col-md-2 mb-2">-->
-<!--                          <div>-->
-<!--                            <nb-select-->
-<!--                              placeholder="Selecione o ano"-->
-<!--                              class="w-100"-->
-<!--                              [formControl]="control.get('year')"-->
-<!--                              [class.is-invalid]="control.get('year')?.invalid && submitted"-->
-<!--                            >-->
-
-<!--                              <nb-option *ngFor="let year of years" [value]="year" [disabled]="isYearAlreadySelected(year)">-->
-<!--                                {{ year }}-->
-<!--                              </nb-option>-->
-<!--                            </nb-select>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="col-md-2 mb-2">-->
-<!--                          <input-->
-<!--                            type="number"-->
-<!--                            class="form-control"-->
-<!--                            [formControl]="control.get('target')"-->
-<!--                            placeholder="Digite a meta"-->
-<!--                            [class.is-invalid]="control.get('target')?.invalid && submitted"-->
-<!--                          />-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 mb-2">-->
-<!--                          <input-->
-<!--                            type="text"-->
-<!--                            class="form-control"-->
-<!--                            [formControl]="control.get('showTarget')"-->
-<!--                            placeholder="Digite a valor de exibição"-->
-<!--                            [class.is-invalid]="control.get('showTarget')?.invalid && submitted"-->
-<!--                          />-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 mb-2">-->
-<!--                          <input-->
-<!--                            type="number"-->
-<!--                            class="form-control"-->
-<!--                            [formControl]="control.get('result')"-->
-<!--                            placeholder="Digite o resultado"-->
-<!--                            [class.is-invalid]="control.get('result')?.invalid && submitted"-->
-<!--                          />-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 mb-2">-->
-<!--                          <input-->
-<!--                            type="text"-->
-<!--                            class="form-control"-->
-<!--                            [formControl]="control.get('showResult')"-->
-<!--                            placeholder="Digite o valor de exibição"-->
-<!--                            [class.is-invalid]="control.get('showResult')?.invalid && submitted"-->
-<!--                          />-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 mb-2">-->
-<!--                          <button nbButton status="danger" (click)="removeYearRow(i)">-->
-<!--                            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>-->
-<!--                          </button>-->
-<!--                        </div>-->
-<!--                    </ng-container>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-12">-->
-<!--                  <button nbButton (click)="addNewYearRow()" class="w-100 d-block input-like-btn">-->
-<!--                    + Adicionar Ano-->
-<!--                  </button>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            -->
 
             <div class="form-container">
               <div class="row mb-3">
@@ -479,7 +386,6 @@
                         <button
                           nbButton
                           size="small"
-                          appearance="ghost"
                           status="danger"
                           nbTooltip="Remover"
                           (click)="removeYearRow(i)"
