@@ -6,14 +6,14 @@
   button[ngbDropdownToggle]::after {
     display: none;
   }
-  
-  
+
+
   .management-card {
-    border-left: 4px solid #0098DA; 
-    border-right: none; 
-    border-top: 1px solid #0098DA; 
-    border-bottom: 1px solid #0098DA; 
-    border-radius: 5px 0 0 5px; 
+    border-left: 4px solid #0098DA;
+    border-right: none;
+    border-top: 1px solid #0098DA;
+    border-bottom: 1px solid #0098DA;
+    border-radius: 5px 0 0 5px;
     padding: 15px;
     margin-bottom: 10px;
   }
@@ -24,7 +24,7 @@
       width: 30px;
     }
   }
-  
+
   .card-create-icon i {
     font-size: 2.5em;
     cursor: pointer;
@@ -34,27 +34,27 @@
   .button-color:focus{
     box-shadow: none;
   }
-  
+
   .fw-bold, .button-color {
     color: #0098DA;
   }
-  
+
   span {
-    line-height: 1.5; 
+    line-height: 1.5;
   }
-  
+
   .text-danger {
-    color: red; 
+    color: red;
   }
-  
+
   .text-success {
-    color: green; 
+    color: green;
   }
 
   .dropdown-menu {
-    min-width: auto; 
+    min-width: auto;
   }
-  
+
   .dropdown-menu-end {
     right: 0;
     left: auto;
@@ -64,27 +64,27 @@
     background-color: #EDF1F7;
   }
   .menu-icon:hover {
-    background-color: #E4E9F2; 
+    background-color: #E4E9F2;
     cursor: pointer;
   }
-  
+
   @media (max-width: 991px) {
     .row {
-      margin-bottom: 15px; 
+      margin-bottom: 15px;
     }
-    
+
     .text-end {
-      text-align: left; 
+      text-align: left;
     }
   }
 
 form {
   display: flex;
   flex-direction: column;
-  border: 1px solid #0098DA; 
-  border-radius: 5px; 
-  padding: 20px; 
-  margin: 20px auto; 
+  border: 1px solid #0098DA;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 20px auto;
 }
 
 p {
@@ -160,26 +160,26 @@ p {
 }
 
 .d-flex.justify-content-end {
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 
-  
+
 .organizer-card {
-  border-left: 4px solid #0098DA; 
-  border-right: none; 
-  border-top: 1px solid #0098DA; 
-  border-bottom: 1px solid #0098DA; 
-  border-radius: 5px 0 0 5px; 
+  border-left: 4px solid #0098DA;
+  border-right: none;
+  border-top: 1px solid #0098DA;
+  border-bottom: 1px solid #0098DA;
+  border-radius: 5px 0 0 5px;
   padding: 15px;
   margin-bottom: 10px !important;
 }
 
 .challenge-card {
-  border-left: 4px solid #0098DA; 
-  border-right: none; 
-  border-top: 1px solid #0098DA; 
-  border-bottom: 1px solid #0098DA; 
-  border-radius: 5px 0 0 5px; 
+  border-left: 4px solid #0098DA;
+  border-right: none;
+  border-top: 1px solid #0098DA;
+  border-bottom: 1px solid #0098DA;
+  border-radius: 5px 0 0 5px;
   padding: 15px;
   margin-bottom: 10px !important;
 }
@@ -218,13 +218,13 @@ p {
   border-radius: 5px;
   font-size: 14px;
   white-space: nowrap;
-  
-  bottom: 120%; 
+
+  bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
-  
+
   transition: opacity 0.3s ease-in-out;
-  
+
   &:after {
     content: "";
     position: absolute;
