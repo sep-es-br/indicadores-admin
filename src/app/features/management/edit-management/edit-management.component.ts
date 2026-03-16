@@ -115,7 +115,6 @@ export class EditManagementComponent implements OnInit {
 
           this.blockedTypes.clear();
           this.checkBlockedTypes(organizerList);
-          console.log(this.blockedTypes)
       });
     });
   }
@@ -128,7 +127,6 @@ export class EditManagementComponent implements OnInit {
   }
 
   checkBlockedTypes(list: any[]) {
-    console.log(list)
   list.forEach(item => {
 
     if (item.children?.length) {
@@ -230,6 +228,7 @@ export class EditManagementComponent implements OnInit {
 
   onCancel(): void {
     this.form.reset();
+    console.log("dasdad")
     this.router.navigate(["/pages/management"]);
   }
 
