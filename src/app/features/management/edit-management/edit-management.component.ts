@@ -20,6 +20,8 @@ export class EditManagementComponent implements OnInit {
 
   selectedManagement!: IManagement;
 
+  blockedTypes = new Set<string>();
+
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
   public managements!: IManagement;
@@ -28,7 +30,7 @@ export class EditManagementComponent implements OnInit {
 
   hasOrganizerList: boolean = true;
 
-  hasChallange: boolean = false;        //add 
+  hasChallange: boolean = false; //add
 
   structureList: IStructureChild[] = [];
 
@@ -64,58 +66,137 @@ export class EditManagementComponent implements OnInit {
     this.updateBreadcrumb();
   }
 
-
-
   ngOnInit(): void {
-    // Lê o state antes do subscribe
-    const { highlightId, section } = history.state ?? {};
+    // const state = history.state ?? {};
+
+    // const organizerList = state.organizerList;
+    // const idState = state.id;
+
+    // console.log("organizerList:", organizerList);
 
     this.route.queryParams.subscribe((params) => {
-      const {
-        name,
-        active,
-        startYear,
-        endYear,
-        description,
-        id,
-        modelName,
-        modelNameInPlural,
-        organizerList,
-      } = params;
+      const { id } = params;
+      this.managementService.getMenagementsId(id).subscribe((res: any) => {
 
-      this.hasOrganizerList = organizerList ? true : false;
-
-      if (name && active && startYear && endYear && description && id) {
-        this.form.patchValue(params);
-
-        const names: string[] = Array.isArray(modelName)
-          ? modelName
-          : modelName?.split(",") || [];
-        const namesPlural: string[] = Array.isArray(modelNameInPlural)
-          ? modelNameInPlural
-          : modelNameInPlural?.split(",") || [];
-
-        this.structureList = this.buildHierarchy(names, namesPlural);
-
-        // Após montar a página, scrolla e destaca
-        if (highlightId && section) {
-          this.scrollToSection(section, highlightId);
+        if (!res?.id) {
+          this.router.navigate(["/pages/management"]);
+          return;
         }
-      } else {
-        this.router.navigate(["/pages/management"]);
-      }
+        const {
+          name,
+          active,
+          startYear,
+          endYear,
+          description,
+          id,
+          modelName,
+          modelNameInPlural,
+          organizerList,
+        } = res;
+
+          this.form.patchValue({
+            name,
+            active,
+            startYear,
+            endYear,
+            description,
+            id,
+          });
+
+          const names: string[] = Array.isArray(modelName)
+            ? modelName
+            : modelName?.split(",") || [];
+
+          const namesPlural: string[] = Array.isArray(modelNameInPlural)
+            ? modelNameInPlural
+            : modelNameInPlural?.split(",") || [];
+
+          this.structureList = this.buildHierarchy(names, namesPlural);
+
+          this.blockedTypes.clear();
+          this.checkBlockedTypes(organizerList);
+          console.log(this.blockedTypes)
+      });
     });
   }
 
-  private scrollToSection(section: string, highlightId: string): void {
-    this.highlightId = highlightId;
-
-    setTimeout(() => {
-      const el = document.getElementById(section);
-      el?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 300);
+  canDelete(item: any): boolean {
+    if (!item?.structureName) {
+      return true;
+    }
+    return !this.blockedTypes.has(item.structureName);
   }
 
+  checkBlockedTypes(list: any[]) {
+    console.log(list)
+  list.forEach(item => {
+
+    if (item.children?.length) {
+      this.blockedTypes.add(item.typeOrganizer);
+    }
+
+    if (item.challengeList?.length) {
+      this.blockedTypes.add(item.typeOrganizer);
+    }
+
+    if (item.children?.length) {
+      this.checkBlockedTypes(item.children);
+    }
+
+  });
+
+}
+
+  // ngOnInit(): void {
+  //   const state = history.state ?? {};
+
+  //   const organizerList = state.organizerList;
+  //   const idState = state.organizerList.id;
+
+  //   console.log("organizerList:", organizerList);
+
+  //   this.hasOrganizerList =
+  //     Array.isArray(organizerList) && organizerList.length > 0;
+
+  //   this.route.queryParams.subscribe((params) => {
+  //     const {
+  //       name,
+  //       active,
+  //       startYear,
+  //       endYear,
+  //       description,
+  //       id,
+  //       modelName,
+  //       modelNameInPlural,
+  //     } = params;
+
+  //     const finalId = id ?? idState;
+
+  //     if (!finalId) {
+  //       // this.router.navigate(["/pages/management"]);
+  //       return;
+  //     }
+
+  //     this.form.patchValue({
+  //       name,
+  //       active,
+  //       startYear,
+  //       endYear,
+  //       description,
+  //       id: finalId,
+  //     });
+
+  //     const names: string[] = Array.isArray(modelName)
+  //       ? modelName
+  //       : modelName?.split(",") || [];
+
+  //     const namesPlural: string[] = Array.isArray(modelNameInPlural)
+  //       ? modelNameInPlural
+  //       : modelNameInPlural?.split(",") || [];
+
+  //     this.structureList = this.buildHierarchy(names, namesPlural);
+  //   });
+  // }
 
   private buildHierarchy(
     names: string[],
@@ -202,12 +283,12 @@ export class EditManagementComponent implements OnInit {
   addNewStructure(): void {
     if (this.hasChallange) {
       this.toastrService.show(
-        '',
-        'Não é possivel adicionar outro organizer, pois ele já possui um desafio.',
-        { status: 'warning', duration: 8000 }
+        "",
+        "Não é possivel adicionar outro organizer, pois ele já possui um desafio.",
+        { status: "warning", duration: 8000 },
       );
       return;
-    }      //verficacao
+    } //verficacao
 
     if (this.newStructure.structureName && this.newStructure.namePlural) {
       this.structureList.push({
@@ -290,9 +371,9 @@ export class EditManagementComponent implements OnInit {
       next: (res) => {
         if (res.possuiDesafio) {
           this.toastrService.show(
-            '',
-            'Não é possível editar a estrutura, pois já existem desafios vinculados.',
-            { status: 'warning', duration: 8000 }
+            "",
+            "Não é possível editar a estrutura, pois já existem desafios vinculados.",
+            { status: "warning", duration: 8000 },
           );
           return;
         }
@@ -314,7 +395,7 @@ export class EditManagementComponent implements OnInit {
       },
       error: (err) => {
         console.error("Erro ao verificar desafio: ", err);
-      }
+      },
     });
   }
   deleteItemStructure(targetArray: any[], item: any): void {

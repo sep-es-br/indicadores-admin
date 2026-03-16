@@ -204,7 +204,15 @@ export class ManagementComponent implements OnInit{
     if (management.modelName == null || management.modelNameInPlural == null) {
       this.populateModelName(management);
     }
-    this.router.navigate(['/pages/management/edit'], { queryParams: management });
+    // console.log("Dentro do man ")
+    // management.organizerList = management.organizerList
+    // this.router.navigate(['/pages/management/edit'], { queryParams: management });
+    this.router.navigate(['/pages/management/edit'], {
+      queryParams: {
+        id: management.id
+      }
+    });
+
   }
 
   populateModelName(management: IManagement) {

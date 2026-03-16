@@ -168,7 +168,7 @@
                 <button class="btn btn-primary btn-sm" (click)="structureToggleEditable(item)" >
                   <i class="fa" [ngClass]="item.editable ? 'fa-check' : 'fa-pencil-alt'"></i>
                 </button>
-                <button class="btn btn-danger btn-sm" (click)="deleteItemStructure(parent || structureList, item)" *ngIf="!hasOrganizerList">
+                <button class="btn btn-danger btn-sm" (click)="deleteItemStructure(parent || structureList, item)" *ngIf="canDelete(item)">
                   <i class="fa fa-trash"></i>
                 </button>
                 <button class="btn btn-success btn-sm" (click)="addChildStructure(item)" *ngIf="item.children.length === 0">
