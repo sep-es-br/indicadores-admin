@@ -46,6 +46,7 @@ import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/ConfirmationDialog.component';
+import { ModalAddPeriodComponent } from './components/modal-add-period/modal-add-period.component';
 
 const NB_MODULES = [
   NbLayoutModule,

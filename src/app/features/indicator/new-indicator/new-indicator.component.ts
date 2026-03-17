@@ -64,11 +64,11 @@ export class NewIndicatorComponent implements OnInit {
     });
     this.updateBreadcrumb();
 
-    this.form.get('management').valueChanges.subscribe((selectedManagement) => {
+    this.form.get('management')?.valueChanges.subscribe((selectedManagement) => {
       this.onManagementChange(selectedManagement);
     });
 
-    this.form.get('unit').valueChanges.subscribe((event) => {
+    this.form.get('unit')?.valueChanges.subscribe((event) => {
       this.onUnitChange(event);
     });
 
@@ -208,6 +208,8 @@ export class NewIndicatorComponent implements OnInit {
     );
   }
 
+
+
   getDistinctOrganizationAcronyms(){
     this.indicatorService.getDistinctOrganizationAcronyms().subscribe(
       (data) => {
@@ -269,6 +271,7 @@ export class NewIndicatorComponent implements OnInit {
   }
 
   getChallengeNameById(challengeId: string): string {
+    let result: string = '';
     for (const organizer of this.filteredOrganizers) {
       const challenge = organizer.challenges.find(c => c.uuId === challengeId);
       if (challenge) {
@@ -278,9 +281,10 @@ export class NewIndicatorComponent implements OnInit {
 
         const managementName = management ? management.managementName : managementPrefix;
 
-        return `${managementName} - ${challenge.name}`;
+        result = `${managementName} - ${challenge.name}`;
       }
     }
+    return result;
   }
 
   onUnitChange(selectedValue: string) {

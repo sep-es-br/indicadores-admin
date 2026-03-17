@@ -1,0 +1,163 @@
+.add-period-card {
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  overflow: visible;
+  font-family: 'Inter', sans-serif;
+}
+
+.add-period-header {
+  padding: 14px 16px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.add-period-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// Label
+.field-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: #8a94a6;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+// Input ANO
+.field-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #e8eaf0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  background: #fafbfc;
+
+  &:focus {
+    border-color: #3366ff;
+    background: #fff;
+  }
+
+  // remove setas do number input
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+// Select customizado
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1.5px solid #3366ff;
+  border-radius: 8px;
+  background: #f0f4ff;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  .select-icon { font-size: 16px; }
+
+  .select-label {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3366ff;
+  }
+
+  .select-freq {
+    font-size: 11px;
+    color: #8a94a6;
+  }
+
+  .select-arrow {
+    font-size: 11px;
+    color: #3366ff;
+  }
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.custom-select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: #f5f7ff; }
+
+  &.selected { background: #eef2ff; }
+
+  .opt-icon { font-size: 18px; }
+
+  .opt-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .opt-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a2e;
+  }
+
+  .opt-freq {
+    font-size: 11px;
+    color: #8a94a6;
+  }
+
+  .opt-check {
+    font-size: 13px;
+    color: #3366ff;
+    font-weight: 700;
+  }
+}
+
+// Botão
+.btn-add {
+  width: 100%;
+  padding: 10px;
+  background: #3366ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: background 0.2s;
+
+  &:hover { background: #2255ee; }
+}

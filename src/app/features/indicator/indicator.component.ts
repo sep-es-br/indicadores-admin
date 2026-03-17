@@ -7,7 +7,7 @@ import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Observable } from 'rxjs-compat';
 import { debounce, debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbSpinnerModule, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { IIndicator } from '../../core/interfaces/indicator.interface';
