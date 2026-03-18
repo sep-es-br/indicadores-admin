@@ -62,9 +62,9 @@ export class IndicatorService {
     );
   }
 
-  public getYears(): Observable<number[]> {
+  public getYears(): Observable<string[]> {
     const url = `${this._url}/year-list`;
-    return this._http.get<number[]>(url).pipe(
+    return this._http.get<string[]>(url).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => new Error('Erro ao obter os anos'));

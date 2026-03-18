@@ -16,28 +16,28 @@ import { iconList } from '../../../core/interfaces/iconlist';
 export class EditOrganizerComponent implements OnInit{
 
  form: FormGroup;
- 
+
    submitted = false;
- 
+
    public breadcrumb: Array<IBreadcrumbItem> = [];
- 
+
    public organizer: IOrganizerItem;
 
    iconList = iconList.map(icon => ({
     value: icon.nome,
     label: icon.palavras_chave[0]
   }));
- 
-   constructor(private organizerService: OrganizerService, private fb: FormBuilder,  private dialogService: NbDialogService, private router: Router, private route: ActivatedRoute, private toastrService: NbToastrService) { 
+
+   constructor(private organizerService: OrganizerService, private fb: FormBuilder,  private dialogService: NbDialogService, private router: Router, private route: ActivatedRoute, private toastrService: NbToastrService) {
      this.form = this.fb.group({
            id: [''],
-           name: ['', [Validators.required]], 
-           description: ['', [Validators.required]], 
+           name: ['', [Validators.required]],
+           description: ['', [Validators.required]],
            icon: ['']
          });
          this.updateBreadcrumb()
    }
- 
+
    ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       const organizerId = params['id'];
@@ -56,8 +56,8 @@ export class EditOrganizerComponent implements OnInit{
       }
     });
    }
- 
- 
+
+
    updateBreadcrumb() {
     this.breadcrumb = [
       {
@@ -69,34 +69,32 @@ export class EditOrganizerComponent implements OnInit{
       {
         label: 'Editar',
       },
- 
- 
     ];
   }
- 
- 
-   
+
+
+
    onCancel(): void {
      this.form.reset();
      this.router.navigate(['/pages/management']);
    }
-   
+
    onSubmit(): void {
     this.submitted = true;
-  
+
     if (this.form.invalid) {
       return;
     }
-  
+
     this.organizer = {
-      ...this.organizer, 
+      ...this.organizer,
       id: this.form.get('id')?.value,
       name: this.form.get('name')?.value,
       description: this.form.get('description')?.value,
       icon: this.form.get('icon')?.value,
       editable: this.organizer?.editable ?? false
     };
-  
+
     this.organizerService.updateOrganizer(this.organizer).subscribe({
       next: () => {
         this.toastrService.show(
@@ -107,6 +105,6 @@ export class EditOrganizerComponent implements OnInit{
       }
     });
   }
-  
+
 
 }

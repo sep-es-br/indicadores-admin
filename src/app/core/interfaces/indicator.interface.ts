@@ -5,13 +5,21 @@ export interface IIndicator {
   polarity: string;
   measures: IChallengeOrgan[];
   odsgoal: IOdsGoal[];
-  targetsFor: IIndicatorValue[];
-  resultedIn: IIndicatorValue[];
   justificationBase?: string;
   observations?: string;
+  times: ITimes[],
   originalFileName?: string;
 }
-
+export interface ITimes {
+  type: string,
+  year: string,
+  period: number,
+  valueGoal: number,
+  showValueGoal: string,
+  valueResult: number,
+  showValueResult: string,
+  justificationGoal: string,
+}
 export interface IIndicatorValue {
   period?: number;
   type?: string;
@@ -37,8 +45,7 @@ export interface IIndicatorForm {
   measureUnit: string;
   organizationAcronym: IChallengeOrgan[];
   ods: string[];
-  targetsFor: IIndicatorValue[];
-  resultedIn: IIndicatorValue[];
+  times: ITimes[];
   justificationBase?: string;
   justificationGoal?: string;
   observations?: string;

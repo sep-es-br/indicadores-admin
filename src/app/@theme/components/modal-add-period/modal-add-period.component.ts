@@ -62,7 +62,7 @@ export class ModalAddPeriodComponent {
     this.typeDropdownOpen = false;
   }
 
-    addPeriod() {
-      this.popoverService.close({ year: this.year, type: this.type });
-    }
+  addPeriod() {
+    this.popoverService.close({ year: this.year, type: this.type });
+  }
 }

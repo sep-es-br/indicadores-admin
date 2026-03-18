@@ -29,6 +29,7 @@ import {
   IIndicator,
   IIndicatorForm,
   IOdsGoal,
+  ITimes,
 } from "../../../core/interfaces/indicator.interface";
 import { organizerList } from "../../../core/interfaces/organizer.interface";
 import { IOds } from "../../../core/interfaces/ods.interface";
@@ -81,12 +82,13 @@ export class IndicatorFormsComponent implements OnInit {
   // PDF
   selectedPdfFile: File | null = null;
   existingPdfFileName: string | null = null;
+  [x: string]: any;
   shouldRemovePdf = false;
   hadOriginalPdf = false;
 
   units: string[] = [];
   organizationAcronyms: organizerList[] = [];
-  years: number[] = [];
+  years: string[] = [];
   odsList: IOds[] = [];
   isOtherUnit = false;
   challengeList: IManagementOrganizerChallenge[] = [];
@@ -109,8 +111,9 @@ export class IndicatorFormsComponent implements OnInit {
   get challengesOrgans() {
     return this.form.get("challengesOrgans") as FormArray;
   }
-  get yearResultTargets() {
-    return this.form.get("yearResultTargets") as FormArray;
+
+  get times() {
+    return this.form.get("times") as FormArray;
   }
 
   typeOptions = [
@@ -143,7 +146,7 @@ export class IndicatorFormsComponent implements OnInit {
       unit: new FormControl("", [Validators.required]),
       customUnit: new FormControl(""),
       challengesOrgans: this.fb.array([]),
-      yearResultTargets: this.fb.array([]),
+      times: this.fb.array([]),
       justificationBase: new FormControl(""),
       observations: new FormControl(""),
     });
@@ -169,7 +172,7 @@ export class IndicatorFormsComponent implements OnInit {
     this.updateBreadcrumb();
     this.initializer();
 
-    this.expandedPeriods = this.yearResultTargets.controls.map(() => true);
+    this.expandedPeriods = this.times.controls.map(() => true);
 
     this.popoverService.onClose$.subscribe((data) => {
       this.popover?.hide();
@@ -187,7 +190,6 @@ export class IndicatorFormsComponent implements OnInit {
       }
     });
 
-    // intervalo
     this.popoverService.onCloseInterval$.subscribe((data) => {
       this.popInterval?.hide();
       if (data) {
@@ -258,50 +260,23 @@ export class IndicatorFormsComponent implements OnInit {
             );
             if (measure) control.patchValue({ organ: measure.organ });
           });
-
-          data.targetsFor.forEach((target) => {
-            this.yearResultTargets.push(
+          // console.log("qwewqeqwe: ", data);
+          data.times.forEach((target) => {
+            this.times.push(
               this.fb.group({
-                year: [target.year],
-                type: ["ANUAL"],
-                displayYear: [`${target.year}`],
-                target: [target.value],
-                showTarget: [target.showValue],
-                justificationGoal: [target.justificationGoal],
-                result: [null],
-                showResult: [""],
+                year: new FormControl(target.year),
+                type: new FormControl("ANUAL"),
+                displayYear: new FormControl(`${target.year}`),
+                valueGoal: new FormControl(target.valueGoal || null),
+                showValueGoal: new FormControl(target.showValueGoal || ""),
+                valueResult: new FormControl(target.valueResult || null),
+                showValueResult: new FormControl(target.showValueResult || ""),
+                justificationGoal: new FormControl(target.justificationGoal),
               }),
             );
             this.expandedPeriods.push(true);
           });
-
-          data.resultedIn.forEach((result) => {
-            const existing = this.yearResultTargets.controls.find(
-              (c) => c.get("year")?.value === result.year,
-            );
-            if (existing) {
-              existing.patchValue({
-                result: result.value,
-                showResult: result.showValue,
-              });
-            } else {
-              this.yearResultTargets.push(
-                this.fb.group({
-                  year: [result.year],
-                  type: ["ANUAL"],
-                  displayYear: [`${result.year}`],
-                  result: [result.value],
-                  showResult: [result.showValue],
-                  target: [null],
-                  showTarget: [""],
-                  justificationGoal: [""],
-                }),
-              );
-              this.expandedPeriods.push(true);
-            }
-          });
-
-          this.yearResultTargets.controls.sort(
+          this.times.controls.sort(
             (a, b) => a.get("year")?.value - b.get("year")?.value,
           );
         },
@@ -312,7 +287,7 @@ export class IndicatorFormsComponent implements OnInit {
   }
 
   isYearAlreadyUsed(year: number, type: string): boolean {
-    return this.yearResultTargets.controls.some((control) => {
+    return this.times.controls.some((control) => {
       const existingYear = control.get("year")?.value;
       const existingType = control.get("type")?.value;
 
@@ -355,7 +330,7 @@ export class IndicatorFormsComponent implements OnInit {
 
     this.isSubmitting = true;
     const formValue = this.form.value;
-
+    console.log("Dados chegando do forms: ", formValue);
     const payload: IIndicatorForm = {
       ...(this.mode === "edit" && {
         id: formValue.id,
@@ -369,21 +344,20 @@ export class IndicatorFormsComponent implements OnInit {
         challengeId: c.challengeId,
         organ: c.organ,
       })),
-      targetsFor: formValue.yearResultTargets.map((t: any) => ({
-        year: t.year,
-        showValue: t.showTarget,
-        value: t.target,
-        justificationGoal: t.justificationGoal,
-      })),
-      resultedIn: formValue.yearResultTargets.map((r: any) => ({
-        year: r.year,
-        showValue: r.showResult,
-        value: r.result,
+      times: formValue.times.map((value: ITimes) => ({
+        year: value.year,
+        type: value.type,
+        valueGoal: value.valueGoal || null,
+        showValueGoal: value.showValueGoal || "",
+        valueResult: value.valueResult || null,
+        showValueResult: value.showValueResult || "",
+        justificationGoal: value.justificationGoal,
       })),
       justificationBase: formValue.justificationBase,
       observations: formValue.observations,
     };
 
+    console.log("Dados passados pelo forms: ", payload);
     const request$: Observable<any> =
       this.mode === "edit"
         ? this._indicatorService.updateIndicator(payload, this.selectedPdfFile)
@@ -423,22 +397,24 @@ export class IndicatorFormsComponent implements OnInit {
   }
 
   addNewYearRow(year: number, type: string) {
-    this.yearResultTargets.push(
+    this.times.push(
       this.fb.group({
-        year: [year],
-        type: [type],
-        displayYear: [type === "BIANUAL" ? `${year}–${year + 1}` : `${year}`],
-        target: [null],
-        showTarget: [""],
-        justificationGoal: [""],
-        result: [null],
-        showResult: [""],
+        year: new FormControl(year),
+        type: new FormControl(type),
+        displayYear: new FormControl(
+          type === "BIANUAL" ? `${year}–${year + 1}` : `${year}`,
+        ),
+        valueGoal: new FormControl(),
+        showValueGoal: new FormControl(),
+        valueResult: new FormControl(),
+        showValueResult: new FormControl(),
+        justificationGoal: new FormControl(),
       }),
     );
   }
 
   removeYearRow(i: number) {
-    this.yearResultTargets.removeAt(i);
+    this.times.removeAt(i);
     this.expandedPeriods.splice(i, 1);
   }
 
@@ -453,7 +429,7 @@ export class IndicatorFormsComponent implements OnInit {
   }
 
   changeType(i: number, type: string) {
-    const control = this.yearResultTargets.at(i);
+    const control = this.times.at(i);
     const year = control.get("year")?.value;
     control.get("type")?.setValue(type);
     control

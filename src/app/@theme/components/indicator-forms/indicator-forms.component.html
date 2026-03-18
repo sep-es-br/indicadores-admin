@@ -204,7 +204,7 @@
     <nb-card-body>
 
       <div
-        *ngIf="yearResultTargets.controls.length === 0"
+        *ngIf="times.controls.length === 0"
         class="empty-apuracao"
       >
         <div class="empty-content">
@@ -220,7 +220,7 @@
       <div class="periods-list">
         <div
           class="period-card"
-          *ngFor="let control of yearResultTargets.controls; let i = index"
+          *ngFor="let control of times.controls; let i = index"
         >
 
           <div
@@ -626,7 +626,7 @@
   <p class="mt-4">Dados de Apurações</p>
 
   <div class="form-container">
-    <div *ngIf="yearResultTargets.controls.length === 0" class="empty-apuracao">
+    <div *ngIf="times.controls.length === 0" class="empty-apuracao">
       <div class="empty-content">
         <nb-icon icon="clipboard-outline"></nb-icon>
         <h6>Nenhum período adicionado</h6>
@@ -640,7 +640,7 @@
     <div class="periods-list">
       <div
         class="period-card"
-        *ngFor="let control of yearResultTargets.controls; let i = index"
+        *ngFor="let control of times.controls; let i = index"
       >
         <div
           class="period-card-header"
@@ -709,7 +709,8 @@
                 fullWidth
                 type="number"
                 placeholder="—"
-                [formControl]="control.get('target')"
+                [formControl]="control.get('valueGoal')"
+                name="valueGoal"
               />
             </div>
             <div class="col-md-3">
@@ -718,7 +719,8 @@
                 nbInput
                 fullWidth
                 placeholder="—"
-                [formControl]="control.get('showTarget')"
+                [formControl]="control.get('showValueGoal')"
+                name="showValueGoal"
               />
             </div>
             <div class="col-md-3">
@@ -728,7 +730,8 @@
                 fullWidth
                 type="number"
                 placeholder="—"
-                [formControl]="control.get('result')"
+                [formControl]="control.get('valueResult')"
+                name="valueResult"
               />
             </div>
             <div class="col-md-3">
@@ -737,7 +740,8 @@
                 nbInput
                 fullWidth
                 placeholder="—"
-                [formControl]="control.get('showResult')"
+                [formControl]="control.get('showValueResult')"
+                name="showValueResult"
               />
             </div>
           </div>
