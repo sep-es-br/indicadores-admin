@@ -1,38 +1,36 @@
 <div class="add-period-card">
-
-  <div class="add-period-header">
-    + Adicionar período
-  </div>
+  <div class="add-period-header">+ Adicionar período</div>
 
   <div class="add-period-body">
 
-    <!-- ANO -->
     <div class="field-group">
       <label class="field-label">ANO</label>
-      <input
-        type="number"
-        class="field-input"
-        [(ngModel)]="year"
-      />
+      <input type="number" class="field-input" [(ngModel)]="year" />
     </div>
 
-    <!-- TIPO -->
     <div class="field-group">
       <label class="field-label">TIPO</label>
       <div class="custom-select-wrapper">
 
-        <div class="custom-select-trigger" (click)="typeDropdownOpen = !typeDropdownOpen">
+        <div
+          class="custom-select-trigger"
+          [class.trigger-anual]="type === 'ANUAL'"
+          [class.trigger-bianual]="type === 'BIANUAL'"
+          (click)="$event.stopPropagation(); typeDropdownOpen = !typeDropdownOpen"
+        >
           <span class="select-icon">{{ getTypeIcon(type) }}</span>
           <span class="select-label">{{ getTypeLabel(type) }}</span>
           <span class="select-freq">{{ getTypeFreq(type) }}</span>
           <span class="select-arrow">▾</span>
         </div>
 
-        <div class="custom-select-dropdown" *ngIf="typeDropdownOpen">
+        <div class="custom-select-dropdown" *ngIf="typeDropdownOpen" (click)="$event.stopPropagation()">
           <div
             class="custom-select-option"
             *ngFor="let opt of typeOptions"
             [class.selected]="type === opt.value"
+            [class.option-anual]="opt.value === 'ANUAL' && type === opt.value"
+            [class.option-bianual]="opt.value === 'BIANUAL' && type === opt.value"
             (click)="selectType(opt.value)"
           >
             <span class="opt-icon">{{ opt.icon }}</span>
@@ -47,7 +45,6 @@
       </div>
     </div>
 
-    <!-- BOTÃO — só aqui fecha o popover via serviço -->
     <button class="btn-add" (click)="addPeriod()">
       Adicionar {{ year }}
     </button>

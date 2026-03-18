@@ -47,6 +47,7 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/ConfirmationDialog.component';
 import { ModalAddPeriodComponent } from './components/modal-add-period/modal-add-period.component';
+import { ModalAddIntervalComponent } from './components/modal-add-interval/modal-add-interval.component';
 
 const NB_MODULES = [
   NbLayoutModule,

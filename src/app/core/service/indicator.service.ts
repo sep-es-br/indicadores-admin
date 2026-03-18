@@ -4,7 +4,6 @@ import { ErrorHandlerService } from "./error-handler.service";
 import { environment } from "../../../environments/environment";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { IChallenge } from "../interfaces/challenge.interface";
 import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-get.interface";
 import { IIndicator, IIndicatorDetails, IIndicatorForm } from "../interfaces/indicator.interface";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
@@ -124,7 +123,7 @@ export class IndicatorService {
     );
   }
 
-  public updateIndicator(indicator: IIndicatorForm, pdfFile?: File): Observable<void> {
+  public updateIndicator(indicator: IIndicatorForm, pdfFile?: File | null): Observable<void> {
     const formData = new FormData();
 
     const jsonBlob = new Blob([JSON.stringify(indicator)], {

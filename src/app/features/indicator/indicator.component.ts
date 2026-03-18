@@ -5,7 +5,7 @@ import { IBreadcrumbItem } from '../../core/interfaces/breadcrumb-item.interface
 import { IPaginacaoDados } from '../../core/interfaces/paginacao-dados.interface';
 import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { debounce, debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
 import { NbDialogService, NbSpinnerModule, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';

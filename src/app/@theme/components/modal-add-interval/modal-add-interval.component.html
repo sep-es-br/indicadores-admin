@@ -1,0 +1,80 @@
+<div class="add-period-card">
+  <div class="add-period-header">⚡ Gerar intervalo rápido</div>
+
+  <div class="add-period-body">
+    <div class="field-group">
+      <label class="field-label">TIPO</label>
+      <div class="custom-select-wrapper">
+        <div class="custom-select-wrapper">
+          <div
+            class="custom-select-trigger"
+            [class.trigger-anual]="type === 'ANUAL'"
+            [class.trigger-bianual]="type === 'BIANUAL'"
+            (click)="
+              $event.stopPropagation(); typeDropdownOpen = !typeDropdownOpen
+            "
+          >
+            <span class="select-icon">{{ getTypeIcon(type) }}</span>
+            <span class="select-label">{{ getTypeLabel(type) }}</span>
+            <span class="select-freq">{{ getTypeFreq(type) }}</span>
+            <span class="select-arrow">▾</span>
+          </div>
+
+          <div
+            class="custom-select-dropdown"
+            *ngIf="typeDropdownOpen"
+            (click)="$event.stopPropagation()"
+          >
+            <div
+              class="custom-select-option"
+              *ngFor="let opt of typeOptions"
+              [class.selected]="type === opt.value"
+              [class.option-anual]="opt.value === 'ANUAL' && type === opt.value"
+              [class.option-bianual]="
+                opt.value === 'BIANUAL' && type === opt.value
+              "
+              (click)="selectType(opt.value)"
+            >
+              <span class="opt-icon">{{ opt.icon }}</span>
+              <span class="opt-info">
+                <span class="opt-label">{{ opt.label }}</span>
+                <span class="opt-freq">{{ opt.freq }}</span>
+              </span>
+              <span class="opt-check" *ngIf="type === opt.value">✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label">De</label>
+        <input
+          type="number"
+          class="field-input"
+          [(ngModel)]="from"
+          (ngModelChange)="calcLines()"
+        />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Até</label>
+        <input
+          type="number"
+          class="field-input"
+          [(ngModel)]="to"
+          (ngModelChange)="calcLines()"
+        />
+      </div>
+    </div>
+
+    <div class="interval-summary" *ngIf="lines > 0">
+      <span class="summary-years"
+        >{{ diff }} {{ type === "BIANUAL" ? "ciclos" : "anos" }}</span
+      >
+      <span class="summary-arrow">→ {{ lines }} linhas</span>
+    </div>
+
+    <button class="btn-add" (click)="generate()">Gerar</button>
+  </div>
+</div>

@@ -60,11 +60,9 @@ export class ModalAddPeriodComponent {
   selectType(val: string) {
     this.type = val;
     this.typeDropdownOpen = false;
-    // NÃO fecha o popover aqui
   }
 
-  addPeriod() {
-    // só aqui fecha e emite os dados
-    this.popoverService.close({ year: this.year, type: this.type });
-  }
+    addPeriod() {
+      this.popoverService.close({ year: this.year, type: this.type });
+    }
 }
