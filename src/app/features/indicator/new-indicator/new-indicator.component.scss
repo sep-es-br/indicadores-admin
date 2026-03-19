@@ -8,10 +8,10 @@ p {
 .form-container {
   display: flex;
   flex-direction: column;
-  border: 1px solid #0098DA; 
-  border-radius: 5px; 
-  padding: 20px; 
-  margin: 20px auto; 
+  border: 1px solid #0098DA;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 20px auto;
 }
 
 .form-row {
@@ -53,7 +53,7 @@ input:focus {
 .btn-outline-primary{
   background-color: #0098DA !important;
   color: white !important;
-  
+
 }
 
 .file-input-wrapper {
@@ -122,7 +122,7 @@ text-align: center;
 }
 
 .btn {
-margin-right: 8px; 
+margin-right: 8px;
 }
 
 .btn:last-child{
@@ -144,10 +144,10 @@ nb-select.size-medium:not(.full-width) {
 }
 
 ::ng-deep nb-select .select-button {
-  background-color: #fff !important;  
-  border-color: #ccc !important;     
+  background-color: #fff !important;
+  border-color: #ccc !important;
   color: #333 !important;
-  
+
   span{
   color :#495057;
   font-size: 1rem;
@@ -155,7 +155,7 @@ nb-select.size-medium:not(.full-width) {
   }
 
   &:focus {
-    border-color: #0098DA !important;  
+    border-color: #0098DA !important;
   }
 
 }
@@ -166,12 +166,17 @@ nb-select.size-medium:not(.full-width) {
 }
 
 .input-like-btn {
-  background-color: #f8f9fa !important; 
-  border: 1px solid #ced4da !important; 
+  background-color: #f8f9fa !important;
+  border: 1px solid #ced4da !important;
   color: #495057;
   font-size: 1rem;
   font-weight: 400;
-  padding: 0.375rem 0.75rem; 
-  text-align: center; 
+  padding: 0.375rem 0.75rem;
+  text-align: center;
   box-shadow: none !important;
+}
+
+i {
+  width: 20px;
+  height: 20px;
 }

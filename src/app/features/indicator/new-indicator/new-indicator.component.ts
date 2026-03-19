@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { IBreadcrumbItem } from '../../../core/interfaces/breadcrumb-item.interface';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IIndicator, IIndicatorForm } from '../../../core/interfaces/indicator.interface';
@@ -13,20 +13,20 @@ import { organizerList } from '../../../core/interfaces/organizer.interface';
 @Component({
   selector: 'ngx-new-indicator',
   templateUrl: './new-indicator.component.html',
-  styleUrls: ['./new-indicator.component.scss']
+  styleUrls: ['./new-indicator.component.scss'],
 })
-export class NewIndicatorComponent implements OnInit{
+export class NewIndicatorComponent implements OnInit {
 
   submitted = false;
   isSubmitting = false;
   form: FormGroup;
 
-  public breadcrumb: Array<IBreadcrumbItem> = []
+  public breadcrumb: Array<IBreadcrumbItem> = [];
 
   indicator: IIndicator;
 
   selectedPdfFile: File | null = null;
-  
+
   units: string[] = [];
 
   organizationAcronyms: organizerList[] = [];
@@ -37,13 +37,19 @@ export class NewIndicatorComponent implements OnInit{
 
   isOtherUnit = false;
 
-  challengeList: IManagementOrganizerChallenge[] = []
+  challengeList: IManagementOrganizerChallenge[] = [];
 
   filteredOrganizers: IOrganizerChallenge[] = [];
 
-  constructor(private fb: FormBuilder, private dialogService: NbDialogService, private router: Router, private indicatorService: IndicatorService,private toastrService: NbToastrService) { 
+  constructor(
+    private fb: FormBuilder,
+    private dialogService: NbDialogService,
+    private router: Router,
+    private indicatorService: IndicatorService,
+    private toastrService: NbToastrService,
+  ) {
     this.form = this.fb.group({
-      name: ['', Validators.required], 
+      name: ['', Validators.required],
       polarity: ['', Validators.required],
       ods: [[]],
       management: [[]],
@@ -53,11 +59,11 @@ export class NewIndicatorComponent implements OnInit{
       challengesOrgans: this.fb.array([]),
       yearResultTargets: this.fb.array([]),
       justificationBase: [''],
-      justificationGoal: [''],
-      observations: ['']
+      // justificationGoal: [''],
+      observations: [''],
     });
-    this.updateBreadcrumb()
-    
+    this.updateBreadcrumb();
+
     this.form.get('management').valueChanges.subscribe((selectedManagement) => {
       this.onManagementChange(selectedManagement);
     });
@@ -83,11 +89,11 @@ export class NewIndicatorComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.getManagementOrganizerChallenges()
-    this.getDistinctMeasureUnits()
-    this.getDistinctOrganizationAcronyms()
-    this.getYears()
-    this.getOdsList()
+    this.getManagementOrganizerChallenges();
+    this.getDistinctMeasureUnits();
+    this.getDistinctOrganizationAcronyms();
+    this.getYears();
+    this.getOdsList();
   }
 
   get yearResultTargets() {
@@ -98,14 +104,15 @@ export class NewIndicatorComponent implements OnInit{
     this.yearResultTargets.push(
       this.fb.group({
         year: ['', Validators.required],
-        result: [null, ],
+        result: [null],
         showResult: [''],
         target: [null, Validators.required],
         showTarget: ['', Validators.required],
-        yearSelectVisible: [false]  
-      })
+        yearSelectVisible: [false],
+        justificationGoal: new FormControl('', [Validators.maxLength(500)]),
+      }),
     );
-  } 
+  }
 
   isYearAlreadySelected(year: number): boolean {
     const yearTargetsArray = this.form.get('yearResultTargets') as FormArray;
@@ -119,7 +126,7 @@ export class NewIndicatorComponent implements OnInit{
 
   updateChallengesOrgans(selectedChallenges: string[]): void {
     const currentChallengesOrgans = this.challengesOrgans.controls;
-  
+
     for (let i = currentChallengesOrgans.length - 1; i >= 0; i--) {
       const challengeId = currentChallengesOrgans[i].get('challengeId')?.value;
 
@@ -127,7 +134,7 @@ export class NewIndicatorComponent implements OnInit{
         this.challengesOrgans.removeAt(i);
       }
     }
-  
+
     selectedChallenges.forEach((challengeId) => {
       const exists = currentChallengesOrgans.some(
         (control) => control.get('challengeId')?.value === challengeId
@@ -145,14 +152,14 @@ export class NewIndicatorComponent implements OnInit{
 
   removeOrganRow(index: number): void {
     const challengeIdToRemove = this.challengesOrgans.at(index).get('challengeId')?.value;
-  
+
     if (challengeIdToRemove) {
       let selectedChallenges: string[] = this.form.get('challenges')?.value || [];
-  
+
       selectedChallenges = selectedChallenges.filter(id => id !== challengeIdToRemove);
-  
+
       this.form.get('challenges')?.setValue(selectedChallenges);
-  
+
       for (let i = this.challengesOrgans.length - 1; i >= 0; i--) {
         if (this.challengesOrgans.at(i).get('challengeId')?.value === challengeIdToRemove) {
           this.challengesOrgans.removeAt(i);
@@ -160,18 +167,18 @@ export class NewIndicatorComponent implements OnInit{
       }
     }
   }
-  
-  
-  
+
+
+
 
   get challengesOrgans() {
     return this.form.get('challengesOrgans') as FormArray;
   }
-  
+
   getManagementOrganizerChallenges(){
     this.indicatorService.getManagementOrganizerChallenges().subscribe(
       (data) => {
-        this.challengeList = data
+        this.challengeList = data;
         this.filteredOrganizers = this.challengeList.flatMap(management => management.organizers);
       }
     );
@@ -231,19 +238,19 @@ export class NewIndicatorComponent implements OnInit{
     if (!selectedManagements || selectedManagements.length === 0) {
       this.filteredOrganizers = this.challengeList.flatMap(management => management.organizers);
     } else {
-      const selectedManagementData = this.challengeList.filter(management => 
+      const selectedManagementData = this.challengeList.filter(management =>
         selectedManagements.includes(management.managementName)
       );
       this.filteredOrganizers = selectedManagementData.flatMap(management => management.organizers);
     }
-  
+
     this.updateChallengesAndOrgans();
   }
 
   updateChallengesAndOrgans(): void {
     const selectedChallenges = this.form.get('challenges')?.value || [];
     const currentChallengesOrgansLength = this.challengesOrgans.length;
-  
+
     for (let i = currentChallengesOrgansLength - 1; i >= 0; i--) {
       const challengeId = selectedChallenges[i];
       if (!this.isChallengeInSelectedManagements(challengeId)) {
@@ -251,10 +258,10 @@ export class NewIndicatorComponent implements OnInit{
         selectedChallenges.splice(i, 1);
       }
     }
-  
+
     this.form.get('challenges')?.setValue(selectedChallenges);
   }
-  
+
   isChallengeInSelectedManagements(challengeId: string): boolean {
     return this.filteredOrganizers.some(organizer =>
       organizer.challenges.some(challenge => challenge.uuId === challengeId)
@@ -266,11 +273,11 @@ export class NewIndicatorComponent implements OnInit{
       const challenge = organizer.challenges.find(c => c.uuId === challengeId);
       if (challenge) {
         const managementPrefix = organizer.name.split(' - ')[0].trim();
-  
+
         const management = this.challengeList.find(m => m.managementName.includes(managementPrefix));
-  
+
         const managementName = management ? management.managementName : managementPrefix;
-  
+
         return `${managementName} - ${challenge.name}`;
       }
     }
@@ -285,11 +292,11 @@ export class NewIndicatorComponent implements OnInit{
 
   onSubmit() {
       this.submitted = true;
-    
+
       if (this.form.valid) {
-        this.isSubmitting = true; 
+        this.isSubmitting = true;
         const formValue = this.form.value;
-    
+
         const newIndicator: IIndicatorForm = {
           name: formValue.name,
           polarity: formValue.polarity,
@@ -303,35 +310,35 @@ export class NewIndicatorComponent implements OnInit{
             year: target.year,
             showValue: target.showTarget,
             value: target.target,
+            justificationGoal: target.justificationGoal,
           })),
           resultedIn: formValue.yearResultTargets.map((result: any) => ({
             year: result.year,
             showValue: result.showResult,
             value: result.result,
           })),
-          justificationBase: formValue.justificationBase, 
-          justificationGoal: formValue.justificationGoal,
-          observations: formValue.observations
+          justificationBase: formValue.justificationBase,
+          observations: formValue.observations,
         };
-    
+
         this.indicatorService.createIndicator(newIndicator, this.selectedPdfFile).subscribe({
           next: (response) => {
             this.toastrService.show(
               '' , 'Indicador criado com sucesso!',
-              { status: 'success', duration: 8000 }
+              { status: 'success', duration: 8000 },
             );
             this.router.navigate(['/pages/indicators']);
           },
           error: (error) => {
             this.toastrService.show(
               error , 'Erro ao criar o indicador ',
-              { status: 'danger', duration: 8000 }
+              { status: 'danger', duration: 8000 },
             );
             this.router.navigate(['/pages/indicators']);
           },
           complete: () => {
-            this.isSubmitting = false; 
-          }
+            this.isSubmitting = false;
+          },
         });
     }
   }
@@ -342,10 +349,10 @@ export class NewIndicatorComponent implements OnInit{
       this.selectedPdfFile = input.files[0];
     }
   }
-  
+
   removePdf(fileInput: HTMLInputElement): void {
     fileInput.value = '';
     this.selectedPdfFile = null;
   }
-  
+
 }
