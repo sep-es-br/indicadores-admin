@@ -31,10 +31,15 @@ import { PeriodPopoverService } from "../../../core/service/period-popover.servi
 })
 export class ModalAddPeriodComponent {
   year: number = new Date().getFullYear();
+  yearInvalido = false;
   type = "ANUAL";
+
+  maxLenght: string = "4";
 
   typeDropdownOpen = false;
 
+  yearFrom: number | null = null;
+  yearTo: number | null = null;
   typeOptions = [
     { value: "ANUAL", label: "Anual", freq: "1 por ano", icon: "📅" },
     {
@@ -62,7 +67,25 @@ export class ModalAddPeriodComponent {
     this.typeDropdownOpen = false;
   }
 
-  addPeriod() {
-    this.popoverService.close({ year: this.year, type: this.type });
+addPeriod() {
+  if (this.yearInvalido) return;
+
+  this.popoverService.close({
+    year: this.year,
+    type: this.type,
+  });
+}
+
+  verifyYear(year: number | string) {
+    const yearStr = String(year);
+
+    const isValidFormat = /^[0-9]{4}$/.test(yearStr);
+    const yearNum = Number(yearStr);
+
+    if (!isValidFormat || yearNum < 1900 || yearNum > this.year + 5) {
+      this.yearInvalido = true;
+    } else {
+      this.yearInvalido = false;
+    }
   }
 }

@@ -133,8 +133,9 @@ export class IndicatorComponent implements OnInit{
         if (confirmed) {
           this.indicatorService.deleteIndicator(indicatorId)
             .subscribe({
-              next: () => {this.toastrService.show(
-                '', 'Gestão deletada com sucesso!',
+              next: () => {
+                this.toastrService.show(
+                '', 'Indicador deletado com sucesso!',
                 { status: 'success', duration: 8000 }
               );
               this.fetchPage();

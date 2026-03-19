@@ -657,19 +657,20 @@
             <span class="period-toggle">{{
               expandedPeriods[i] ? "▼" : "▶"
             }}</span>
-            <span class="period-year">{{
+            <span class="period-year">
+              {{
               control.get("displayYear")?.value
-            }}</span>
+            }}
+          </span>
             <div class="period-type-wrapper">
               <span
                 class="period-type-badge"
-                (click)="$event.stopPropagation(); toggleTypeDropdown(i)"
               >
                 📅 {{ getTypeLabel(control.get("type")?.value) }}
-                <nb-icon
+                <!-- <nb-icon
                   icon="chevron-down-outline"
                   style="font-size: 10px"
-                ></nb-icon>
+                ></nb-icon> -->
               </span>
               <div
                 class="type-inline-dropdown"
@@ -805,7 +806,7 @@
       >
         + Adicionar período
       </button>
-      <button
+      <!-- <button
         type="button"
         nbButton
         ghost
@@ -817,7 +818,7 @@
         (click)="popInterval.show()"
       >
         ⚡ Intervalo
-      </button>
+      </button> -->
     </div>
   </div>
 

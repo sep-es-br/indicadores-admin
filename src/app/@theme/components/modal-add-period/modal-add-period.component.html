@@ -3,13 +3,34 @@
 
   <div class="add-period-body">
 
+    <!-- ANO -->
     <div class="field-group">
-      <label class="field-label">ANO</label>
-      <input type="number" class="field-input" [(ngModel)]="year" />
+      <label class="field-label">
+        {{ type === 'BIANUAL' ? 'ANO INICIAL' : 'ANO' }}
+      </label>
+
+      <input
+        type="number"
+        class="field-input"
+        [(ngModel)]="year"
+        (ngModelChange)="verifyYear($event)"
+      />
+    </div>
+
+    <div class="field-group" *ngIf="type === 'BIANUAL' && year">
+      <label class="field-label">ANO FINAL</label>
+
+      <input
+        type="number"
+        class="field-input"
+        [value]="year + 1"
+
+      />
     </div>
 
     <div class="field-group">
       <label class="field-label">TIPO</label>
+
       <div class="custom-select-wrapper">
 
         <div
@@ -24,7 +45,11 @@
           <span class="select-arrow">▾</span>
         </div>
 
-        <div class="custom-select-dropdown" *ngIf="typeDropdownOpen" (click)="$event.stopPropagation()">
+        <div
+          class="custom-select-dropdown"
+          *ngIf="typeDropdownOpen"
+          (click)="$event.stopPropagation()"
+        >
           <div
             class="custom-select-option"
             *ngFor="let opt of typeOptions"
@@ -34,10 +59,12 @@
             (click)="selectType(opt.value)"
           >
             <span class="opt-icon">{{ opt.icon }}</span>
+
             <span class="opt-info">
               <span class="opt-label">{{ opt.label }}</span>
               <span class="opt-freq">{{ opt.freq }}</span>
             </span>
+
             <span class="opt-check" *ngIf="type === opt.value">✓</span>
           </div>
         </div>
@@ -45,8 +72,16 @@
       </div>
     </div>
 
-    <button class="btn-add" (click)="addPeriod()">
-      Adicionar {{ year }}
+    <div class="preview-period" *ngIf="year">
+      Período:
+      <strong>
+        {{ type === 'BIANUAL' ? (year + '–' + (year + 1)) : year }}
+      </strong>
+    </div>
+
+    <button class="btn-add" (click)="addPeriod()" [disabled]="yearInvalido">
+      Adicionar
+      {{ type === 'BIANUAL' ? (year + '–' + (year + 1)) : year }}
     </button>
 
   </div>

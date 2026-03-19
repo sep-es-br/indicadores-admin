@@ -108,9 +108,6 @@ export class IndicatorFormsComponent implements OnInit {
   @ViewChild("pop") popover!: NbPopoverDirective;
   addPeriodComponent = ModalAddPeriodComponent;
 
-  @ViewChild("popInterval") popInterval!: NbPopoverDirective;
-  addIntervalComponent = ModalAddIntervalComponent;
-
   private _indicatorService = inject(IndicatorService);
   private _toastService = inject(NbToastrService);
 
@@ -133,6 +130,7 @@ export class IndicatorFormsComponent implements OnInit {
   ];
 
   getTypeLabel(val: string) {
+    console.log(val, "wwqewqqewqe");
     return this.typeOptions.find((o) => o.value === val)?.label ?? val;
   }
 
@@ -174,7 +172,7 @@ export class IndicatorFormsComponent implements OnInit {
     });
   }
 
- ngOnInit() {
+  ngOnInit() {
     this.updateBreadcrumb();
     this.initializer();
 
@@ -182,59 +180,39 @@ export class IndicatorFormsComponent implements OnInit {
 
     this.popoverService.onClose$.subscribe((data) => {
       this.popover?.hide();
-      if (data) {
-        if (this.isYearAlreadyUsed(data.year, data.type)) {
-          this._toastService.show(
-            `O período ${data.year} já foi adicionado.`,
-            "Atenção",
-            { status: "warning", duration: 4000 },
-          );
-          return;
-        }
-        this.addNewYearRow(data.year, data.type);
-        this.expandedPeriods.push(true);
+      if (!data) return;
+
+      const year = Number(data.year);
+      const type = data.type.toLocaleUpperCase();
+
+      const label = type === "BIANUAL" ? `${year}-${year + 1}` : `${year}`;
+
+      if (this.isYearAlreadyUsed(year, type)) {
+        this._toastService.show(
+          `O período ${label} já foi adicionado.`,
+          "Atenção",
+          { status: "warning", duration: 4000 },
+        );
+        return;
       }
+
+      this.addNewYearRow(year, type);
+      this.expandedPeriods.push(true);
     });
-
-    this.popoverService.onCloseInterval$.subscribe((data) => {
-      this.popInterval?.hide();
-      if (data) {
-        const { from, to, type } = data;
-        const step = type === "BIANUAL" ? 2 : 1;
-        let skipped = 0;
-
-        for (let year = from; year <= to; year += step) {
-          if (this.isYearAlreadyUsed(year, type)) {
-            skipped++;
-            continue;
-          }
-          this.addNewYearRow(year, type);
-          this.expandedPeriods.push(true);
-        }
-
-        if (skipped > 0) {
-          this._toastService.show(
-            `${skipped} período(s) já existiam e foram ignorados.`,
-            "Atenção",
-            { status: "warning", duration: 4000 },
-          );
-        }
-      }
-    });
-
     if (this.mode === "edit") {
       this.loadIndicatorForEdit();
     }
   }
 
-isInvalid(field: string): boolean {
-  const control = this.form.get(field);
-  return !!(
-    control &&
-    control.invalid &&
-    (control.touched || this.submitted)
-  );
-}
+  isInvalid(field: string): boolean {
+    const control = this.form.get(field);
+    return !!(
+      control &&
+      control.invalid &&
+      (control.touched || this.submitted)
+    );
+  }
+
   loadIndicatorForEdit() {
     this.isLoading = true;
     this.route.queryParams.subscribe((params) => {
@@ -274,53 +252,73 @@ isInvalid(field: string): boolean {
             );
             if (measure) control.patchValue({ organ: measure.organ });
           });
-          // console.log("qwewqeqwe: ", data);
+
           data.times.forEach((target) => {
+            const rawType = target.type;
+
+            const type =
+              rawType?.toUpperCase() === "BIANUAL" ? "BIANUAL" : "ANUAL";
+
             this.times.push(
               this.fb.group({
                 year: new FormControl(target.year),
-                type: new FormControl("ANUAL"),
-                displayYear: new FormControl(`${target.year}`),
+                type: new FormControl(type),
+                displayYear: new FormControl(target.year),
                 valueGoal: new FormControl(target.valueGoal || null),
                 showValueGoal: new FormControl(target.showValueGoal || ""),
                 valueResult: new FormControl(target.valueResult || null),
                 showValueResult: new FormControl(target.showValueResult || ""),
                 justificationGoal: new FormControl(target.justificationGoal),
-                justificationResult: new FormControl(target.justificationResult), //add
+                justificationResult: new FormControl(
+                  target.justificationResult,
+                ),
               }),
             );
+
             this.expandedPeriods.push(true);
           });
-          this.times.controls.sort(
-            (a, b) => a.get("year")?.value - b.get("year")?.value,
-          );
+
+          this.times.controls.sort((a, b) => {
+            const yearA = Number(String(a.get("year")?.value).split("-")[0]);
+            const yearB = Number(String(b.get("year")?.value).split("-")[0]);
+
+            return yearA - yearB;
+          });
         },
         error: () => this.router.navigate(["/pages/indicators"]),
         complete: () => (this.isLoading = false),
       });
     });
   }
-    
+
   isYearAlreadyUsed(year: number, type: string): boolean {
-      return this.times.controls.some((control) => {
-        const existingYear = control.get("year")?.value;
-        const existingType = control.get("type")?.value;
+    const inputYear = Number(year);
 
-        if (type === "ANUAL") {
-          if (existingType === "ANUAL") return existingYear === year;
-          if (existingType === "BIANUAL")
-            return existingYear === year  || existingYear + 1 === year;
+    return this.times.controls.some((control, index) => {
+      const existingYear = Number(control.value.year);
+      const existingType = control.value.type;
+
+      if (type === "ANUAL") {
+        if (existingType === "ANUAL") return existingYear === inputYear;
+
+        if (existingType === "BIANUAL") {
+          return existingYear === inputYear || existingYear + 1 === inputYear;
+        }
+      }
+
+      if (type === "BIANUAL") {
+        if (existingType === "ANUAL") {
+          return existingYear === inputYear || existingYear === inputYear + 1;
         }
 
-        if (type === "BIANUAL") {
-          if (existingType === "ANUAL")
-            return existingYear === year  || existingYear === year + 1;
-          if (existingType === "BIANUAL") return existingYear === year;
+        if (existingType === "BIANUAL") {
+          return existingYear === inputYear;
         }
+      }
 
-        return false;
-      });
-    }
+      return false;
+    });
+  }
 
   private extractOdsOrders(odsList: IOdsGoal[]): string[] {
     return odsList.map((ods) => ods.order);
@@ -345,7 +343,7 @@ isInvalid(field: string): boolean {
 
     this.isSubmitting = true;
     const formValue = this.form.value;
-    console.log("Dados chegando do forms: ", formValue);
+
     const payload: IIndicatorForm = {
       ...(this.mode === "edit" && {
         id: formValue.id,
@@ -359,21 +357,29 @@ isInvalid(field: string): boolean {
         challengeId: c.challengeId,
         organ: c.organ,
       })),
-      times: formValue.times.map((value: ITimes) => ({
-        year: value.year,
-        type: value.type,
-        valueGoal: value.valueGoal || null,
-        showValueGoal: value.showValueGoal || "",
-        valueResult: value.valueResult || null,
-        showValueResult: value.showValueResult || "",
-        justificationGoal: value.justificationGoal,
-        justificationResult: value.justificationResult,
-      })),
+      times: formValue.times.map((value: ITimes) => {
+        const rawYear = String(value.year);
+        const baseYear = parseInt(rawYear.split("-")[0], 10);
+
+        return {
+          year:
+            value.type === "BIANUAL"
+              ? `${baseYear}-${baseYear + 1}`
+              : `${baseYear}`,
+          type: value.type,
+          period: 1,
+          valueGoal: value.valueGoal || null,
+          showValueGoal: value.showValueGoal || "",
+          valueResult: value.valueResult || null,
+          showValueResult: value.showValueResult || "",
+          justificationGoal: value.justificationGoal,
+          justificationResult: value.justificationResult,
+        };
+      }),
       justificationBase: formValue.justificationBase,
       observations: formValue.observations,
     };
 
-    console.log("Dados passados pelo forms: ", payload);
     const request$: Observable<any> =
       this.mode === "edit"
         ? this._indicatorService.updateIndicator(payload, this.selectedPdfFile)
@@ -413,6 +419,7 @@ isInvalid(field: string): boolean {
   }
 
   addNewYearRow(year: number, type: string) {
+    console.log("TIMES: ", this.times);
     this.times.push(
       this.fb.group({
         year: new FormControl(year),

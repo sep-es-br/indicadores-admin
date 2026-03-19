@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { NbCardModule, NbDialogRef } from "@nebular/theme";
+import { NbButtonModule, NbCardModule, NbDialogRef } from "@nebular/theme";
 
 @Component({
   selector: "ngx-confirmation-dialog",
@@ -49,7 +49,8 @@ import { NbCardModule, NbDialogRef } from "@nebular/theme";
   standalone: true,
   imports: [
     CommonModule,
-    NbCardModule
+    NbCardModule,
+    NbButtonModule
   ]
 })
 export class ConfirmationDialogComponent {
