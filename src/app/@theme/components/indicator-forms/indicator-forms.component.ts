@@ -174,7 +174,7 @@ export class IndicatorFormsComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+ ngOnInit() {
     this.updateBreadcrumb();
     this.initializer();
 
@@ -286,6 +286,7 @@ isInvalid(field: string): boolean {
                 valueResult: new FormControl(target.valueResult || null),
                 showValueResult: new FormControl(target.showValueResult || ""),
                 justificationGoal: new FormControl(target.justificationGoal),
+                justificationResult: new FormControl(target.justificationResult), //add
               }),
             );
             this.expandedPeriods.push(true);
@@ -299,27 +300,27 @@ isInvalid(field: string): boolean {
       });
     });
   }
-
+    
   isYearAlreadyUsed(year: number, type: string): boolean {
-    return this.times.controls.some((control) => {
-      const existingYear = control.get("year")?.value;
-      const existingType = control.get("type")?.value;
+      return this.times.controls.some((control) => {
+        const existingYear = control.get("year")?.value;
+        const existingType = control.get("type")?.value;
 
-      if (type === "ANUAL") {
-        if (existingType === "ANUAL") return existingYear === year;
-        if (existingType === "BIANUAL")
-          return existingYear === year || existingYear + 1 === year;
-      }
+        if (type === "ANUAL") {
+          if (existingType === "ANUAL") return existingYear === year;
+          if (existingType === "BIANUAL")
+            return existingYear === year  || existingYear + 1 === year;
+        }
 
-      if (type === "BIANUAL") {
-        if (existingType === "ANUAL")
-          return existingYear === year || existingYear === year + 1;
-        if (existingType === "BIANUAL") return existingYear === year;
-      }
+        if (type === "BIANUAL") {
+          if (existingType === "ANUAL")
+            return existingYear === year  || existingYear === year + 1;
+          if (existingType === "BIANUAL") return existingYear === year;
+        }
 
-      return false;
-    });
-  }
+        return false;
+      });
+    }
 
   private extractOdsOrders(odsList: IOdsGoal[]): string[] {
     return odsList.map((ods) => ods.order);
@@ -366,6 +367,7 @@ isInvalid(field: string): boolean {
         valueResult: value.valueResult || null,
         showValueResult: value.showValueResult || "",
         justificationGoal: value.justificationGoal,
+        justificationResult: value.justificationResult,
       })),
       justificationBase: formValue.justificationBase,
       observations: formValue.observations,
@@ -423,6 +425,7 @@ isInvalid(field: string): boolean {
         valueResult: new FormControl(),
         showValueResult: new FormControl(),
         justificationGoal: new FormControl(),
+        justificationResult: new FormControl(), //add
       }),
     );
   }

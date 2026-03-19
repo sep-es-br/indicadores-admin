@@ -19,6 +19,7 @@ export interface ITimes {
   valueResult: number,
   showValueResult: string,
   justificationGoal: string,
+  justificationResult: string,
 }
 export interface IIndicatorValue {
   period?: number;

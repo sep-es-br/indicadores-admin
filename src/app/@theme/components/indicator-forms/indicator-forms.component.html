@@ -641,7 +641,7 @@
     </div>
 
     <!-- CARDS DOS PERÍODOS -->
-    <div class="periods-list">
+  <div class="periods-list">
       <div
         class="period-card"
         *ngFor="let control of times.controls; let i = index"
@@ -689,9 +689,9 @@
             </div>
           </div>
           <div class="period-card-right">
-            <span class="period-year-label"
-              >🗓 {{ control.get("displayYear")?.value }}</span
-            >
+            <span class="period-year-label">
+              🗓 {{ control.get("displayYear")?.value }}
+            </span>
             <button
               nbButton
               size="tiny"
@@ -749,13 +749,13 @@
               />
             </div>
           </div>
+
           <div class="row mt-3">
-            <div class="col-12">
+            <div class="col-md-6">
               <div class="d-flex justify-content-between">
                 <label class="field-label">JUSTIFICATIVA DE META</label>
                 <small class="text-muted">
-                  {{ (control.get("justificationGoal")?.value || "").length }} /
-                  500
+                  {{ (control.get("justificationGoal")?.value || "").length }} / 500
                 </small>
               </div>
               <textarea
@@ -764,6 +764,23 @@
                 rows="3"
                 placeholder="Descreva a justificativa..."
                 [formControl]="control.get('justificationGoal')"
+                maxlength="500"
+              ></textarea>
+            </div>
+
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between">
+                <label class="field-label">JUSTIFICATIVA DO REALIZADO</label>
+                <small class="text-muted">
+                  {{ (control.get("justificationResult")?.value || "").length }} / 500
+                </small>
+              </div>
+              <textarea
+                nbInput
+                fullWidth
+                rows="3"
+                placeholder="Descreva a justificativa..."
+                [formControl]="control.get('justificationResult')"
                 maxlength="500"
               ></textarea>
             </div>
