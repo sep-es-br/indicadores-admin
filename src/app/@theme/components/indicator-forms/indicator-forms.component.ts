@@ -22,6 +22,7 @@ import {
   NbDialogModule,
   NbPopoverModule,
   NbPopoverDirective,
+  NbThemeService,
 } from "@nebular/theme";
 import { IndicatorService } from "../../../core/service/indicator.service";
 import { IBreadcrumbItem } from "../../../core/interfaces/breadcrumb-item.interface";
@@ -46,6 +47,11 @@ import { PeriodPopoverService } from "../../../core/service/period-popover.servi
 import { ModalAddIntervalComponent } from "../modal-add-interval/modal-add-interval.component";
 import { Observable } from "rxjs";
 
+export enum AvailableThemes {
+  DEFAULT = "default",
+  DARK = "dark",
+  COSMIC = "cosmic",
+}
 @Component({
   selector: "ngx-indicator-forms",
   templateUrl: "./indicator-forms.component.html",
@@ -221,6 +227,14 @@ export class IndicatorFormsComponent implements OnInit {
     }
   }
 
+isInvalid(field: string): boolean {
+  const control = this.form.get(field);
+  return !!(
+    control &&
+    control.invalid &&
+    (control.touched || this.submitted)
+  );
+}
   loadIndicatorForEdit() {
     this.isLoading = true;
     this.route.queryParams.subscribe((params) => {

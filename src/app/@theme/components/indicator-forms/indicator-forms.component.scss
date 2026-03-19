@@ -104,13 +104,11 @@
 //   background-color: #f8d7da !important;
 // }
 
-
 // .invalid-feedback {
 //   color: #dc3545;
 //   font-size: 0.875em;
 //   margin-top: 0.25em;
 // }
-
 
 // .organizer-container {
 //   font-family: Arial, sans-serif;
@@ -137,7 +135,6 @@
 // .custom-option {
 //   font-weight: 100;
 // }
-
 
 // nb-select.size-medium:not(.full-width) {
 //   max-width: 100% !important;
@@ -180,7 +177,6 @@
 //   width: 20px;
 //   height: 20px;
 // }
-
 
 // .empty-apuracao{
 //   text-align:center;
@@ -389,7 +385,6 @@
 //   overflow: hidden;
 // }
 
-
 // ::ng-deep .period-card-header.type-bianual.expanded {
 //   border-bottom-color: #ffe0b2 !important;
 // }
@@ -398,29 +393,27 @@
 //   border-bottom-color: #e0eaff !important;
 // }
 
-
-
 p {
   text-align: left;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #0098DA;
+  color: #0098da;
 }
 
-::ng-deep nb-spinner.custom-big-spinner  {
+::ng-deep nb-spinner.custom-big-spinner {
   font-size: 5rem;
   background-color: transparent !important;
-  span{
-    border-top-color: #0098DA !important;
-    border-bottom-color: #0098DA !important;
-    border-left-color: #0098DA !important;
+  span {
+    border-top-color: #0098da !important;
+    border-bottom-color: #0098da !important;
+    border-left-color: #0098da !important;
   }
 }
 
 .form-container {
   display: flex;
   flex-direction: column;
-  border: 1px solid #0098DA;
+  border: 1px solid #0098da;
   border-radius: 5px;
   padding: 20px;
   margin: 20px auto;
@@ -442,7 +435,7 @@ p {
 label {
   font-weight: bold;
   margin-bottom: 5px;
-  color: #0098DA;
+  color: #0098da;
 }
 
 input {
@@ -451,19 +444,32 @@ input {
   border-radius: 5px;
 }
 
-input:focus {
-  outline: none;
-  border-color: #0098DA;
-  box-shadow: 0 0 5px rgba(0, 152, 218, 0.5)
+textarea {
+  color: var(--text-basic-color) !important;
+  background-color: var(--background-basic-color-1) !important;
 }
 
-.btn-outline-danger{
-  background-color: #ED356C !important;
+textarea::placeholder {
+  color: var(--text-basic-color) !important;
+}
+
+input:focus {
+  outline: none;
+  border-color: #0098da;
+  box-shadow: 0 0 5px rgba(0, 152, 218, 0.5);
+}
+
+input::placeholder {
+  color: var(--text-basic-color) !important;
+}
+
+.btn-outline-danger {
+  background-color: #ed356c !important;
   color: white !important;
 }
 
-.btn-outline-primary{
-  background-color: #0098DA !important;
+.btn-outline-primary {
+  background-color: #0098da !important;
   color: white !important;
 }
 
@@ -502,7 +508,7 @@ button.btn-danger:hover {
 }
 
 button.btn-primary {
-  background-color: #0098DA;
+  background-color: #0098da;
   color: white;
 }
 
@@ -534,7 +540,7 @@ button.btn-primary:hover {
   margin-right: 8px;
 }
 
-.btn:last-child{
+.btn:last-child {
   margin-right: 0;
 }
 
@@ -550,32 +556,23 @@ button.btn-primary:hover {
 nb-select.size-medium:not(.full-width) {
   max-width: 100% !important;
 }
-
 ::ng-deep nb-select .select-button {
-  background-color: #fff !important;
-  border-color: #ccc !important;
-  color: #333 !important;
-
-  span {
-    color: #495057;
-    font-size: 1rem;
-    font-weight: 400;
-  }
-
-  &:focus {
-    border-color: #0098DA !important;
-  }
+  background-color: var(--background-basic-color-1);
+  color: var(--text-basic-color);
+  border-color: var(--border-basic-color-3);
 }
 
-::ng-deep .is-invalid .select-button{
-  border-color: #dc3545 !important;
-  background-color: #f8d7da !important;
+::ng-deep nb-select.status-danger .select-button {
+  border-color: #FF3D71 !important;
 }
+// ::ng-deep .is-invalid .select-button {
+//   border-color: #ff708d !important;
+// }
 
 .input-like-btn {
-  background-color: #f8f9fa !important;
-  border: 1px solid #ced4da !important;
-  color: #495057;
+  background-color: var(--background-basic-color-1) !important;
+  border-color: var(--border-basic-color-3) !important;
+  color: var(--text-basic-color) !important;
   font-size: 1rem;
   font-weight: 400;
   padding: 0.375rem 0.75rem;
@@ -598,14 +595,18 @@ nb-select.size-medium:not(.full-width) {
   margin-bottom: 10px;
 }
 
-.empty-content h6 { font-weight: 600; }
+.empty-content h6 {
+  font-weight: 600;
+}
 
 .empty-content p {
   color: #8f9bb3;
   font-size: 13px;
 }
 
-.description-empty { text-align: center; }
+.description-empty {
+  text-align: center;
+}
 
 .empty-actions {
   display: flex;
@@ -631,7 +632,7 @@ nb-select.size-medium:not(.full-width) {
 }
 
 .period-card {
-  border: 1px solid #e8eaf0;
+  // border: 1px solid #e8eaf0;
   border-radius: 10px;
   overflow: hidden;
 }
@@ -642,14 +643,20 @@ nb-select.size-medium:not(.full-width) {
   align-items: center;
   padding: 12px 16px;
   min-height: 48px;
-  background: #f0f6ff;
+  background-color: var(--background-basic-color-1) !important;
   cursor: pointer;
   border-bottom: 1px solid transparent;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 
-  &:hover { background: #e5efff; }
+  &:hover {
+    background: #e5efff;
+  }
 
-  &.expanded { border-bottom-color: #e0eaff; }
+  &.expanded {
+    border-bottom-color: #e0eaff;
+  }
 }
 
 .period-card-left {
@@ -660,7 +667,7 @@ nb-select.size-medium:not(.full-width) {
 
 .period-toggle {
   font-size: 11px;
-  color: #3366ff;
+  color: var(--text-basic-color) !important;
 }
 
 .period-year {
@@ -673,7 +680,7 @@ nb-select.size-medium:not(.full-width) {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: #fff;
+  background-color: var(--background-basic-color-1) !important;
   border: 1px solid #c5d5ff;
   border-radius: 20px;
   padding: 3px 10px;
@@ -690,13 +697,13 @@ nb-select.size-medium:not(.full-width) {
 
 .period-year-label {
   font-size: 12px;
-  color: #e06060;
+  color: var(--text-basic-color) !important;
   font-weight: 500;
 }
 
 .period-card-body {
   padding: 16px;
-  background: #fff;
+  background-color: var(--background-basic-color-1) !important;
 }
 
 .field-label {
@@ -710,30 +717,67 @@ nb-select.size-medium:not(.full-width) {
 }
 
 // ── Tipo ANUAL
-::ng-deep .period-card-header.type-anual {
-  background: #f0f6ff !important;
+:host-context(.nb-theme-default, .nb-theme-dark, .nb-theme-cosmic) {
+  ::ng-deep .period-card-header.type-anual {
+    background: rgba(51, 102, 255, 0.08);
 
-  &:hover { background: #e5efff !important; }
-  &.expanded { border-bottom-color: #e0eaff !important; }
+    &:hover {
+      background: rgba(51, 102, 255, 0.12);
+    }
 
-  .period-toggle { color: #3366ff !important; }
-  .period-type-badge { color: #3366ff !important; border-color: #c5d5ff !important; background: #fff !important; }
-  .period-year-label { color: #e06060 !important; }
+    &.expanded {
+      border-bottom: 1px solid rgba(51, 102, 255, 0.2);
+    }
+
+    .period-toggle {
+      color: #3366ff;
+    }
+
+    .period-type-badge {
+      border: 1px solid var(--border-basic-color-3);
+      color: var(--text-basic-color);
+      background-color: var(--background-basic-color-1);
+    }
+
+    .period-year-label {
+      color: #e06060;
+    }
+  }
 }
 
 // ── Tipo BIANUAL
-::ng-deep .period-card-header.type-bianual {
-  background: #fff8f0 !important;
+:host-context(.nb-theme-default, .nb-theme-dark, .nb-theme-cosmic) {
+  ::ng-deep .period-card-header.type-bianual {
+    background: rgba(230, 81, 0, 0.08);
 
-  &:hover { background: #fff3e0 !important; }
-  &.expanded { border-bottom-color: #ffe0b2 !important; }
+    &:hover {
+      background: rgba(230, 81, 0, 0.12);
+    }
 
-  .period-toggle { color: #e65100 !important; }
-  .period-type-badge { color: #e65100 !important; border-color: #ffcc80 !important; background: #fff3e0 !important; }
-  .period-year-label { color: #e65100 !important; }
+    &.expanded {
+      border-bottom: 1px solid rgba(230, 81, 0, 0.25);
+    }
+
+    .period-toggle {
+      color: #e65100;
+    }
+
+    .period-type-badge {
+      color: #e65100;
+      border: 1px solid rgba(230, 81, 0, 0.4);
+      background: var(--background-basic-color-1);
+    }
+
+    .period-year-label {
+      color: #e65100;
+    }
+  }
 }
 
-// ── Dropdown de tipo inline
+.period-year {
+  color: var(--text-basic-color);
+}
+
 .period-type-wrapper {
   position: relative;
   z-index: 1000;
@@ -743,14 +787,16 @@ nb-select.size-medium:not(.full-width) {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  background: #fff;
+  background-color: var(--background-basic-color-1);
+  color: var(--text-basic-color);
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
   z-index: 1001;
   min-width: 200px;
   overflow: hidden;
 }
 
+// opções
 .type-inline-option {
   display: flex;
   align-items: center;
@@ -758,19 +804,29 @@ nb-select.size-medium:not(.full-width) {
   padding: 8px 12px;
   font-size: 12px;
   cursor: pointer;
-  color: #1a1a2e;
+  color: var(--text-basic-color);
   white-space: nowrap;
+  transition: 0.15s;
 
   .opt-freq {
     margin-left: auto;
     font-size: 10px;
-    color: #8a94a6;
+    color: var(--text-hint-color);
     padding-left: 8px;
   }
 
-  &:hover { background: #f5f7ff; }
-  &.selected { background: #eef2ff; font-weight: 600; color: #3366ff; }
+  &:hover {
+    background-color: var(--background-basic-color-2);
+  }
+
+  &.selected {
+    background-color: var(--background-primary-color-1);
+    color: #fff;
+    font-weight: 600;
+  }
 }
+
+// footer
 .form-actions-footer {
   display: flex;
   justify-content: flex-end;

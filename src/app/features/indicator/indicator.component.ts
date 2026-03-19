@@ -9,10 +9,15 @@ import { Observable } from 'rxjs';
 import { debounce, debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
 import { NbDialogService, NbSpinnerModule, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { IIndicator } from '../../core/interfaces/indicator.interface';
 import { IndicatorService } from '../../core/service/indicator.service';
+import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 
+export enum AvailableThemes {
+  DEFAULT = "default",
+  DARK = "dark",
+  COSMIC = "cosmic",
+}
 
 @Component({
   selector: 'ngx-indicator',

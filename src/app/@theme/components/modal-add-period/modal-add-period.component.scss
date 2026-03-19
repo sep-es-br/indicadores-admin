@@ -1,6 +1,6 @@
 .add-period-card {
   width: 280px;
-  background: #fff;
+  background: var(--background-basic-color-1);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   overflow: visible;
@@ -11,8 +11,8 @@
   padding: 14px 16px 10px;
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a2e;
-  border-bottom: 1px solid #f0f0f0;
+  color: var(--text-basic-color);
+  border-bottom: 1px solid var(--border-basic-color-3);
 }
 
 .add-period-body {
@@ -28,7 +28,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.6px;
-  color: #8a94a6;
+  color: var(--text-hint-color);
   text-transform: uppercase;
   margin-bottom: 6px;
 }
@@ -37,22 +37,21 @@
 .field-input {
   width: 100%;
   padding: 8px 12px;
-  border: 1.5px solid #e8eaf0;
+  border: 1.5px solid var(--border-basic-color-3);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #1a1a2e;
+  color: var(--text-basic-color);
   outline: none;
-  transition: border-color 0.2s;
+  transition: 0.2s;
   box-sizing: border-box;
-  background: #fafbfc;
+  background: var(--background-basic-color-2);
 
   &:focus {
     border-color: #3366ff;
-    background: #fff;
+    background: var(--background-basic-color-1);
   }
 
-  // remove setas do number input
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -71,9 +70,9 @@
   padding: 8px 12px;
   border: 1.5px solid #3366ff;
   border-radius: 8px;
-  background: #f0f4ff;
+  background: rgba(51, 102, 255, 0.1);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s;
 
   .select-icon { font-size: 16px; }
 
@@ -86,7 +85,7 @@
 
   .select-freq {
     font-size: 11px;
-    color: #8a94a6;
+    color: var(--text-hint-color);
   }
 
   .select-arrow {
@@ -100,7 +99,7 @@
   top: calc(100% + 6px);
   left: 0;
   right: 0;
-  background: #fff;
+  background: var(--background-basic-color-1);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.14);
   z-index: 9999;
@@ -113,11 +112,15 @@
   gap: 10px;
   padding: 10px 14px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: 0.15s;
 
-  &:hover { background: #f5f7ff; }
+  &:hover {
+    background: var(--background-basic-color-2);
+  }
 
-  &.selected { background: #eef2ff; }
+  &.selected {
+    background: var(--background-basic-color-3);
+  }
 
   .opt-icon { font-size: 18px; }
 
@@ -130,12 +133,12 @@
   .opt-label {
     font-size: 13px;
     font-weight: 500;
-    color: #1a1a2e;
+    color: var(--text-basic-color);
   }
 
   .opt-freq {
     font-size: 11px;
-    color: #8a94a6;
+    color: var(--text-hint-color);
   }
 
   .opt-check {
@@ -145,49 +148,74 @@
   }
 }
 
-// Botão
 .btn-add {
   width: 100%;
   padding: 10px;
-  background: #3366ff;
-  color: #fff;
+
+  background: var(--color-primary-500);
+  color: var(--text-control-color);
+
   border: none;
   border-radius: 8px;
+
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.3px;
-  transition: background 0.2s;
 
-  &:hover { background: #2255ee; }
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--color-primary-600);
+  }
+
+  &:active {
+    background: var(--color-primary-700);
+  }
+
+  &:disabled {
+    background: var(--background-basic-color-3);
+    color: var(--text-hint-color);
+    cursor: not-allowed;
+  }
 }
 
 .custom-select-trigger.trigger-anual {
   border-color: #3366ff;
-  background: #f0f4ff;
+  background: rgba(51, 102, 255, 0.1);
 
-  .select-label { color: #3366ff; }
-  .select-arrow { color: #3366ff; }
+  .select-label,
+  .select-arrow {
+    color: #3366ff;
+  }
 }
 
 .custom-select-trigger.trigger-bianual {
   border-color: #e65100;
-  background: #fff8f0;
+  background: rgba(230, 81, 0, 0.1);
 
-  .select-label { color: #e65100; }
-  .select-arrow { color: #e65100; }
+  .select-label,
+  .select-arrow {
+    color: #e65100;
+  }
 }
 
 .custom-select-option.selected.option-anual {
-  background: #eef2ff;
+  background: rgba(51, 102, 255, 0.15);
 
-  .opt-label { color: #3366ff; font-weight: 600; }
-  .opt-check { color: #3366ff; font-weight: 700; }
+  .opt-label,
+  .opt-check {
+    color: #3366ff;
+    font-weight: 600;
+  }
 }
 
 .custom-select-option.selected.option-bianual {
-  background: #fff3e0;
+  background: rgba(230, 81, 0, 0.15);
 
-  .opt-label { color: #e65100; font-weight: 600; }
-  .opt-check { color: #e65100; font-weight: 700; }
+  .opt-label,
+  .opt-check {
+    color: #e65100;
+    font-weight: 600;
+  }
 }

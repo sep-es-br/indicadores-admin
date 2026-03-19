@@ -13,7 +13,7 @@
     "ng": "ng",
     "debug": "ng build --source-map",
     "conventional-changelog": "conventional-changelog",
-    "start": "ng serve --port 4000",
+    "start": "ng serve ",
     "build": "ng build",
     "build:prod": "npm run build -- --configuration production --aot",
     "test": "ng test",

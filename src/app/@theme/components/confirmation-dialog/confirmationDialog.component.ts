@@ -1,40 +1,60 @@
-import { Component, Inject } from '@angular/core';
-import { NbDialogRef, NB_DIALOG_CONFIG } from '@nebular/theme';
+import { CommonModule } from "@angular/common";
+import { Component } from "@angular/core";
+import { NbCardModule, NbDialogRef } from "@nebular/theme";
 
 @Component({
-  selector: 'ngx-confirmation-dialog',
+  selector: "ngx-confirmation-dialog",
   template: `
     <nb-card>
       <nb-card-header>{{ title }}</nb-card-header>
-       <nb-card-body class="message-container">{{ message }}</nb-card-body>
+      <nb-card-body class="message-container">{{ message }}</nb-card-body>
       <nb-card-footer class="d-flex justify-content-end">
-        <button nbButton status="success" (click)="close(true)" class="mr-2 no-focus">Confirmar</button>
-        <button nbButton status="danger" (click)="close(false)" class="no-focus">Cancelar</button>
+        <button
+          nbButton
+          status="success"
+          (click)="close(true)"
+          class="mr-2 no-focus"
+        >
+          Confirmar
+        </button>
+        <button
+          nbButton
+          status="danger"
+          (click)="close(false)"
+          class="no-focus"
+        >
+          Cancelar
+        </button>
       </nb-card-footer>
     </nb-card>
   `,
   styles: [
     `
       .mr-2 {
-        margin-right: 8px; 
+        margin-right: 8px;
       }
       .no-focus:focus {
-      outline: none;
-      box-shadow: none;
+        outline: none;
+        box-shadow: none;
       }
       .message-container {
-        max-width: 1000px; 
-        max-height: 150px; 
-        overflow: auto; 
-        word-wrap: break-word; 
-        white-space: pre-line; 
+        max-width: 1000px;
+        max-height: 150px;
+        overflow: auto;
+        word-wrap: break-word;
+        white-space: pre-line;
       }
     `,
   ],
+  standalone: true,
+  imports: [
+    CommonModule,
+    NbCardModule
+  ]
 })
 export class ConfirmationDialogComponent {
-    title: string;
-    message: string;
+  title: string = "";
+  message: string = "";
 
   constructor(protected dialogRef: NbDialogRef<ConfirmationDialogComponent>) {}
 
