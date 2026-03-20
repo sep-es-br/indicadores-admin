@@ -88,4 +88,8 @@ addPeriod() {
       this.yearInvalido = false;
     }
   }
+
+  close() {
+  this.popoverService.close(null);
+}
 }
