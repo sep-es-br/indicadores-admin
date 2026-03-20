@@ -1,4 +1,4 @@
-@import '../@theme/styles/themes';
+@import "../@theme/styles/themes";
 
 @include nb-install-component() {
   ::ng-deep router-outlet + * {
@@ -15,9 +15,48 @@
       }
     }
   }
-  ::ng-deep{
-    .menu-item a:hover, .menu-item a.active, .menu-item a.active .menu-icon, .menu-item a:hover .menu-icon{
-      color: #0098DA;
+  ::ng-deep {
+    :host-context(.nb-theme-dark, .nb-theme-cosmic) {
+      .menu-item a:hover,
+      .menu-item a.active,
+      .menu-item a.active .menu-icon,
+      .menu-item a:hover .menu-icon {
+        color: #dac8ff !important;
+      }
     }
-  } 
+
+    .menu-item:hover {
+      nb-icon {
+        svg {
+          &,
+          * {
+            &[fill]:not([fill="none"]):not([fill="transparent"]) {
+              fill: currentColor !important;
+            }
+
+            &[stroke]:not([stroke="none"]):not([stroke="transparent"]) {
+              stroke: currentColor !important;
+            }
+          }
+        }
+      }
+    }
+
+    .menu-item.active {
+      nb-icon {
+        svg {
+          &,
+          * {
+            &[fill]:not([fill="none"]):not([fill="transparent"]) {
+              fill: currentColor !important;
+            }
+
+            &[stroke]:not([stroke="none"]):not([stroke="transparent"]) {
+              stroke: currentColor !important;
+            }
+          }
+        }
+      }
+    }
+  }
 }

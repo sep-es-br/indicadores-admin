@@ -1,0 +1,240 @@
+.add-period-card {
+  width: 280px;
+  background: var(--background-basic-color-1);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  overflow: visible;
+  font-family: 'Inter', sans-serif;
+}
+
+.add-period-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-basic-color);
+  border-bottom: 1px solid var(--border-basic-color-3);
+}
+
+.add-period-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// Label
+.field-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: var(--text-hint-color);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+// Input ANO
+.field-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border-basic-color-3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-basic-color);
+  outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+  background: var(--background-basic-color-2);
+
+  &:focus {
+    border-color: #3366ff;
+    background: var(--background-basic-color-1);
+  }
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+// Select customizado
+.custom-select-wrapper {
+  position: relative;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1.5px solid #3366ff;
+  border-radius: 8px;
+  background: rgba(51, 102, 255, 0.1);
+  cursor: pointer;
+  transition: 0.2s;
+
+  .select-icon { font-size: 16px; }
+
+  .select-label {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3366ff;
+  }
+
+  .select-freq {
+    font-size: 11px;
+    color: var(--text-hint-color);
+  }
+
+  .select-arrow {
+    font-size: 11px;
+    color: #3366ff;
+  }
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--background-basic-color-1);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.custom-select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: 0.15s;
+
+  &:hover {
+    background: var(--background-basic-color-2);
+  }
+
+  &.selected {
+    background: var(--background-basic-color-3);
+  }
+
+  .opt-icon { font-size: 18px; }
+
+  .opt-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .opt-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-basic-color);
+  }
+
+  .opt-freq {
+    font-size: 11px;
+    color: var(--text-hint-color);
+  }
+
+  .opt-check {
+    font-size: 13px;
+    color: #3366ff;
+    font-weight: 700;
+  }
+}
+
+.btn-add {
+  width: 100%;
+  padding: 10px;
+
+  background: var(--color-primary-500);
+  color: var(--text-control-color);
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--color-primary-600);
+  }
+
+  &:active {
+    background: var(--color-primary-700);
+  }
+
+  &:disabled {
+    background: var(--background-basic-color-3);
+    color: var(--text-hint-color);
+    cursor: not-allowed;
+  }
+}
+
+.custom-select-trigger.trigger-anual {
+  border-color: #3366ff;
+  background: rgba(51, 102, 255, 0.1);
+
+  .select-label,
+  .select-arrow {
+    color: #3366ff;
+  }
+}
+
+.custom-select-trigger.trigger-bianual {
+  border-color: #e65100;
+  background: rgba(230, 81, 0, 0.1);
+
+  .select-label,
+  .select-arrow {
+    color: #e65100;
+  }
+}
+
+.custom-select-option.selected.option-anual {
+  background: rgba(51, 102, 255, 0.15);
+
+  .opt-label,
+  .opt-check {
+    color: #3366ff;
+    font-weight: 600;
+  }
+}
+
+.custom-select-option.selected.option-bianual {
+  background: rgba(230, 81, 0, 0.15);
+
+  .opt-label,
+  .opt-check {
+    color: #e65100;
+    font-weight: 600;
+  }
+}
+
+
+.btn-close {
+  cursor: pointer;
+  font-size: 14px;
+  color: #8f9bb3;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+
+  &:hover {
+    color: #ff3d71;
+    background: rgba(255, 61, 113, 0.1);
+  }
+}
