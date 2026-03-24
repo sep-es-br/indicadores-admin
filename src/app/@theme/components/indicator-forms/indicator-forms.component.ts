@@ -130,7 +130,6 @@ export class IndicatorFormsComponent implements OnInit {
   ];
 
   getTypeLabel(val: string) {
-    console.log(val, "wwqewqqewqe");
     return this.typeOptions.find((o) => o.value === val)?.label ?? val;
   }
 
@@ -183,18 +182,9 @@ export class IndicatorFormsComponent implements OnInit {
       if (!data) return;
 
       const year = Number(data.year);
-      const type = data.type.toLocaleUpperCase();
-
-      const label = type === "BIANUAL" ? `${year}-${year + 1}` : `${year}`;
-
-      if (this.isYearAlreadyUsed(year, type)) {
-        this._toastService.show(
-          `O período ${label} já foi adicionado.`,
-          "Atenção",
-          { status: "warning", duration: 4000 },
-        );
-        return;
-      }
+      const type = String(data.type || "")
+        .trim()
+        .toUpperCase();
 
       this.addNewYearRow(year, type);
       this.expandedPeriods.push(true);
@@ -254,16 +244,25 @@ export class IndicatorFormsComponent implements OnInit {
           });
 
           data.times.forEach((target) => {
-            const rawType = target.type;
-
             const type =
-              rawType?.toUpperCase() === "BIANUAL" ? "BIANUAL" : "ANUAL";
+              String(target.type || "")
+                .trim()
+                .toUpperCase() === "BIANUAL"
+                ? "BIANUAL"
+                : "ANUAL";
+
+            const rawYear = String(target.year || "");
+            const baseYear = Number(rawYear.split("-")[0]);
 
             this.times.push(
               this.fb.group({
-                year: new FormControl(target.year),
+                year: new FormControl(baseYear), // sempre número
                 type: new FormControl(type),
-                displayYear: new FormControl(target.year),
+                displayYear: new FormControl(
+                  type === "BIANUAL"
+                    ? `${baseYear}-${baseYear + 1}`
+                    : `${baseYear}`,
+                ),
                 valueGoal: new FormControl(target.valueGoal || null),
                 showValueGoal: new FormControl(target.showValueGoal || ""),
                 valueResult: new FormControl(target.valueResult || null),
@@ -291,32 +290,62 @@ export class IndicatorFormsComponent implements OnInit {
     });
   }
 
+  // isYearAlreadyUsed(year: number, type: string): boolean {
+  //   const inputYear = Number(year);
+
+  //   return this.times.controls.some((control, index) => {
+  //     const existingYear = Number(control.value.year);
+  //     const existingType = control.value.type;
+  //     console.log("tipo um: ", )
+  //     if (type === "ANUAL") {
+  //       if (existingType === "ANUAL") return existingYear === inputYear;
+
+  //       if (existingType === "BIANUAL") {
+  //         return existingYear === inputYear || existingYear + 1 === inputYear;
+  //       }
+  //     }
+
+  //     if (type === "BIANUAL") {
+  //       if (existingType === "ANUAL") {
+  //         return existingYear === inputYear || existingYear === inputYear + 1;
+  //       }
+
+  //       if (existingType === "BIANUAL") {
+  //         return existingYear === inputYear;
+  //       }
+  //     }
+
+  //     return false;
+  //   });
+  // }
+
   isYearAlreadyUsed(year: number, type: string): boolean {
     const inputYear = Number(year);
+    const normalizedType =
+      String(type || "")
+        .trim()
+        .toUpperCase() === "BIANUAL"
+        ? "BIANUAL"
+        : "ANUAL";
 
-    return this.times.controls.some((control, index) => {
-      const existingYear = Number(control.value.year);
-      const existingType = control.value.type;
+    return this.times.controls.some((control) => {
+      const existingYear = Number(control.get("year")?.value);
+      const existingType =
+        String(control.get("type")?.value || "")
+          .trim()
+          .toUpperCase() === "BIANUAL"
+          ? "BIANUAL"
+          : "ANUAL";
 
-      if (type === "ANUAL") {
-        if (existingType === "ANUAL") return existingYear === inputYear;
+      const newCoveredYears =
+        normalizedType === "BIANUAL" ? [inputYear, inputYear + 1] : [inputYear];
 
-        if (existingType === "BIANUAL") {
-          return existingYear === inputYear || existingYear + 1 === inputYear;
-        }
-      }
+      const existingCoveredYears =
+        existingType === "BIANUAL"
+          ? [existingYear, existingYear + 1]
+          : [existingYear];
 
-      if (type === "BIANUAL") {
-        if (existingType === "ANUAL") {
-          return existingYear === inputYear || existingYear === inputYear + 1;
-        }
-
-        if (existingType === "BIANUAL") {
-          return existingYear === inputYear;
-        }
-      }
-
-      return false;
+      return newCoveredYears.some((y) => existingCoveredYears.includes(y));
     });
   }
 
@@ -418,21 +447,63 @@ export class IndicatorFormsComponent implements OnInit {
     );
   }
 
+  // addNewYearRow(year: number, type: string) {
+  //   console.log("TIMES: ", this.times);
+  //   this.times.push(
+  //     this.fb.group({
+  //       year: new FormControl(year),
+  //       type: new FormControl(type),
+  //       displayYear: new FormControl(
+  //         type === "BIANUAL" ? `${year}–${year + 1}` : `${year}`,
+  //       ),
+  //       valueGoal: new FormControl(),
+  //       showValueGoal: new FormControl(),
+  //       valueResult: new FormControl(),
+  //       showValueResult: new FormControl(),
+  //       justificationGoal: new FormControl(),
+  //       justificationResult: new FormControl(), //add
+  //     }),
+  //   );
+  // }
+
   addNewYearRow(year: number, type: string) {
-    console.log("TIMES: ", this.times);
+    const inputYear = Number(year);
+    const normalizedType =
+      String(type || "")
+        .trim()
+        .toUpperCase() === "BIANUAL"
+        ? "BIANUAL"
+        : "ANUAL";
+
+    const label =
+      normalizedType === "BIANUAL"
+        ? `${inputYear}-${inputYear + 1}`
+        : `${inputYear}`;
+
+    if (this.isYearAlreadyUsed(inputYear, normalizedType)) {
+      this._toastService.show(
+        `O período ${label} já foi adicionado.`,
+        "Atenção",
+        { status: "warning", duration: 4000 },
+      );
+      return;
+    }
+
     this.times.push(
       this.fb.group({
-        year: new FormControl(year),
-        type: new FormControl(type),
+        year: new FormControl(inputYear),
+        type: new FormControl(normalizedType),
         displayYear: new FormControl(
-          type === "BIANUAL" ? `${year}–${year + 1}` : `${year}`,
+          normalizedType === "BIANUAL"
+            ? `${inputYear}-${inputYear + 1}`
+            : `${inputYear}`,
         ),
         valueGoal: new FormControl(),
         showValueGoal: new FormControl(),
         valueResult: new FormControl(),
         showValueResult: new FormControl(),
         justificationGoal: new FormControl(),
-        justificationResult: new FormControl(), //add
+        justificationResult: new FormControl(),
       }),
     );
   }
