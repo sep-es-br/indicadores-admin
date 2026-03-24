@@ -17,20 +17,19 @@ export class HomeComponent implements OnInit {
 
   public odsNumbers = Array.from({ length: 17 }, (_, i) => i + 1);
 
-  constructor(private homeService: HomeService, private route: ActivatedRoute) { 
+  constructor(private homeService: HomeService, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      console.log('ID:', params['id']); // Exibe no console para teste
-    });
+    // this.route.queryParams.subscribe(params => {
+    //   console.log('ID:', params['id']); // Exibe no console para teste
+    // });
     this.getOdsInfo(1)
   }
 
   getOdsInfo(order: number){
     this.homeService.getOdsInfo(order).subscribe(
       data => {
-        console.log('ODS Info:', data);
         this.odsData = data;
       },
       error => {
