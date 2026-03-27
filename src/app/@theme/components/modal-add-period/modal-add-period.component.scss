@@ -184,7 +184,7 @@
 }
 
 .custom-select-trigger.trigger-anual {
-  border-color: #3366ff;
+  border-color: #3366ff !important;
   background: rgba(51, 102, 255, 0.1);
 
   .select-label,
@@ -194,7 +194,7 @@
 }
 
 .custom-select-trigger.trigger-bianual {
-  border-color: #e65100;
+  border-color: #e65100 !important;
   background: rgba(230, 81, 0, 0.1);
 
   .select-label,

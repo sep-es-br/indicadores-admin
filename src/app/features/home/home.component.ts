@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
 
   public menulinks = menulinks;
 
-  public odsData:IOds;
+  public odsData!:IOds;
 
   public odsNumbers = Array.from({ length: 17 }, (_, i) => i + 1);
 

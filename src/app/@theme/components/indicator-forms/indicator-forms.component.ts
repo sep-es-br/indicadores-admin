@@ -120,9 +120,9 @@ export class IndicatorFormsComponent implements OnInit {
   }
 
   typeOptions = [
-    { value: "ANUAL", label: "Anual", freq: "1 por ano", icon: "📅" },
+    { value: "YEAR", label: "Anual", freq: "1 por ano", icon: "📅" },
     {
-      value: "BIANUAL",
+      value: "BIANNUAL",
       label: "Bianual",
       freq: "1 ciclo / 2 anos",
       icon: "🗓️",
@@ -247,9 +247,9 @@ export class IndicatorFormsComponent implements OnInit {
             const type =
               String(target.type || "")
                 .trim()
-                .toUpperCase() === "BIANUAL"
-                ? "BIANUAL"
-                : "ANUAL";
+                .toUpperCase() === "BIANNUAL"
+                ? "BIANNUAL"
+                : "YEAR";
 
             const rawYear = String(target.year || "");
             const baseYear = Number(rawYear.split("-")[0]);
@@ -259,7 +259,7 @@ export class IndicatorFormsComponent implements OnInit {
                 year: new FormControl(baseYear), // sempre número
                 type: new FormControl(type),
                 displayYear: new FormControl(
-                  type === "BIANUAL"
+                  type === "BIANNUAL"
                     ? `${baseYear}-${baseYear + 1}`
                     : `${baseYear}`,
                 ),
@@ -290,58 +290,29 @@ export class IndicatorFormsComponent implements OnInit {
     });
   }
 
-  // isYearAlreadyUsed(year: number, type: string): boolean {
-  //   const inputYear = Number(year);
-
-  //   return this.times.controls.some((control, index) => {
-  //     const existingYear = Number(control.value.year);
-  //     const existingType = control.value.type;
-  //     console.log("tipo um: ", )
-  //     if (type === "ANUAL") {
-  //       if (existingType === "ANUAL") return existingYear === inputYear;
-
-  //       if (existingType === "BIANUAL") {
-  //         return existingYear === inputYear || existingYear + 1 === inputYear;
-  //       }
-  //     }
-
-  //     if (type === "BIANUAL") {
-  //       if (existingType === "ANUAL") {
-  //         return existingYear === inputYear || existingYear === inputYear + 1;
-  //       }
-
-  //       if (existingType === "BIANUAL") {
-  //         return existingYear === inputYear;
-  //       }
-  //     }
-
-  //     return false;
-  //   });
-  // }
-
   isYearAlreadyUsed(year: number, type: string): boolean {
     const inputYear = Number(year);
     const normalizedType =
       String(type || "")
         .trim()
-        .toUpperCase() === "BIANUAL"
-        ? "BIANUAL"
-        : "ANUAL";
+        .toUpperCase() === "BIANNUAL"
+        ? "BIANNUAL"
+        : "YEAR";
 
     return this.times.controls.some((control) => {
       const existingYear = Number(control.get("year")?.value);
       const existingType =
         String(control.get("type")?.value || "")
           .trim()
-          .toUpperCase() === "BIANUAL"
-          ? "BIANUAL"
-          : "ANUAL";
+          .toUpperCase() === "BIANNUAL"
+          ? "BIANNUAL"
+          : "YEAR";
 
       const newCoveredYears =
-        normalizedType === "BIANUAL" ? [inputYear, inputYear + 1] : [inputYear];
+        normalizedType === "BIANNUAL" ? [inputYear, inputYear + 1] : [inputYear];
 
       const existingCoveredYears =
-        existingType === "BIANUAL"
+        existingType === "BIANNUAL"
           ? [existingYear, existingYear + 1]
           : [existingYear];
 
@@ -392,7 +363,7 @@ export class IndicatorFormsComponent implements OnInit {
 
         return {
           year:
-            value.type === "BIANUAL"
+            value.type === "BIANNUAL"
               ? `${baseYear}-${baseYear + 1}`
               : `${baseYear}`,
           type: value.type,
@@ -409,6 +380,8 @@ export class IndicatorFormsComponent implements OnInit {
       observations: formValue.observations,
     };
 
+    console.log("Dados referente ao submit: ", payload)
+
     const request$: Observable<any> =
       this.mode === "edit"
         ? this._indicatorService.updateIndicator(payload, this.selectedPdfFile)
@@ -424,27 +397,27 @@ export class IndicatorFormsComponent implements OnInit {
         ? "Erro ao editar o indicador"
         : "Erro ao criar o indicador";
 
-    request$.subscribe(
-      () => {
-        this._toastService.show(successMsg, "Sucesso", {
-          status: "success",
-          duration: 8000,
-        });
-        this.router.navigate(["/pages/indicators"]);
-        this.isSubmitting = false;
-      },
-      (error: any) => {
-        this._toastService.show(errorMsg, "Erro", {
-          status: "danger",
-          duration: 8000,
-        });
-        this.router.navigate(["/pages/indicators"]);
-        this.isSubmitting = false;
-      },
-      () => {
-        this.isSubmitting = false;
-      },
-    );
+    // request$.subscribe(
+    //   () => {
+    //     this._toastService.show(successMsg, "Sucesso", {
+    //       status: "success",
+    //       duration: 8000,
+    //     });
+    //     this.router.navigate(["/pages/indicators"]);
+    //     this.isSubmitting = false;
+    //   },
+    //   (error: any) => {
+    //     this._toastService.show(errorMsg, "Erro", {
+    //       status: "danger",
+    //       duration: 8000,
+    //     });
+    //     this.router.navigate(["/pages/indicators"]);
+    //     this.isSubmitting = false;
+    //   },
+    //   () => {
+    //     this.isSubmitting = false;
+    //   },
+    // );
   }
 
   // addNewYearRow(year: number, type: string) {
@@ -471,12 +444,12 @@ export class IndicatorFormsComponent implements OnInit {
     const normalizedType =
       String(type || "")
         .trim()
-        .toUpperCase() === "BIANUAL"
-        ? "BIANUAL"
-        : "ANUAL";
+        .toUpperCase() === "BIANNUAL"
+        ? "BIANNUAL"
+        : "YEAR";
 
     const label =
-      normalizedType === "BIANUAL"
+      normalizedType === "BIANNUAL"
         ? `${inputYear}-${inputYear + 1}`
         : `${inputYear}`;
 
@@ -494,7 +467,7 @@ export class IndicatorFormsComponent implements OnInit {
         year: new FormControl(inputYear),
         type: new FormControl(normalizedType),
         displayYear: new FormControl(
-          normalizedType === "BIANUAL"
+          normalizedType === "BIANNUAL"
             ? `${inputYear}-${inputYear + 1}`
             : `${inputYear}`,
         ),
@@ -529,7 +502,7 @@ export class IndicatorFormsComponent implements OnInit {
     control.get("type")?.setValue(type);
     control
       .get("displayYear")
-      ?.setValue(type === "BIANUAL" ? `${year}–${year + 1}` : `${year}`);
+      ?.setValue(type === "BIANNUAL" ? `${year}–${year + 1}` : `${year}`);
     this.typeDropdownIndex = null;
   }
 
