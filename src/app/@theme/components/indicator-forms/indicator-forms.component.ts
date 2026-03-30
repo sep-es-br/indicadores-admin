@@ -263,6 +263,7 @@ export class IndicatorFormsComponent implements OnInit {
                     ? `${baseYear}-${baseYear + 1}`
                     : `${baseYear}`,
                 ),
+                period: new FormControl(target.period),
                 valueGoal: new FormControl(target.valueGoal || null),
                 showValueGoal: new FormControl(target.showValueGoal || ""),
                 valueResult: new FormControl(target.valueResult || null),
@@ -309,7 +310,9 @@ export class IndicatorFormsComponent implements OnInit {
           : "YEAR";
 
       const newCoveredYears =
-        normalizedType === "BIANNUAL" ? [inputYear, inputYear + 1] : [inputYear];
+        normalizedType === "BIANNUAL"
+          ? [inputYear, inputYear + 1]
+          : [inputYear];
 
       const existingCoveredYears =
         existingType === "BIANNUAL"
@@ -344,6 +347,8 @@ export class IndicatorFormsComponent implements OnInit {
     this.isSubmitting = true;
     const formValue = this.form.value;
 
+    this.populatingTheTimeBiannual(formValue.times);
+
     const payload: IIndicatorForm = {
       ...(this.mode === "edit" && {
         id: formValue.id,
@@ -357,30 +362,13 @@ export class IndicatorFormsComponent implements OnInit {
         challengeId: c.challengeId,
         organ: c.organ,
       })),
-      times: formValue.times.map((value: ITimes) => {
-        const rawYear = String(value.year);
-        const baseYear = parseInt(rawYear.split("-")[0], 10);
-
-        return {
-          year:
-            value.type === "BIANNUAL"
-              ? `${baseYear}-${baseYear + 1}`
-              : `${baseYear}`,
-          type: value.type,
-          period: 1,
-          valueGoal: value.valueGoal || null,
-          showValueGoal: value.showValueGoal || "",
-          valueResult: value.valueResult || null,
-          showValueResult: value.showValueResult || "",
-          justificationGoal: value.justificationGoal,
-          justificationResult: value.justificationResult,
-        };
-      }),
+      times: this.populatingTheTimeBiannual(formValue.times).map((t) => ({
+        ...t,
+        period: t.period && t.period > 0 ? t.period : 1,
+      })),
       justificationBase: formValue.justificationBase,
       observations: formValue.observations,
     };
-
-    console.log("Dados referente ao submit: ", payload)
 
     const request$: Observable<any> =
       this.mode === "edit"
@@ -397,48 +385,79 @@ export class IndicatorFormsComponent implements OnInit {
         ? "Erro ao editar o indicador"
         : "Erro ao criar o indicador";
 
-    // request$.subscribe(
-    //   () => {
-    //     this._toastService.show(successMsg, "Sucesso", {
-    //       status: "success",
-    //       duration: 8000,
-    //     });
-    //     this.router.navigate(["/pages/indicators"]);
-    //     this.isSubmitting = false;
-    //   },
-    //   (error: any) => {
-    //     this._toastService.show(errorMsg, "Erro", {
-    //       status: "danger",
-    //       duration: 8000,
-    //     });
-    //     this.router.navigate(["/pages/indicators"]);
-    //     this.isSubmitting = false;
-    //   },
-    //   () => {
-    //     this.isSubmitting = false;
-    //   },
-    // );
+    request$.subscribe(
+      () => {
+        this._toastService.show(successMsg, "Sucesso", {
+          status: "success",
+          duration: 8000,
+        });
+        this.router.navigate(["/pages/indicators"]);
+        this.isSubmitting = false;
+      },
+      (error: any) => {
+        this._toastService.show(errorMsg, "Erro", {
+          status: "danger",
+          duration: 8000,
+        });
+        this.router.navigate(["/pages/indicators"]);
+        this.isSubmitting = false;
+      },
+      () => {
+        this.isSubmitting = false;
+      },
+    );
   }
 
-  // addNewYearRow(year: number, type: string) {
-  //   console.log("TIMES: ", this.times);
-  //   this.times.push(
-  //     this.fb.group({
-  //       year: new FormControl(year),
-  //       type: new FormControl(type),
-  //       displayYear: new FormControl(
-  //         type === "BIANUAL" ? `${year}–${year + 1}` : `${year}`,
-  //       ),
-  //       valueGoal: new FormControl(),
-  //       showValueGoal: new FormControl(),
-  //       valueResult: new FormControl(),
-  //       showValueResult: new FormControl(),
-  //       justificationGoal: new FormControl(),
-  //       justificationResult: new FormControl(), //add
-  //     }),
-  //   );
-  // }
+populatingTheTimeBiannual(times: ITimes[]): ITimes[] {
+  return times.flatMap((time, _, list) =>
+    this.rindigTheBiannual(time, list)
+  );
+}
 
+rindigTheBiannual(time: ITimes, list: ITimes[]): ITimes[] {
+  // 👉 não é bianual
+  if (!time || !time.type?.includes("BIANNUAL")) {
+    return [
+      {
+        ...time,
+        period: time.period && time.period > 0 ? time.period : 1,
+      },
+    ];
+  }
+
+  const year = Number(time.year);
+
+  if (time.period === 2) {
+    return [time];
+  }
+
+  const hasSecondYear = list.some(
+    (t) =>
+      t.type === "BIANNUAL" &&
+      t.period === 2 &&
+      Number(t.year) === year + 1
+  );
+
+  if (hasSecondYear) {
+    return [time];
+  }
+
+  const [startYear, endYear] = time.displayYear.split("-");
+
+  const firstYear: ITimes = {
+    ...time,
+    year: Number(startYear),
+    period: 1,
+  };
+
+  const secondYear: ITimes = {
+    type: time.type,
+    year: Number(endYear),
+    period: 2,
+  } as ITimes;
+
+  return [firstYear, secondYear];
+}
   addNewYearRow(year: number, type: string) {
     const inputYear = Number(year);
     const normalizedType =
@@ -471,6 +490,7 @@ export class IndicatorFormsComponent implements OnInit {
             ? `${inputYear}-${inputYear + 1}`
             : `${inputYear}`,
         ),
+        period: new FormControl(null),
         valueGoal: new FormControl(),
         showValueGoal: new FormControl(),
         valueResult: new FormControl(),

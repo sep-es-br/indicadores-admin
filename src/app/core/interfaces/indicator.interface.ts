@@ -12,8 +12,9 @@ export interface IIndicator {
 }
 export interface ITimes {
   type: string,
-  year: string,
+  year: number,
   period: number,
+  displayYear: string,
   valueGoal: number,
   showValueGoal: string,
   valueResult: number,
