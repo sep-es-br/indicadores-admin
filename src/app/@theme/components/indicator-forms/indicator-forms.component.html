@@ -649,8 +649,8 @@
         <div
           class="period-card-header"
           [class.expanded]="expandedPeriods[i]"
-          [class.type-bianual]="control.get('type')?.value === 'BIANUAL'"
-          [class.type-anual]="control.get('type')?.value === 'ANUAL'"
+          [class.type-bianual]="control.get('type')?.value === 'BIANNUAL'"
+          [class.type-anual]="control.get('type')?.value === 'YEAR'"
           (click)="togglePeriod(i)"
         >
           <div class="period-card-left">

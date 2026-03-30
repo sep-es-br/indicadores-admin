@@ -32,7 +32,7 @@ import { PeriodPopoverService } from "../../../core/service/period-popover.servi
 export class ModalAddPeriodComponent {
   year: number = new Date().getFullYear();
   yearInvalido = false;
-  type = "ANUAL";
+  type = "YEAR";
 
   maxLenght: string = "4";
 
@@ -41,9 +41,9 @@ export class ModalAddPeriodComponent {
   yearFrom: number | null = null;
   yearTo: number | null = null;
   typeOptions = [
-    { value: "ANUAL", label: "Anual", freq: "1 por ano", icon: "📅" },
+    { value: "YEAR", label: "Anual", freq: "1 por ano", icon: "📅" },
     {
-      value: "BIANUAL",
+      value: "BIANNUAL",
       label: "Bianual",
       freq: "1 ciclo / 2 anos",
       icon: "🗓️",

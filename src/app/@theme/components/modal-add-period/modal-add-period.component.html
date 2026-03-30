@@ -3,13 +3,13 @@
      <span class="btn-close" (click)="close()">✕</span>
 
   </div>
-  
+
   <div class="add-period-body">
 
     <!-- ANO -->
     <div class="field-group">
       <label class="field-label">
-        {{ type === 'BIANUAL' ? 'ANO INICIAL' : 'ANO' }}
+        {{ type === 'BIANNUAL' ? 'ANO INICIAL' : 'ANO' }}
       </label>
 
       <input
@@ -20,7 +20,7 @@
       />
     </div>
 
-    <div class="field-group" *ngIf="type === 'BIANUAL' && year">
+    <div class="field-group" *ngIf="type === 'BIANNUAL' && year">
       <label class="field-label">ANO FINAL</label>
 
       <input
@@ -38,8 +38,8 @@
 
         <div
           class="custom-select-trigger"
-          [class.trigger-anual]="type === 'ANUAL'"
-          [class.trigger-bianual]="type === 'BIANUAL'"
+          [class.trigger-anual]="type === 'YEAR'"
+          [class.trigger-bianual]="type === 'BIANNUAL'"
           (click)="$event.stopPropagation(); typeDropdownOpen = !typeDropdownOpen"
         >
           <span class="select-icon">{{ getTypeIcon(type) }}</span>
@@ -57,8 +57,8 @@
             class="custom-select-option"
             *ngFor="let opt of typeOptions"
             [class.selected]="type === opt.value"
-            [class.option-anual]="opt.value === 'ANUAL' && type === opt.value"
-            [class.option-bianual]="opt.value === 'BIANUAL' && type === opt.value"
+            [class.option-anual]="opt.value === 'YEAR' && type === opt.value"
+            [class.option-bianual]="opt.value === 'BIANNUAL' && type === opt.value"
             (click)="selectType(opt.value)"
           >
             <span class="opt-icon">{{ opt.icon }}</span>
@@ -78,13 +78,13 @@
     <div class="preview-period" *ngIf="year">
       Período:
       <strong>
-        {{ type === 'BIANUAL' ? (year + '–' + (year + 1)) : year }}
+        {{ type === 'BIANNUAL' ? (year + '–' + (year + 1)) : year }}
       </strong>
     </div>
 
     <button class="btn-add" (click)="addPeriod()" [disabled]="yearInvalido">
       Adicionar
-      {{ type === 'BIANUAL' ? (year + '–' + (year + 1)) : year }}
+      {{ type === 'BIANNUAL' ? (year + '–' + (year + 1)) : year }}
     </button>
 
   </div>
