@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import {
   FormArray,
   FormBuilder,
@@ -44,8 +51,7 @@ import { IndicatorRoutingModule } from "../../../features/indicator/indicator-ro
 import { ThemeModule } from "../../theme.module";
 import { ModalAddPeriodComponent } from "../modal-add-period/modal-add-period.component";
 import { PeriodPopoverService } from "../../../core/service/period-popover.service";
-import { ModalAddIntervalComponent } from "../modal-add-interval/modal-add-interval.component";
-import { Observable } from "rxjs";
+import { Observable, Subject, takeUntil } from "rxjs";
 
 export enum AvailableThemes {
   DEFAULT = "default",
@@ -76,7 +82,7 @@ export enum AvailableThemes {
   ],
   styleUrls: ["./indicator-forms.component.scss"],
 })
-export class IndicatorFormsComponent implements OnInit {
+export class IndicatorFormsComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   submitted = false;
   isSubmitting = false;
@@ -110,6 +116,8 @@ export class IndicatorFormsComponent implements OnInit {
 
   private _indicatorService = inject(IndicatorService);
   private _toastService = inject(NbToastrService);
+
+  private destroy$ = new Subject<void>();
 
   get challengesOrgans() {
     return this.form.get("challengesOrgans") as FormArray;
@@ -171,24 +179,31 @@ export class IndicatorFormsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit() {
     this.updateBreadcrumb();
     this.initializer();
 
     this.expandedPeriods = this.times.controls.map(() => true);
 
-    this.popoverService.onClose$.subscribe((data) => {
-      this.popover?.hide();
-      if (!data) return;
+    this.popoverService.onClose$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.popover?.hide();
+        if (!data) return;
 
-      const year = Number(data.year);
-      const type = String(data.type || "")
-        .trim()
-        .toUpperCase();
+        const year = Number(data.year);
+        const type = String(data.type || "")
+          .trim()
+          .toUpperCase();
 
-      this.addNewYearRow(year, type);
-      this.expandedPeriods.push(true);
-    });
+        this.addNewYearRow(year, type);
+        this.expandedPeriods.push(true);
+      });
     if (this.mode === "edit") {
       this.loadIndicatorForEdit();
     }
@@ -256,7 +271,7 @@ export class IndicatorFormsComponent implements OnInit {
 
             this.times.push(
               this.fb.group({
-                year: new FormControl(baseYear), // sempre número
+                year: new FormControl(baseYear),
                 type: new FormControl(type),
                 displayYear: new FormControl(
                   type === "BIANNUAL"
@@ -408,57 +423,55 @@ export class IndicatorFormsComponent implements OnInit {
     );
   }
 
-populatingTheTimeBiannual(times: ITimes[]): ITimes[] {
-  return times.flatMap((time, _, list) =>
-    this.rindigTheBiannual(time, list)
-  );
-}
-
-rindigTheBiannual(time: ITimes, list: ITimes[]): ITimes[] {
-  // 👉 não é bianual
-  if (!time || !time.type?.includes("BIANNUAL")) {
-    return [
-      {
-        ...time,
-        period: time.period && time.period > 0 ? time.period : 1,
-      },
-    ];
+  populatingTheTimeBiannual(times: ITimes[]): ITimes[] {
+    return times.flatMap((time, _, list) => this.rindigTheBiannual(time, list));
   }
 
-  const year = Number(time.year);
+  rindigTheBiannual(time: ITimes, list: ITimes[]): ITimes[] {
+    // 👉 não é bianual
+    if (!time || !time.type?.includes("BIANNUAL")) {
+      return [
+        {
+          ...time,
+          period: time.period && time.period > 0 ? time.period : 1,
+        },
+      ];
+    }
 
-  if (time.period === 2) {
-    return [time];
+    const year = Number(time.year);
+
+    if (time.period === 2) {
+      return [time];
+    }
+
+    const hasSecondYear = list.some(
+      (t) =>
+        t.type === "BIANNUAL" && t.period === 2 && Number(t.year) === year + 1,
+    );
+
+    if (hasSecondYear) {
+      return [time];
+    }
+
+    const [startYear, endYear] = time.displayYear.split("-");
+
+    const firstYear: ITimes = {
+      ...time,
+      year: Number(startYear),
+      period: 1,
+    };
+
+    const secondYear: ITimes = {
+      type: time.type,
+      year: Number(endYear),
+      period: 2,
+    } as ITimes;
+
+    return [firstYear, secondYear];
   }
 
-  const hasSecondYear = list.some(
-    (t) =>
-      t.type === "BIANNUAL" &&
-      t.period === 2 &&
-      Number(t.year) === year + 1
-  );
-
-  if (hasSecondYear) {
-    return [time];
-  }
-
-  const [startYear, endYear] = time.displayYear.split("-");
-
-  const firstYear: ITimes = {
-    ...time,
-    year: Number(startYear),
-    period: 1,
-  };
-
-  const secondYear: ITimes = {
-    type: time.type,
-    year: Number(endYear),
-    period: 2,
-  } as ITimes;
-
-  return [firstYear, secondYear];
-}
   addNewYearRow(year: number, type: string) {
+    console.log("Adicionando novo período:", { year, type });
     const inputYear = Number(year);
     const normalizedType =
       String(type || "")
@@ -476,7 +489,7 @@ rindigTheBiannual(time: ITimes, list: ITimes[]): ITimes[] {
       this._toastService.show(
         `O período ${label} já foi adicionado.`,
         "Atenção",
-        { status: "warning", duration: 4000 },
+        { status: "warning", duration: 2000 },
       );
       return;
     }
