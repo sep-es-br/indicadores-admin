@@ -294,8 +294,8 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
           });
 
           this.times.controls.sort((a, b) => {
-            const yearA = Number(String(a.get("year")?.value).split("-")[0]);
-            const yearB = Number(String(b.get("year")?.value).split("-")[0]);
+            const yearA = Number(String(a.get("year")?.value));
+            const yearB = Number(String(b.get("year")?.value));
 
             return yearA - yearB;
           });
