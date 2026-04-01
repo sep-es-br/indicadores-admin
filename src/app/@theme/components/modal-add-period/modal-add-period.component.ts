@@ -1,11 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, Optional } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import {
   NbButtonModule,
   NbCardModule,
-  NbDialogModule,
-  NbDialogRef,
   NbInputModule,
   NbPopoverModule,
   NbSelectModule,
@@ -23,34 +21,27 @@ import { PeriodPopoverService } from "../../../core/service/period-popover.servi
     NbSelectModule,
     NbPopoverModule,
     FormsModule,
-    NbPopoverModule,
-    NbSelectModule,
   ],
   templateUrl: "./modal-add-period.component.html",
   styleUrls: ["./modal-add-period.component.scss"],
 })
-export class ModalAddPeriodComponent {
+export class ModalAddPeriodComponent implements OnInit {
   year: number = new Date().getFullYear();
   yearInvalido = false;
   type = "YEAR";
-
   maxLenght: string = "4";
-
   typeDropdownOpen = false;
 
-  yearFrom: number | null = null;
-  yearTo: number | null = null;
   typeOptions = [
-    { value: "YEAR", label: "Anual", freq: "1 por ano", icon: "📅" },
-    {
-      value: "BIANNUAL",
-      label: "Bianual",
-      freq: "1 ciclo / 2 anos",
-      icon: "🗓️",
-    },
+    { value: "YEAR",     label: "Anual",   freq: "1 por ano",        icon: "📅" },
+    { value: "BIANNUAL", label: "Bianual", freq: "1 ciclo / 2 anos", icon: "🗓️" },
   ];
 
   constructor(private popoverService: PeriodPopoverService) {}
+
+  ngOnInit() {
+    this.year = this.popoverService.suggestedYear;
+  }
 
   getTypeLabel(val: string) {
     return this.typeOptions.find((o) => o.value === val)?.label ?? val;
@@ -67,29 +58,20 @@ export class ModalAddPeriodComponent {
     this.typeDropdownOpen = false;
   }
 
-addPeriod() {
-  if (this.yearInvalido) return;
-
-  this.popoverService.close({
-    year: this.year,
-    type: this.type,
-  });
-}
+  addPeriod() {
+    if (this.yearInvalido) return;
+    this.popoverService.close({ year: this.year, type: this.type });
+  }
 
   verifyYear(year: number | string) {
     const yearStr = String(year);
-
     const isValidFormat = /^[0-9]{4}$/.test(yearStr);
     const yearNum = Number(yearStr);
-
-    if (!isValidFormat || yearNum < 1900 || yearNum > this.year + 5) {
-      this.yearInvalido = true;
-    } else {
-      this.yearInvalido = false;
-    }
+    this.yearInvalido =
+      !isValidFormat || yearNum < 1900 || yearNum > new Date().getFullYear() + 5;
   }
 
   close() {
-  this.popoverService.close(null);
-}
+    this.popoverService.close(null);
+  }
 }
