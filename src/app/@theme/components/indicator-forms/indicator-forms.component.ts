@@ -527,8 +527,11 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
 
   openAddPeriodPopover() {
     const maxYear = this.times.controls.reduce((max, control) => {
-      const y = Number(control.get("year")?.value);
-      return y > max ? y : max;
+      const y = Number(control.get('year')?.value);
+      const type = String(control.get('type')?.value || '').toUpperCase();
+
+      const effectiveMax = type === 'BIANNUAL' ? y + 1 : y;
+      return effectiveMax > max ? effectiveMax : max;
     }, 0);
 
     this.popoverService.suggestedYear =
