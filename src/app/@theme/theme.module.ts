@@ -61,12 +61,12 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
-  NgbPaginationModule
+  NgbPaginationModule,
+  ConfirmationDialogComponent,
 ];
 const COMPONENTS = [
   HeaderComponent,
   FooterComponent,
-  ConfirmationDialogComponent,
   BreadcrumbComponent,
   TableSearchComponent,
   PaginationComponent,
@@ -83,6 +83,52 @@ const PIPES = [
   TimingPipe,
   NumberWithCommasPipe,
 ];
+
+export enum AvailableThemes {
+  DEFAULT = 'default',
+  DARK = 'dark',
+  COSMIC = 'cosmic',
+};
+
+export interface AvailableThemesStyles {
+  themePrimaryColor: string;
+  themeSecondaryColor: string;
+  textPrimaryColor: string;
+  textSecondaryColor: string;
+}
+
+export const getAvailableThemesStyles = (theme: AvailableThemes): AvailableThemesStyles => {
+  switch (theme) {
+    case AvailableThemes.DEFAULT:
+      return {
+        themePrimaryColor: '#FFFFFF',
+        themeSecondaryColor: '#EDF1F7',
+        textPrimaryColor: '#505050',
+        textSecondaryColor: '#000000',
+      };
+    case AvailableThemes.DARK:
+      return {
+        themePrimaryColor: '#151A30',
+        themeSecondaryColor: '#222B45',
+        textPrimaryColor: '#FFFFFF',
+        textSecondaryColor: '#505050',
+      };
+    case AvailableThemes.COSMIC:
+      return {
+        themePrimaryColor: '#1B1B38',
+        themeSecondaryColor: '#323259',
+        textPrimaryColor: '#FFFFFF',
+        textSecondaryColor: '#505050',
+      };
+    default:
+      return {
+        themePrimaryColor: '#FFFFFF',
+        themeSecondaryColor: '#EDF1F7',
+        textPrimaryColor: '#000000',
+        textSecondaryColor: '#505050',
+      };
+  }
+};
 
 @NgModule({
   imports: [CommonModule,RouterModule,FormsModule, ...NB_MODULES],

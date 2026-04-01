@@ -5,14 +5,19 @@ import { IBreadcrumbItem } from '../../core/interfaces/breadcrumb-item.interface
 import { IPaginacaoDados } from '../../core/interfaces/paginacao-dados.interface';
 import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { debounce, debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbSpinnerModule, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 import { IIndicator } from '../../core/interfaces/indicator.interface';
 import { IndicatorService } from '../../core/service/indicator.service';
+import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
 
+export enum AvailableThemes {
+  DEFAULT = "default",
+  DARK = "dark",
+  COSMIC = "cosmic",
+}
 
 @Component({
   selector: 'ngx-indicator',
@@ -128,8 +133,9 @@ export class IndicatorComponent implements OnInit{
         if (confirmed) {
           this.indicatorService.deleteIndicator(indicatorId)
             .subscribe({
-              next: () => {this.toastrService.show(
-                '', 'Gestão deletada com sucesso!',
+              next: () => {
+                this.toastrService.show(
+                '', 'Indicador deletado com sucesso!',
                 { status: 'success', duration: 8000 }
               );
               this.fetchPage();

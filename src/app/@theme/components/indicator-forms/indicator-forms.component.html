@@ -1,0 +1,837 @@
+<!-- <ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+
+<form [formGroup]="form">
+  <nb-card>
+    <nb-card-header> Ficha de Indicadores </nb-card-header>
+
+    <nb-card-body>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Nome</label>
+          <input
+            nbInput
+            fullWidth
+            placeholder="Digite o nome"
+            formControlName="name"
+            [status]="
+              form.get('name')?.invalid && submitted ? 'danger' : 'basic'
+            "
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label>Unidade de Medida</label>
+          <nb-select
+            fullWidth
+            placeholder="Selecione uma unidade"
+            formControlName="unit"
+            [status]="
+              form.get('unit')?.invalid && submitted ? 'danger' : 'basic'
+            "
+          >
+            <nb-option *ngFor="let unit of units" [value]="unit">{{
+              unit
+            }}</nb-option>
+            <nb-option value="other">Outra</nb-option>
+          </nb-select>
+          <input
+            *ngIf="form.get('unit')?.value === 'other'"
+            nbInput
+            fullWidth
+            class="mt-2"
+            placeholder="Digite a unidade"
+            formControlName="customUnit"
+          />
+        </div>
+
+        <div class="col-md-6 mt-3">
+          <label>Polaridade</label>
+          <nb-select
+            fullWidth
+            placeholder="Selecione"
+            formControlName="polarity"
+          >
+            <nb-option value="Positiva">Positiva</nb-option>
+            <nb-option value="Negativa">Negativa</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="col-md-6 mt-3">
+          <label>ODS</label>
+          <nb-select
+            fullWidth
+            multiple
+            placeholder="Selecione"
+            formControlName="ods"
+          >
+            <nb-option-group
+              *ngFor="let ods of odsList"
+              [title]="ods.order + ' - ' + ods.name"
+            >
+              <nb-option
+                *ngFor="let goal of ods.odsGoals"
+                [value]="goal.order"
+                >{{ goal.order }}</nb-option
+              >
+            </nb-option-group>
+          </nb-select>
+        </div>
+
+        <div class="col-md-6 mt-3">
+          <label>Justificativa da Base</label>
+          <textarea
+            nbInput
+            fullWidth
+            rows="3"
+            formControlName="justificationBase"
+            maxlength="2000"
+          ></textarea>
+        </div>
+
+        <div class="col-md-6 mt-3">
+          <label>Observações</label>
+          <textarea
+            nbInput
+            fullWidth
+            rows="3"
+            formControlName="observations"
+            maxlength="2000"
+          ></textarea>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+
+  <nb-card class="mt-3">
+    <nb-card-header> Desafios e Órgãos </nb-card-header>
+
+    <nb-card-body>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Gestão</label>
+          <nb-select
+            fullWidth
+            multiple
+            placeholder="Selecione"
+            formControlName="management"
+          >
+            <nb-option
+              *ngFor="let management of challengeList"
+              [value]="management.managementName"
+            >
+              {{ management.managementName }}
+            </nb-option>
+          </nb-select>
+        </div>
+
+        <div class="col-md-6">
+          <label>Desafio</label>
+          <nb-select
+            fullWidth
+            multiple
+            placeholder="Selecione"
+            formControlName="challenges"
+          >
+            <nb-option-group
+              *ngFor="let organizer of filteredOrganizers"
+              [title]="organizer.name"
+            >
+              <nb-option
+                *ngFor="let challenge of organizer.challenges"
+                [value]="challenge.uuId"
+              >
+                {{ challenge.name }}
+              </nb-option>
+            </nb-option-group>
+          </nb-select>
+        </div>
+      </div>
+
+      <div class="mt-4" *ngIf="challengesOrgans.controls.length">
+        <div class="row fw-bold mb-2">
+          <div class="col-md-6">Desafio</div>
+          <div class="col-md-5">Órgão</div>
+          <div class="col-md-1 text-center">Ação</div>
+        </div>
+
+        <ng-container
+          *ngFor="let control of challengesOrgans.controls; let i = index"
+        >
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <input
+                nbInput
+                fullWidth
+                readonly
+                [value]="
+                  getChallengeNameById(control.get('challengeId')?.value)
+                "
+              />
+            </div>
+            <div class="col-md-5">
+              <nb-select
+                fullWidth
+                placeholder="Selecione um órgão"
+                [formControl]="control.get('organ')"
+              >
+                <nb-option
+                  *ngFor="let organ of organizationAcronyms"
+                  [value]="organ.sigla"
+                >
+                  {{ organ.sigla }} - {{ organ.nomeFantasia }}
+                </nb-option>
+              </nb-select>
+            </div>
+            <div class="col-md-1 text-center">
+              <button
+                nbButton
+                size="small"
+                status="danger"
+                (click)="removeOrganRow(i)"
+              >
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </nb-card-body>
+  </nb-card>
+
+  <nb-card class="mt-3">
+    <nb-card-header> Dados de Apurações </nb-card-header>
+
+    <nb-card-body>
+
+      <div
+        *ngIf="times.controls.length === 0"
+        class="empty-apuracao"
+      >
+        <div class="empty-content">
+          <nb-icon icon="clipboard-outline"></nb-icon>
+          <h6>Nenhum período adicionado</h6>
+          <p class="description-empty">
+            Clique em "+ Adicionar" e escolha o ano e o tipo de periodicidade
+          </p>
+        </div>
+      </div>
+
+
+      <div class="periods-list">
+        <div
+          class="period-card"
+          *ngFor="let control of times.controls; let i = index"
+        >
+
+          <div
+            class="period-card-header"
+            [class.expanded]="expandedPeriods[i]"
+            [class.type-bianual]="control.get('type')?.value === 'BIANUAL'"
+            [class.type-anual]="control.get('type')?.value === 'ANUAL'"
+            (click)="togglePeriod(i)"
+          >
+            <div class="period-card-left">
+
+              <span class="period-toggle">{{
+                expandedPeriods[i] ? "▼" : "▶"
+              }}</span>
+
+
+              <span class="period-year">{{
+                control.get("displayYear")?.value
+              }}</span>
+
+              <div class="period-type-wrapper">
+                <span
+                  class="period-type-badge"
+                  (click)="$event.stopPropagation(); toggleTypeDropdown(i)"
+                >
+                  📅 {{ getTypeLabel(control.get("type")?.value) }}
+                  <nb-icon
+                    icon="chevron-down-outline"
+                    style="font-size: 10px"
+                  ></nb-icon>
+                </span>
+
+                <div
+                  class="type-inline-dropdown"
+                  *ngIf="typeDropdownIndex === i"
+                  (click)="$event.stopPropagation()"
+                >
+                  <div
+                    *ngFor="let opt of typeOptions"
+                    class="type-inline-option"
+                    [class.selected]="control.get('type')?.value === opt.value"
+                    (click)="changeType(i, opt.value)"
+                  >
+                    {{ opt.icon }} {{ opt.label }}
+                    <span class="opt-freq">{{ opt.freq }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="period-card-right">
+              <span class="period-year-label"
+                >🗓 {{ control.get("displayYear")?.value }}</span
+              >
+              <button
+                nbButton
+                size="tiny"
+                status="danger"
+                ghost
+                (click)="$event.stopPropagation(); removeYearRow(i)"
+              >
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+
+
+          <div class="period-card-body" *ngIf="expandedPeriods[i]">
+            <div class="row">
+              <div class="col-md-3">
+                <label class="field-label">META</label>
+                <input
+                  nbInput
+                  fullWidth
+                  type="number"
+                  placeholder="—"
+                  [formControl]="control.get('target')"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="field-label">META DE EXIBIÇÃO</label>
+                <input
+                  nbInput
+                  fullWidth
+                  placeholder="—"
+                  [formControl]="control.get('showTarget')"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="field-label">RESULTADO</label>
+                <input
+                  nbInput
+                  fullWidth
+                  type="number"
+                  placeholder="—"
+                  [formControl]="control.get('result')"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="field-label">RESULTADO DE EXIBIÇÃO</label>
+                <input
+                  nbInput
+                  fullWidth
+                  placeholder="—"
+                  [formControl]="control.get('showResult')"
+                />
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="d-flex justify-content-between">
+                  <label class="field-label">JUSTIFICATIVA DE META</label>
+                  <small class="text-muted">
+                    {{
+                      (control.get("justificationGoal")?.value || "").length
+                    }}
+                    / 500
+                  </small>
+                </div>
+                <textarea
+                  nbInput
+                  fullWidth
+                  rows="3"
+                  placeholder="Descreva a justificativa..."
+                  [formControl]="control.get('justificationGoal')"
+                  maxlength="500"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-actions mt-3">
+        <button
+          type="button"
+          nbButton
+          ghost
+          status="primary"
+          fullWidth
+          [nbPopover]="addPeriodComponent"
+          nbPopoverPlacement="top"
+          nbPopoverTrigger="noop"
+          #pop="nbPopover"
+          (click)="pop.show()"
+        >
+          + Adicionar período
+        </button>
+
+        <button
+          type="button"
+          nbButton
+          ghost
+          status="warning"
+          [nbPopover]="addIntervalComponent"
+          nbPopoverPlacement="top-end"
+          nbPopoverTrigger="noop"
+          #popInterval="nbPopover"
+          (click)="popInterval.show()"
+        >
+          ⚡ Intervalo
+        </button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+
+  <nb-card class="mt-3">
+    <nb-card-footer class="text-center">
+      <div class="d-flex justify-content-between">
+        <button nbButton status="basic" (click)="onCancel()">Cancelar</button>
+        <button
+          nbButton
+          status="primary"
+          (click)="onSubmit()"
+          [nbSpinner]="isSubmitting"
+          [disabled]="isSubmitting"
+        >
+          Salvar
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</form> -->
+
+<ngx-breadcrumb [breadcrumb]="breadcrumb"></ngx-breadcrumb>
+
+<form [formGroup]="form">
+  <p>Ficha de indicadores</p>
+
+  <div class="form-container">
+    <div class="row">
+      <div class="col-md-6">
+        <label>Nome</label>
+        <input
+          nbInput
+          fullWidth
+          placeholder="Digite o nome"
+          formControlName="name"
+          [status]="isInvalid('name') ? 'danger' : 'basic'"
+        />
+      </div>
+
+      <div class="col-md-6">
+        <label>Unidade de Medida</label>
+        <nb-select
+          fullWidth
+          placeholder="Selecione uma unidade"
+          formControlName="unit"
+          [status]="isInvalid('unit') ? 'danger' : 'basic'"
+        >
+          <nb-option *ngFor="let unit of units" [value]="unit">{{
+            unit
+          }}</nb-option>
+          <nb-option value="other">Outra</nb-option>
+        </nb-select>
+        <input
+          *ngIf="form.get('unit')?.value === 'other'"
+          nbInput
+          fullWidth
+          class="mt-2"
+          placeholder="Digite a unidade"
+          formControlName="customUnit"
+        />
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Polaridade</label>
+        <nb-select
+          fullWidth
+          placeholder="Selecione"
+          formControlName="polarity"
+          [ngClass]="{ 'status-danger': isInvalid('polarity') }">
+          <nb-option value="Positiva">Positiva</nb-option>
+          <nb-option value="Negativa">Negativa</nb-option>
+        </nb-select>
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>ODS</label>
+        <nb-select
+          fullWidth
+          multiple
+          placeholder="Selecione um ou mais ODS"
+          formControlName="ods"
+        >
+          <nb-option-group
+            *ngFor="let ods of odsList"
+            [title]="ods.order + ' - ' + ods.name"
+          >
+            <nb-option *ngFor="let goal of ods.odsGoals" [value]="goal.order">{{
+              goal.order
+            }}</nb-option>
+          </nb-option-group>
+        </nb-select>
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Justificativa da Base de Referência</label>
+        <textarea
+          nbInput
+          fullWidth
+          rows="3"
+          formControlName="justificationBase"
+          maxlength="2000"
+          placeholder="Digite a justificativa"
+        ></textarea>
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Observações</label>
+        <textarea
+          nbInput
+          fullWidth
+          rows="3"
+          formControlName="observations"
+          maxlength="2000"
+          placeholder="Digite suas observações"
+        ></textarea>
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Gestão</label>
+        <nb-select
+          fullWidth
+          multiple
+          placeholder="Selecione"
+          formControlName="management"
+        >
+          <nb-option
+            *ngFor="let management of challengeList"
+            [value]="management.managementName"
+          >
+            {{ management.managementName }}
+          </nb-option>
+        </nb-select>
+      </div>
+
+      <div class="col-md-6 mt-3">
+        <label>Desafio</label>
+        <nb-select
+          fullWidth
+          multiple
+          placeholder="Selecione"
+          formControlName="challenges"
+        >
+          <nb-option-group
+            *ngFor="let organizer of filteredOrganizers"
+            [title]="organizer.name"
+          >
+            <nb-option
+              *ngFor="let challenge of organizer.challenges"
+              [value]="challenge.uuId"
+            >
+              {{ challenge.name }}
+            </nb-option>
+          </nb-option-group>
+        </nb-select>
+      </div>
+
+      <!-- DESAFIO x ÓRGÃO -->
+      <div class="col-12 mt-3" *ngIf="challengesOrgans.controls.length">
+        <div class="row fw-bold mb-2">
+          <div class="col-md-6"> <label for="">Desafio</label></div>
+          <div class="col-md-5"> <label for="">Órgão</label></div>
+          <div class="col-md-1 text-center"> <label for="">Ação</label></div>
+        </div>
+        <ng-container
+          *ngFor="let control of challengesOrgans.controls; let i = index"
+        >
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <input
+                nbInput
+                fullWidth
+                readonly
+                [value]="
+                  getChallengeNameById(control.get('challengeId')?.value)
+                "
+              />
+            </div>
+            <div class="col-md-5">
+              <nb-select
+                fullWidth
+                placeholder="Selecione um órgão"
+                [formControl]="control.get('organ')"
+              >
+                <nb-option
+                  *ngFor="let organ of organizationAcronyms"
+                  [value]="organ.sigla"
+                >
+                  {{ organ.sigla }} - {{ organ.nomeFantasia }}
+                </nb-option>
+              </nb-select>
+            </div>
+            <div class="col-md-1 text-center">
+              <button
+                nbButton
+                size="small"
+                status="danger"
+                (click)="removeOrganRow(i)"
+              >
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="col-12 mt-3">
+        <label>Anexar PDF</label>
+        <div class="d-flex align-items-center gap-3">
+          <button
+            type="button"
+            nbButton
+            status="primary"
+            (click)="fileInput.click()"
+          >
+            Escolher arquivo
+          </button>
+          <span *ngIf="selectedPdfFile" class="file-name">{{
+            selectedPdfFile.name
+          }}</span>
+          <button
+            *ngIf="selectedPdfFile"
+            type="button"
+            nbButton
+            status="danger"
+            size="small"
+            (click)="removePdf(fileInput)"
+          >
+            ×
+          </button>
+          <input
+            #fileInput
+            type="file"
+            accept=".pdf"
+            hidden
+            (change)="onPdfSelected($event)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DADOS DE APURAÇÕES -->
+  <p class="mt-4">Dados de Apurações</p>
+
+  <div class="form-container">
+    <div *ngIf="times.controls.length === 0" class="empty-apuracao">
+      <div class="empty-content">
+        <nb-icon icon="clipboard-outline"></nb-icon>
+        <h6>Nenhum período adicionado</h6>
+        <p class="description-empty">
+          Clique em "+ Adicionar" e escolha o ano e o tipo de periodicidade
+        </p>
+      </div>
+    </div>
+
+    <!-- CARDS DOS PERÍODOS -->
+  <div class="periods-list">
+      <div
+        class="period-card"
+        *ngFor="let control of times.controls; let i = index"
+      >
+        <div
+          class="period-card-header"
+          [class.expanded]="expandedPeriods[i]"
+          [class.type-bianual]="control.get('type')?.value === 'BIANNUAL'"
+          [class.type-anual]="control.get('type')?.value === 'YEAR'"
+          (click)="togglePeriod(i)"
+        >
+          <div class="period-card-left">
+            <span class="period-toggle">{{
+              expandedPeriods[i] ? "▼" : "▶"
+            }}</span>
+            <span class="period-year">
+              {{
+              control.get("displayYear")?.value
+            }}
+          </span>
+            <div class="period-type-wrapper">
+              <span
+                class="period-type-badge"
+              >
+                📅 {{ getTypeLabel(control.get("type")?.value) }}
+                <!-- <nb-icon
+                  icon="chevron-down-outline"
+                  style="font-size: 10px"
+                ></nb-icon> -->
+              </span>
+              <div
+                class="type-inline-dropdown"
+                *ngIf="typeDropdownIndex === i"
+                (click)="$event.stopPropagation()"
+              >
+                <div
+                  *ngFor="let opt of typeOptions"
+                  class="type-inline-option"
+                  [class.selected]="control.get('type')?.value === opt.value"
+                  (click)="$event.stopPropagation(); changeType(i, opt.value)"
+                >
+                  {{ opt.icon }} {{ opt.label }}
+                  <span class="opt-freq">{{ opt.freq }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="period-card-right">
+            <span class="period-year-label">
+              🗓 {{ control.get("displayYear")?.value }}
+            </span>
+            <button
+              nbButton
+              size="tiny"
+              status="danger"
+              ghost
+              (click)="$event.stopPropagation(); removeYearRow(i)"
+            >
+              <nb-icon icon="trash-2-outline"></nb-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="period-card-body" *ngIf="expandedPeriods[i]">
+          <div class="row">
+            <div class="col-md-3">
+              <label class="field-label">META</label>
+              <input
+                nbInput
+                fullWidth
+                type="number"
+                placeholder="—"
+                [formControl]="control.get('valueGoal')"
+                name="valueGoal"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="field-label">META DE EXIBIÇÃO</label>
+              <input
+                nbInput
+                fullWidth
+                placeholder="—"
+                [formControl]="control.get('showValueGoal')"
+                name="showValueGoal"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="field-label">RESULTADO</label>
+              <input
+                nbInput
+                fullWidth
+                type="number"
+                placeholder="—"
+                [formControl]="control.get('valueResult')"
+                name="valueResult"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="field-label">RESULTADO DE EXIBIÇÃO</label>
+              <input
+                nbInput
+                fullWidth
+                placeholder="—"
+                [formControl]="control.get('showValueResult')"
+                name="showValueResult"
+              />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between">
+                <label class="field-label">JUSTIFICATIVA DE META</label>
+                <small class="text-muted">
+                  {{ (control.get("justificationGoal")?.value || "").length }} / 500
+                </small>
+              </div>
+              <textarea
+                nbInput
+                fullWidth
+                rows="3"
+                placeholder="Descreva a justificativa..."
+                [formControl]="control.get('justificationGoal')"
+                maxlength="500"
+              ></textarea>
+            </div>
+
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between">
+                <label class="field-label">JUSTIFICATIVA DO REALIZADO</label>
+                <small class="text-muted">
+                  {{ (control.get("justificationResult")?.value || "").length }} / 500
+                </small>
+              </div>
+              <textarea
+                nbInput
+                fullWidth
+                rows="3"
+                placeholder="Descreva a justificativa..."
+                [formControl]="control.get('justificationResult')"
+                maxlength="500"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="empty-actions mt-3">
+      <button
+        type="button"
+        nbButton
+        ghost
+        status="primary"
+        fullWidth
+        [nbPopover]="addPeriodComponent"
+        nbPopoverPlacement="top"
+        nbPopoverTrigger="noop"
+        #pop="nbPopover"
+        (click)="pop.show()"
+      >
+        + Adicionar período
+      </button>
+      <!-- <button
+        type="button"
+        nbButton
+        ghost
+        status="warning"
+        [nbPopover]="addIntervalComponent"
+        nbPopoverPlacement="top-end"
+        nbPopoverTrigger="noop"
+        #popInterval="nbPopover"
+        (click)="popInterval.show()"
+      >
+        ⚡ Intervalo
+      </button> -->
+    </div>
+  </div>
+
+  <div class="form-actions-footer">
+    <button nbButton status="danger" (click)="onCancel()">Cancelar</button>
+    <button
+      nbButton
+      status="primary"
+      (click)="onSubmit()"
+      [nbSpinner]="isSubmitting"
+      [disabled]="isSubmitting"
+    >
+      Salvar
+    </button>
+  </div>
+</form>
