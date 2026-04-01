@@ -14,6 +14,9 @@ export class PeriodPopoverService {
   } | null>();
   onCloseInterval$ = this.closeInterval$.asObservable();
 
+  // ✅ Ano sugerido calculado pelo pai antes de abrir o popover
+  suggestedYear: number = new Date().getFullYear();
+
   close(data?: { year: number; type: string }) {
     this.close$.next(data ?? null);
   }

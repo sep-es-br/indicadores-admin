@@ -51,7 +51,7 @@ import { IndicatorRoutingModule } from "../../../features/indicator/indicator-ro
 import { ThemeModule } from "../../theme.module";
 import { ModalAddPeriodComponent } from "../modal-add-period/modal-add-period.component";
 import { PeriodPopoverService } from "../../../core/service/period-popover.service";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { forkJoin, Observable, Subject, takeUntil } from "rxjs";
 
 export enum AvailableThemes {
   DEFAULT = "default",
@@ -145,7 +145,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private popoverService: PeriodPopoverService,
+    private popoverService: PeriodPopoverService
   ) {
     this.form = this.fb.group({
       id: new FormControl(""),
@@ -204,6 +204,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
         this.addNewYearRow(year, type);
         this.expandedPeriods.push(true);
       });
+
     if (this.mode === "edit") {
       this.loadIndicatorForEdit();
     }
@@ -220,6 +221,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
 
   loadIndicatorForEdit() {
     this.isLoading = true;
+
     this.route.queryParams.subscribe((params) => {
       const indicatorId = params["id"];
       if (!indicatorId) {
@@ -227,38 +229,48 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this._indicatorService.getIndicator(indicatorId).subscribe({
-        next: (data: IIndicator) => {
+      // ✅ forkJoin garante que challengeList e indicator chegam juntos,
+      // eliminando a race condition em redes lentas.
+      forkJoin({
+        indicator: this._indicatorService.getIndicator(indicatorId),
+        challenges: this._indicatorService.getManagementOrganizerChallenges(),
+      }).subscribe({
+        next: ({ indicator, challenges }) => {
+          // Popula challengeList ANTES de qualquer patchValue
+          this.challengeList = challenges;
+          this.filteredOrganizers = challenges.flatMap((m) => m.organizers);
+
           this.form.patchValue({
-            id: data.uuId,
-            name: data.name,
-            polarity: data.polarity,
-            unit: data.measureUnit,
-            justificationBase: data.justificationBase,
-            observations: data.observations,
-            ods: this.extractOdsOrders(data.odsgoal),
-            challenges: data.measures.map((m) => m.challengeId),
+            id: indicator.uuId,
+            name: indicator.name,
+            polarity: indicator.polarity,
+            unit: indicator.measureUnit,
+            justificationBase: indicator.justificationBase,
+            observations: indicator.observations,
+            ods: this.extractOdsOrders(indicator.odsgoal),
+            challenges: indicator.measures.map((m) => m.challengeId),
           });
 
-          if (data.originalFileName) {
-            this.existingPdfFileName = data.originalFileName;
+          if (indicator.originalFileName) {
+            this.existingPdfFileName = indicator.originalFileName;
             this.hadOriginalPdf = true;
           }
 
+          // ✅ challengeList já está populado — getManagementNamesByChallengeIds funciona corretamente
           const managementNames = this.getManagementNamesByChallengeIds(
-            data.measures.map((m) => m.challengeId),
+            indicator.measures.map((m) => m.challengeId)
           );
           this.form.get("management")?.setValue(managementNames);
 
           this.challengesOrgans.controls.forEach((control) => {
             const challengeId = control.get("challengeId")?.value;
-            const measure = data.measures.find(
-              (m) => m.challengeId === challengeId,
+            const measure = indicator.measures.find(
+              (m) => m.challengeId === challengeId
             );
             if (measure) control.patchValue({ organ: measure.organ });
           });
 
-          data.times.forEach((target) => {
+          indicator.times.forEach((target) => {
             const type =
               String(target.type || "")
                 .trim()
@@ -276,7 +288,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
                 displayYear: new FormControl(
                   type === "BIANNUAL"
                     ? `${baseYear}-${baseYear + 1}`
-                    : `${baseYear}`,
+                    : `${baseYear}`
                 ),
                 period: new FormControl(target.period),
                 valueGoal: new FormControl(target.valueGoal || null),
@@ -285,9 +297,9 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
                 showValueResult: new FormControl(target.showValueResult || ""),
                 justificationGoal: new FormControl(target.justificationGoal),
                 justificationResult: new FormControl(
-                  target.justificationResult,
+                  target.justificationResult
                 ),
-              }),
+              })
             );
 
             this.expandedPeriods.push(true);
@@ -296,7 +308,6 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
           this.times.controls.sort((a, b) => {
             const yearA = Number(String(a.get("year")?.value));
             const yearB = Number(String(b.get("year")?.value));
-
             return yearA - yearB;
           });
         },
@@ -346,7 +357,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
     const names: string[] = [];
     challengeIds.forEach((id) => {
       const mgmt = this.challengeList.find((m) =>
-        m.organizers.some((o) => o.challenges.some((c) => c.uuId === id)),
+        m.organizers.some((o) => o.challenges.some((c) => c.uuId === id))
       );
       if (mgmt && !names.includes(mgmt.managementName)) {
         names.push(mgmt.managementName);
@@ -419,7 +430,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
       },
       () => {
         this.isSubmitting = false;
-      },
+      }
     );
   }
 
@@ -446,7 +457,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
 
     const hasSecondYear = list.some(
       (t) =>
-        t.type === "BIANNUAL" && t.period === 2 && Number(t.year) === year + 1,
+        t.type === "BIANNUAL" && t.period === 2 && Number(t.year) === year + 1
     );
 
     if (hasSecondYear) {
@@ -489,7 +500,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
       this._toastService.show(
         `O período ${label} já foi adicionado.`,
         "Atenção",
-        { status: "warning", duration: 2000 },
+        { status: "warning", duration: 2000 }
       );
       return;
     }
@@ -501,7 +512,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
         displayYear: new FormControl(
           normalizedType === "BIANNUAL"
             ? `${inputYear}-${inputYear + 1}`
-            : `${inputYear}`,
+            : `${inputYear}`
         ),
         period: new FormControl(null),
         valueGoal: new FormControl(),
@@ -510,8 +521,20 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
         showValueResult: new FormControl(),
         justificationGoal: new FormControl(),
         justificationResult: new FormControl(),
-      }),
+      })
     );
+  }
+
+  openAddPeriodPopover() {
+    const maxYear = this.times.controls.reduce((max, control) => {
+      const y = Number(control.get("year")?.value);
+      return y > max ? y : max;
+    }, 0);
+
+    this.popoverService.suggestedYear =
+      maxYear > 0 ? maxYear + 1 : new Date().getFullYear();
+
+    this.popover.show();
   }
 
   removeYearRow(i: number) {
@@ -521,7 +544,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
 
   togglePeriod(i: number) {
     this.expandedPeriods = this.expandedPeriods.map((val, idx) =>
-      idx === i ? !val : val,
+      idx === i ? !val : val
     );
   }
 
@@ -544,7 +567,11 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
   }
 
   initializer() {
-    this.getManagementOrganizerChallenges();
+    // ✅ No modo edit, getManagementOrganizerChallenges é chamado dentro do forkJoin
+    // para garantir sincronismo. No modo create, chamamos normalmente aqui.
+    if (this.mode === "create") {
+      this.getManagementOrganizerChallenges();
+    }
     this.getDistinctMeasureUnits();
     this.getDistinctOrganizationAcronyms();
     this.getYears();
@@ -601,7 +628,7 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
           this.fb.group({
             challengeId: [id, Validators.required],
             organ: ["", Validators.required],
-          }),
+          })
         );
       }
     });
@@ -642,19 +669,19 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
 
   isChallengeInSelectedManagements(id: string): boolean {
     return this.filteredOrganizers.some((o) =>
-      o.challenges.some((c) => c.uuId === id),
+      o.challenges.some((c) => c.uuId === id)
     );
   }
 
   getChallengeNameById(challengeId: string): string {
     for (const organizer of this.filteredOrganizers) {
       const challenge = organizer.challenges.find(
-        (c) => c.uuId === challengeId,
+        (c) => c.uuId === challengeId
       );
       if (challenge) {
         const prefix = organizer.name.split(" - ")[0].trim();
         const mgmt = this.challengeList.find((m) =>
-          m.managementName.includes(prefix),
+          m.managementName.includes(prefix)
         );
         return `${mgmt?.managementName ?? prefix} - ${challenge.name}`;
       }
