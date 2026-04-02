@@ -1,45 +1,44 @@
-@import '../../@theme/styles/themes';
+@import "../../@theme/styles/themes";
 
-.pointer{
-    cursor: pointer;
+.pointer {
+  cursor: pointer;
 }
 
-.logo-ODS{
-    width: 400px;
+.logo-ODS {
+  width: 400px;
 }
 
 .ods-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-top: 20px;
 }
 
 .ods-icons img {
-    width: 75px;
-    height: 75px;
-    margin: 5px;
+  width: 75px;
+  height: 75px;
+  margin: 5px;
 }
 
-.title{
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #0098DA;
+.title {
+  padding-top: 20px;
+  padding-bottom: 5px;
+  color: #0098da;
 }
-p{
-    font-size: 16px; 
-    text-align: justify
+p {
+  font-size: 16px;
+  text-align: justify;
 }
 
 @media (max-width: 991px) {
-    .col-md-12 {
-        &.col-lg-7 {
-          order: 2; 
-        }
-  
-        &.col-lg-5 {
-          order: 1; 
-        }
+  .col-md-12 {
+    &.col-lg-7 {
+      order: 2;
     }
-}
 
+    &.col-lg-5 {
+      order: 1;
+    }
+  }
+}

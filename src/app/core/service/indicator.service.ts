@@ -4,7 +4,6 @@ import { ErrorHandlerService } from "./error-handler.service";
 import { environment } from "../../../environments/environment";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { IChallenge } from "../interfaces/challenge.interface";
 import { IHttpGetRequestBody, IHttpGetResponseBody } from "../interfaces/http-get.interface";
 import { IIndicator, IIndicatorDetails, IIndicatorForm } from "../interfaces/indicator.interface";
 import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-string-parameters.helper";
@@ -63,9 +62,9 @@ export class IndicatorService {
     );
   }
 
-  public getYears(): Observable<number[]> {
+  public getYears(): Observable<string[]> {
     const url = `${this._url}/year-list`;
-    return this._http.get<number[]>(url).pipe(
+    return this._http.get<string[]>(url).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
         return throwError(() => new Error('Erro ao obter os anos'));
@@ -83,18 +82,18 @@ export class IndicatorService {
     );
   }
 
-  public createIndicator(indicator: IIndicatorForm, pdfFile?: File): Observable<IIndicatorForm> {
+  public createIndicator(indicator: IIndicatorForm, pdfFile?: File | null): Observable<IIndicatorForm> {
     const formData = new FormData();
-  
+
     formData.append('indicator', new Blob(
       [JSON.stringify(indicator)],
       { type: 'application/json' }
     ));
-  
+
     if (pdfFile) {
       formData.append('file', pdfFile, pdfFile.name);
     }
-  
+
     return this._http.post<IIndicatorForm>(this._url, formData).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
@@ -102,7 +101,7 @@ export class IndicatorService {
       })
     );
   }
-  
+
 
   public getIndicator(indicatorUuId: string): Observable<IIndicator> {
     const url = `${this._url}/getIndicator/${indicatorUuId}`;
@@ -124,22 +123,22 @@ export class IndicatorService {
     );
   }
 
-  public updateIndicator(indicator: IIndicatorForm, pdfFile?: File): Observable<void> {
+  public updateIndicator(indicator: IIndicatorForm, pdfFile?: File | null): Observable<void> {
     const formData = new FormData();
-  
+
     const jsonBlob = new Blob([JSON.stringify(indicator)], {
       type: 'application/json',
     });
     formData.append('indicator', jsonBlob);
-  
+
     if (pdfFile) {
       formData.append('file', pdfFile);
     }
-  
+
     return this._http.put<void>(this._url, formData).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
-        return throwError(() => err); 
+        return throwError(() => err);
       })
     );
   }
@@ -149,8 +148,10 @@ export class IndicatorService {
     return this._http.delete<void>(url).pipe(
       catchError((err: HttpErrorResponse) => {
         this._errorHandlerService.handleError(err);
-        return throwError(() => err); 
+        return throwError(() => err);
       })
     );
   }
+
+  
 }
