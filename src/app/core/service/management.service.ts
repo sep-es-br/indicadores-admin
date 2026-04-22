@@ -17,6 +17,15 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
 
     constructor(private _http: HttpClient, private _errorHandlerService: ErrorHandlerService) {}
 
+    public getMenagementsId(uuId: string) :Observable<IHttpGetResponseBody<IManagement>> {
+      return this._http.get<IHttpGetResponseBody<IManagement>>(`${this._url}/${uuId}`).pipe(
+          catchError((err: HttpErrorResponse) => {
+            this._errorHandlerService.handleError(err);
+            return throwError(() => err);
+          })
+        );
+    }
+
     public getManagements(pageConfig: IHttpGetRequestBody): Observable<IHttpGetResponseBody<IManagement>> {
         return this._http.get<IHttpGetResponseBody<IManagement>>(`${this._url}`,{
           params:
@@ -43,7 +52,7 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
         return this._http.delete<void>(url).pipe(
           catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
-            return throwError(() => err); 
+            return throwError(() => err);
           })
         );
       }
@@ -52,9 +61,19 @@ import { PageableQueryStringParametersHelper } from "../helpers/pageable-query-s
         return this._http.put<void>(this._url, management).pipe(
           catchError((err: HttpErrorResponse) => {
             this._errorHandlerService.handleError(err);
-            return throwError(() => err); 
+            return throwError(() => err);
           })
         );
       }
-      
+
+     public hasChallenge(id: string): Observable<{ possuiDesafio: boolean }> {
+      const url = `${this._url}/has-challenge/${id}`;
+      return this._http.get<{ possuiDesafio: boolean }>(url).pipe(
+        catchError((err: HttpErrorResponse) => {
+          this._errorHandlerService.handleError(err);
+          return throwError(() => err);
+      })
+    );
+}
+
   }

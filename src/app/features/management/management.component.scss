@@ -63,6 +63,7 @@ span {
 .menu-icon {
   background-color: #edf1f7;
 }
+
 .menu-icon:hover {
   background-color: #e4e9f2;
   cursor: pointer;
@@ -73,15 +74,88 @@ span {
     margin-bottom: 15px;
   }
 
-  .text-end {
-    text-align: left;
+  button[ngbDropdownToggle]::after {
+    display: none;
+  }
+
+
+  .management-card {
+    border-left: 4px solid #0098DA;
+    border-right: none;
+    border-top: 1px solid #0098DA;
+    border-bottom: 1px solid #0098DA;
+    border-radius: 5px 0 0 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+
+  .card-create-icon {
+    i {
+      color: #0098DA;
+      width: 30px;
+    }
+  }
+
+  .card-create-icon i {
+    font-size: 2.5em;
+    cursor: pointer;
+    line-height: 1.1;
+  }
+
+  .button-color:focus {
+    box-shadow: none;
+  }
+
+  .fw-bold,
+  .button-color {
+    color: #0098DA;
+  }
+
+  span {
+    line-height: 1.5;
+  }
+
+  .text-danger {
+    color: red;
+  }
+
+  .text-success {
+    color: green;
+  }
+
+  .dropdown-menu {
+    min-width: auto;
+  }
+
+  .dropdown-menu-end {
+    right: 0;
+    left: auto;
+  }
+
+  .menu-icon {
+    background-color: #EDF1F7;
+  }
+
+  .menu-icon:hover {
+    background-color: #E4E9F2;
+    cursor: pointer;
+  }
+
+  @media (max-width: 991px) {
+    .row {
+      margin-bottom: 15px;
+    }
+
+    .text-end {
+      text-align: left;
+    }
   }
 }
 
 form {
   display: flex;
   flex-direction: column;
-  border: 1px solid #0098da;
+  border: 1px solid #0098DA;
   border-radius: 5px;
   padding: 20px;
   margin: 20px auto;
@@ -96,7 +170,8 @@ p {
 
 .form-label {
   font-weight: bold;
-  color: #0098da; /* Azul escuro */
+  color: #0098da;
+  /* Azul escuro */
 }
 
 .form-control {
@@ -109,8 +184,10 @@ p {
 }
 
 .form-control:focus {
-  border-color: #0098da; /* Azul */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra azul ao focar */
+  border-color: #0098da;
+  /* Azul */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  /* Sombra azul ao focar */
 }
 
 .row {
@@ -118,7 +195,8 @@ p {
 }
 
 .btn-secondary {
-  background-color: #dc3545; /* Vermelho */
+  background-color: #dc3545;
+  /* Vermelho */
   border-color: #dc3545;
   color: #fff;
 }
@@ -163,21 +241,22 @@ p {
   margin-top: 20px;
 }
 
+
 .organizer-card {
-  border-left: 4px solid #0098da;
+  border-left: 4px solid #0098DA;
   border-right: none;
-  border-top: 1px solid #0098da;
-  border-bottom: 1px solid #0098da;
+  border-top: 1px solid #0098DA;
+  border-bottom: 1px solid #0098DA;
   border-radius: 5px 0 0 5px;
   padding: 15px;
   margin-bottom: 10px !important;
 }
 
 .challenge-card {
-  border-left: 4px solid #0098da;
+  border-left: 4px solid #0098DA;
   border-right: none;
-  border-top: 1px solid #0098da;
-  border-bottom: 1px solid #0098da;
+  border-top: 1px solid #0098DA;
+  border-bottom: 1px solid #0098DA;
   border-radius: 5px 0 0 5px;
   padding: 15px;
   margin-bottom: 10px !important;
@@ -240,6 +319,24 @@ p {
   visibility: visible;
   opacity: 1;
 }
+
+.highlight {
+  animation: pulse 2s ease-in-out;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    background-color: transparent;
+  }
+
+  40%,
+  60% {
+    background-color: rgba(var(--primary-rgb), 0.2);
+  }
+}
+
 
 
 /* Tema claro */
