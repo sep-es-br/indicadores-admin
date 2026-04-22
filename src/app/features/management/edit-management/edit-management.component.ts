@@ -94,27 +94,27 @@ export class EditManagementComponent implements OnInit {
           organizerList,
         } = res;
 
-          this.form.patchValue({
-            name,
-            active,
-            startYear,
-            endYear,
-            description,
-            id,
-          });
+        this.form.patchValue({
+          name,
+          active,
+          startYear,
+          endYear,
+          description,
+          id,
+        });
 
-          const names: string[] = Array.isArray(modelName)
-            ? modelName
-            : modelName?.split(",") || [];
+        const names: string[] = Array.isArray(modelName)
+          ? modelName
+          : modelName?.split(",") || [];
 
-          const namesPlural: string[] = Array.isArray(modelNameInPlural)
-            ? modelNameInPlural
-            : modelNameInPlural?.split(",") || [];
+        const namesPlural: string[] = Array.isArray(modelNameInPlural)
+          ? modelNameInPlural
+          : modelNameInPlural?.split(",") || [];
 
-          this.structureList = this.buildHierarchy(names, namesPlural);
+        this.structureList = this.buildHierarchy(names, namesPlural);
 
-          this.blockedTypes.clear();
-          this.checkBlockedTypes(organizerList);
+        this.blockedTypes.clear();
+        this.checkBlockedTypes(organizerList);
       });
     });
   }
@@ -127,23 +127,23 @@ export class EditManagementComponent implements OnInit {
   }
 
   checkBlockedTypes(list: any[]) {
-  list.forEach(item => {
+    list.forEach(item => {
 
-    if (item.children?.length) {
-      this.blockedTypes.add(item.typeOrganizer);
-    }
+      if (item.children?.length) {
+        this.blockedTypes.add(item.typeOrganizer);
+      }
 
-    if (item.challengeList?.length) {
-      this.blockedTypes.add(item.typeOrganizer);
-    }
+      if (item.challengeList?.length) {
+        this.blockedTypes.add(item.typeOrganizer);
+      }
 
-    if (item.children?.length) {
-      this.checkBlockedTypes(item.children);
-    }
+      if (item.children?.length) {
+        this.checkBlockedTypes(item.children);
+      }
 
-  });
+    });
 
-}
+  }
 
   // ngOnInit(): void {
   //   const state = history.state ?? {};
@@ -366,6 +366,7 @@ export class EditManagementComponent implements OnInit {
   }
 
   addChildStructure(item: IStructureChild): void {
+    console.log("dados passados", item)
     this.managementService.hasChallenge(this.form.value.id).subscribe({
       next: (res) => {
         if (res.possuiDesafio) {
@@ -397,6 +398,7 @@ export class EditManagementComponent implements OnInit {
       },
     });
   }
+
   deleteItemStructure(targetArray: any[], item: any): void {
     const index = targetArray.indexOf(item);
 
