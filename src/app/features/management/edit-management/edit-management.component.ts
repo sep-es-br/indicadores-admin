@@ -366,7 +366,6 @@ export class EditManagementComponent implements OnInit {
   }
 
   addChildStructure(item: IStructureChild): void {
-    console.log("dados passados", item)
     this.managementService.hasChallenge(this.form.value.id).subscribe({
       next: (res) => {
         if (res.possuiDesafio) {
