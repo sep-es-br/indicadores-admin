@@ -8,10 +8,10 @@ p {
 .form-container {
   display: flex;
   flex-direction: column;
-  border: 1px solid #0098DA; 
-  border-radius: 5px; 
-  padding: 20px; 
-  margin: 20px auto; 
+  border: 1px solid #0098DA;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 20px auto;
 }
 
 .form-row {
@@ -98,7 +98,7 @@ text-align: center;
 }
 
 .btn {
-margin-right: 8px; 
+margin-right: 8px;
 }
 
 .btn:last-child{
@@ -125,14 +125,14 @@ nb-option-list.size-medium nb-option {
 
 ::ng-deep nb-option.selected{
   background-color: #0098DA !important;
-  color:#fff !important;  
+  color:#fff !important;
 }
 
 ::ng-deep nb-select .select-button {
-  background-color: #fff !important;  
-  border-color: #ccc !important;     
+  background-color: #fff !important;
+  border-color: #ccc !important;
   color: #333 !important;
-  
+
   span{
   color :#495057;
   font-size: 1rem;
@@ -140,7 +140,7 @@ nb-option-list.size-medium nb-option {
   }
 
   &:focus {
-    border-color: #0098DA !important;  
+    border-color: #0098DA !important;
   }
 
 }

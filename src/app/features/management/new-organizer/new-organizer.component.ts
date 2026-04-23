@@ -14,11 +14,11 @@ import { iconList } from '../../../core/interfaces/iconlist';
   templateUrl: './new-organizer.component.html',
   styleUrls: ['./new-organizer.component.scss']
 })
-export class NewOrganizerComponent implements OnInit{
+export class NewOrganizerComponent implements OnInit {
 
   public breadcrumb: Array<IBreadcrumbItem> = [];
 
-  managementInfo: IManagementInfo = { name: '', id: '', modelName: '' }; 
+  managementInfo: IManagementInfo = { name: '', administratorId: '', modelName: '', modelNameInPlural: '' };
 
   organizerList: IOrganizerItem[] = [];
 
@@ -33,24 +33,31 @@ export class NewOrganizerComponent implements OnInit{
   newItem: IOrganizerItem = {
     name: '',
     description: '',
+    modelName: this.managementInfo.modelName,
+    modelNameInPlural: this.managementInfo.modelNameInPlural || '',
     icon: '',
     editable: true,
   };
 
   iconList = iconList.map(icon => ({
     value: icon.nome,
-    label: icon.palavras_chave[0] 
+    label: icon.palavras_chave[0]
   }));
 
-  constructor(private organizerService: OrganizerService, private route: ActivatedRoute,  private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService) { 
-    
-  }
+  constructor(
+    private organizerService: OrganizerService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toastrService: NbToastrService,
+    private dialogService: NbDialogService
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.managementInfo.id = params['id'];
+      this.managementInfo.administratorId = params['administratorId'];
       this.managementInfo.name = params['name'];
       this.managementInfo.modelName = params['modelName'];
+      this.managementInfo.modelNameInPlural = params['modelNameInPlural'] || '';
       this.managementInfo.parentOrganizerId = params['parentOrganizerId'] || '';
     });
     this.updateBreadcrumb()
@@ -82,32 +89,38 @@ export class NewOrganizerComponent implements OnInit{
       },
     ];
   }
-  
+
   toggleEditable(item: IOrganizerItem): void {
     item.editable = !item.editable;
 
     if (!item.editable) {
-        if (!item.name || !item.description) {
-          this.toastrService.show('', 'Por favor, preencha o Nome e a Descrição antes de salvar.', {
-            status: 'warning',
-            duration: 8000,
-          });
-          item.editable = !item.editable;
-          return; 
-        }
+      if (!item.name || !item.description) {
+        this.toastrService.show('', 'Por favor, preencha o Nome e a Descrição antes de salvar.', {
+          status: 'warning',
+          duration: 8000,
+        });
+        item.editable = !item.editable;
+        return;
+      }
     }
   }
 
   addNewItem(): void {
     if (this.newItem.name && this.newItem.description) {
+      this.newItem.modelName = this.managementInfo.modelName || "";
+      this.newItem.modelNameInPlural = this.managementInfo.modelNameInPlural || "";
+
       this.organizerList.push({ ...this.newItem, editable: false });
       this.resetNewItem();
     } else {
       let missingFields = [];
-      
+
       if (!this.newItem.name) missingFields.push('Nome');
       if (!this.newItem.description) missingFields.push('Descrição');
-  
+      // if(!this.newItem.icon) missingFields.push('Ícone');
+      // if(!this.newItem.modelName) missingFields.push('Model Name');
+      // if(!this.newItem.modelNameInPlural) missingFields.push('Model Name In Plural');
+
       this.toastrService.show(
         '',
         `Por favor, preencha todos os campos obrigatórios: ${missingFields.join(', ')}.`,
@@ -123,11 +136,13 @@ export class NewOrganizerComponent implements OnInit{
     this.newItem = {
       name: '',
       description: '',
+      modelName: this.managementInfo.modelName,
+      modelNameInPlural: this.managementInfo.modelNameInPlural || '',
       icon: '',
       editable: true,
     };
   }
-  
+
   deleteItem(targetArray: any[], item: any): void {
     const index = targetArray.indexOf(item);
     if (index > -1) {
@@ -149,7 +164,7 @@ export class NewOrganizerComponent implements OnInit{
         });
     }
   }
-  
+
 
   checkInvalidItems(items: IOrganizerItem[]): boolean {
     return items.some(item => {
@@ -159,13 +174,13 @@ export class NewOrganizerComponent implements OnInit{
       return false;
     });
   }
-  
+
 
   saveItems(): void {
     if (this.checkInvalidItems(this.organizerList)) {
       this.toastrService.show(
-        '', 
-        'Não é possível salvar. Existe algum item marcado como editável.', 
+        '',
+        'Não é possível salvar. Existe algum item marcado como editável.',
         { status: 'warning', duration: 8000 }
       );
       return;
@@ -173,8 +188,8 @@ export class NewOrganizerComponent implements OnInit{
 
     if (!this.organizerList || this.organizerList.length === 0) {
       this.toastrService.show(
-        '', 
-        'A lista de organizadores não pode estar vazia.', 
+        '',
+        'A lista de organizadores não pode estar vazia.',
         { status: 'warning', duration: 8000 }
       );
       return;
@@ -184,19 +199,19 @@ export class NewOrganizerComponent implements OnInit{
       this.organizerService.createOrganizerChildren(this.organizerList, this.managementInfo.parentOrganizerId).subscribe({
         next: () => {
           this.toastrService.show(
-            '', 
-            'Organizadores filhos salvos com sucesso!', 
+            '',
+            'Organizadores filhos salvos com sucesso!',
             { status: 'success', duration: 8000 }
           );
           this.router.navigate(['/pages/management']);
         },
       });
     } else {
-      this.organizerService.createOrganizer(this.organizerList, this.managementInfo.id).subscribe({
+      this.organizerService.createOrganizer(this.organizerList, this.managementInfo.administratorId).subscribe({
         next: () => {
           this.toastrService.show(
-            '', 
-            'Organizadores salvos com sucesso!', 
+            '',
+            'Organizadores salvos com sucesso!',
             { status: 'success', duration: 8000 }
           );
           this.router.navigate(['/pages/management']);
