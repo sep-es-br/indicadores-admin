@@ -1,44 +1,49 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { IManagement } from '../../core/interfaces/management.interface';
-import { ManagementService } from '../../core/service/management.service';
-import { IBreadcrumbItem } from '../../core/interfaces/breadcrumb-item.interface';
-import { IPaginacaoDados } from '../../core/interfaces/paginacao-dados.interface';
-import { IHttpGetRequestBody } from '../../core/interfaces/http-get.interface';
-import { Observable, BehaviorSubject} from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../@theme/components/confirmation-dialog/ConfirmationDialog.component';
-import { IOrganizerAdmin } from '../../core/interfaces/organizer.interface';
-import { OrganizerService } from '../../core/service/organizer.service';
-import { ChallengeService } from '../../core/service/challenge.service';
+import { Component, OnInit, Renderer2 } from "@angular/core";
+import { IManagement } from "../../core/interfaces/management.interface";
+import { ManagementService } from "../../core/service/management.service";
+import { IBreadcrumbItem } from "../../core/interfaces/breadcrumb-item.interface";
+import { IPaginacaoDados } from "../../core/interfaces/paginacao-dados.interface";
+import { IHttpGetRequestBody } from "../../core/interfaces/http-get.interface";
+import { Observable, BehaviorSubject } from "rxjs";
+import { finalize, tap } from "rxjs/operators";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
+import { Router } from "@angular/router";
+import { ConfirmationDialogComponent } from "../../@theme/components/confirmation-dialog/ConfirmationDialog.component";
+import { IOrganizerAdmin } from "../../core/interfaces/organizer.interface";
+import { OrganizerService } from "../../core/service/organizer.service";
+import { ChallengeService } from "../../core/service/challenge.service";
 
+interface INewOrganizerParams {
+  id: string;
+  modelNameInPlural?: string;
+  modelName: string;
+  parentOrganizerId?: string;
+}
 
 @Component({
-  selector: 'ngx-management',
-  templateUrl: './management.component.html',
-  styleUrls: ['./management.component.scss']
+  selector: "ngx-management",
+  templateUrl: "./management.component.html",
+  styleUrls: ["./management.component.scss"],
 })
-export class ManagementComponent implements OnInit{
-
+export class ManagementComponent implements OnInit {
   private _pageConfig: IHttpGetRequestBody = {
     page: 0,
-    search: '',
+    search: "",
     size: 8,
-    sort: '',
+    sort: "",
   };
 
   private _managementList: BehaviorSubject<Array<IManagement>> =
-  new BehaviorSubject<Array<IManagement>>([]);
+    new BehaviorSubject<Array<IManagement>>([]);
 
   public get managementList(): Observable<Array<IManagement>> {
     return this._managementList;
   }
 
   selectedManagement: IManagement = {
-    id: '',
-    name: '',
-    description: '',
+    id: "",
+    name: "",
+    description: "",
     startYear: 0,
     endYear: 0,
     active: false,
@@ -60,60 +65,69 @@ export class ManagementComponent implements OnInit{
     totalRegistros: 50,
   };
 
-  constructor(private managementService: ManagementService, private organizerService: OrganizerService, private challengeService: ChallengeService,
-    private _r2: Renderer2, private router: Router, private toastrService: NbToastrService, private dialogService: NbDialogService,) {
-  }
+  constructor(
+    private managementService: ManagementService,
+    private organizerService: OrganizerService,
+    private challengeService: ChallengeService,
+    private _r2: Renderer2,
+    private router: Router,
+    private toastrService: NbToastrService,
+    private dialogService: NbDialogService
+  ) { }
 
   ngOnInit(): void {
     this.fetchPage();
-
   }
-
 
   private fetchPage(pageConfigParam?: {
     [K in keyof IHttpGetRequestBody]?: IHttpGetRequestBody[K];
   }): void {
     const tempPageConfig = { ...this._pageConfig, ...pageConfigParam };
 
-    this.managementService.getManagements(tempPageConfig).pipe(tap((response) => {
-      this._managementList.next(response.content);
-      this.paginacaoDados = {
-        paginaAtual: response.page.number + 1,
-        itensPorPagina: response.page.size,
-        primeiroItemPagina: response.page.number * response.page.size + 1,
-        ultimoItemPagina: response.page.number * response.page.size + response.content.length,
-        totalRegistros: response.page.totalElements,
-      };
-    }),
-    finalize(() => (this.loading = false, this.updateBreadcrumb()))
-  )
-  .subscribe();
-
+    this.managementService
+      .getManagements(tempPageConfig)
+      .pipe(
+        tap((response) => {
+          this._managementList.next(response.content);
+          this.paginacaoDados = {
+            paginaAtual: response.page.number + 1,
+            itensPorPagina: response.page.size,
+            primeiroItemPagina: response.page.number * response.page.size + 1,
+            ultimoItemPagina:
+              response.page.number * response.page.size +
+              response.content.length,
+            totalRegistros: response.page.totalElements,
+          };
+        }),
+        finalize(() => ((this.loading = false), this.updateBreadcrumb()))
+      )
+      .subscribe();
   }
 
   toggleManagement(management: any) {
-    this.expandedManagement = this.expandedManagement === management ? null : management;
+    this.expandedManagement =
+      this.expandedManagement === management ? null : management;
   }
 
   public deleteManagement(managementId: string): void {
     this.dialogService
       .open(ConfirmationDialogComponent, {
         context: {
-          title: 'Confirmação',
-          message: 'Tem certeza de que deseja excluir esta gestão?',
+          title: "Confirmação",
+          message: "Tem certeza de que deseja excluir esta gestão?",
         },
       })
       .onClose.subscribe((confirmed: boolean) => {
         if (confirmed) {
-          this.managementService.deleteManagement(managementId)
-            .subscribe({
-              next: () => {this.toastrService.show(
-                '', 'Gestão deletada com sucesso!',
-                { status: 'success', duration: 8000 }
-              );
+          this.managementService.deleteManagement(managementId).subscribe({
+            next: () => {
+              this.toastrService.show("", "Gestão deletada com sucesso!", {
+                status: "success",
+                duration: 8000,
+              });
               this.fetchPage();
-            }
-            });
+            },
+          });
         }
       });
   }
@@ -122,22 +136,21 @@ export class ManagementComponent implements OnInit{
     this.dialogService
       .open(ConfirmationDialogComponent, {
         context: {
-          title: 'Confirmação',
-          message: 'Tem certeza de que deseja excluir este organizador?',
+          title: "Confirmação",
+          message: "Tem certeza de que deseja excluir este organizador?",
         },
       })
       .onClose.subscribe((confirmed: boolean) => {
         if (confirmed) {
-          this.organizerService.deleteOrganizer(organizerId)
-            .subscribe({
-              next: () => {
-                this.toastrService.show(
-                  '', 'Organizador deletado com sucesso!',
-                  { status: 'success', duration: 8000 }
-                );
-                this.fetchPage();
-              }
-            });
+          this.organizerService.deleteOrganizer(organizerId).subscribe({
+            next: () => {
+              this.toastrService.show("", "Organizador deletado com sucesso!", {
+                status: "success",
+                duration: 8000,
+              });
+              this.fetchPage();
+            },
+          });
         }
       });
   }
@@ -146,33 +159,30 @@ export class ManagementComponent implements OnInit{
     this.dialogService
       .open(ConfirmationDialogComponent, {
         context: {
-          title: 'Confirmação',
-          message: 'Tem certeza de que deseja excluir este desafio?',
+          title: "Confirmação",
+          message: "Tem certeza de que deseja excluir este desafio?",
         },
       })
       .onClose.subscribe((confirmed: boolean) => {
         if (confirmed) {
-          this.challengeService.deleteChallenge(challengeId)
-            .subscribe({
-              next: () => {
-                this.toastrService.show(
-                  '', 'Desafio deletado com sucesso!',
-                  { status: 'success', duration: 8000 }
-                );
-                this.fetchPage();
-              }
-            });
+          this.challengeService.deleteChallenge(challengeId).subscribe({
+            next: () => {
+              this.toastrService.show("", "Desafio deletado com sucesso!", {
+                status: "success",
+                duration: 8000,
+              });
+              this.fetchPage();
+            },
+          });
         }
       });
   }
-
-
 
   public filtroPesquisaOutputEvent(filtro: string): void {
     this._pageConfig.search = filtro;
 
     if (!filtro) {
-      this._pageConfig.sort = '';
+      this._pageConfig.sort = "";
       this.limparSortColumn();
     }
 
@@ -184,18 +194,17 @@ export class ManagementComponent implements OnInit{
   }
 
   updateBreadcrumb() {
-		this.breadcrumb = [
-			{
-				label: 'Gestão Administrativa',
-			},
-
-		];
-	}
+    this.breadcrumb = [
+      {
+        label: "Gestão Administrativa",
+      },
+    ];
+  }
 
   private limparSortColumn(): void {
-    document.querySelectorAll('th[ng-reflect-sortable]').forEach((el) => {
-      this._r2.removeClass(el, 'asc');
-      this._r2.removeClass(el, 'desc');
+    document.querySelectorAll("th[ng-reflect-sortable]").forEach((el) => {
+      this._r2.removeClass(el, "asc");
+      this._r2.removeClass(el, "desc");
     });
   }
 
@@ -203,7 +212,9 @@ export class ManagementComponent implements OnInit{
     if (management.modelName == null || management.modelNameInPlural == null) {
       this.populateModelName(management);
     }
-    this.router.navigate(['/pages/management/edit'], { queryParams: management });
+    this.router.navigate(["/pages/management/edit"], {
+      queryParams: management,
+    });
   }
 
   populateModelName(management: IManagement) {
@@ -229,18 +240,37 @@ export class ManagementComponent implements OnInit{
   }
 
   editOrganizer(organizerId: string): void {
-    this.router.navigate(['/pages/management/edit-organizer'], { queryParams: { id: organizerId } });
+    this.router.navigate(["/pages/management/edit-organizer"], {
+      queryParams: { id: organizerId },
+    });
   }
 
   editChallenge(challengeId: string): void {
-    this.router.navigate(['/pages/management/edit-challenge'], { queryParams: { id: challengeId } });
+    this.router.navigate(["/pages/management/edit-challenge"], {
+      queryParams: { id: challengeId },
+    });
   }
 
-  newOrganizer(administrationId: string, administrationName: string, modelName: string, parentOrganizerId?: string): void {
-    if(modelName == 'Desafio'){
-      this.router.navigate(['/pages/management/new-challenge'], { queryParams: { modelName: modelName, parentOrganizerId: parentOrganizerId } });
-    }else{
-      this.router.navigate(['/pages/management/new-organizer'], { queryParams: { id: administrationId, name: administrationName, modelName: modelName, parentOrganizerId: parentOrganizerId } });
+  newOrganizer(newOrganizer: INewOrganizerParams): void {
+    if (newOrganizer.modelName == "Desafio") {
+      this.router.navigate(["/pages/management/new-challenge"], {
+        queryParams: {
+          modelName: newOrganizer.modelName,
+          parentOrganizerId: newOrganizer.parentOrganizerId,
+        },
+      });
+    } else {
+      this.router.navigate(["/pages/management/new-organizer"], {
+        queryParams: {
+          administratorId: newOrganizer.id,
+          modelName:
+            Array.isArray(newOrganizer.modelName) && newOrganizer.modelName[0]
+              ? newOrganizer.modelName?.[0]
+              : newOrganizer.modelName,
+          modelNameInPlural: newOrganizer.modelNameInPlural?.[0],
+          parentOrganizerId: newOrganizer.parentOrganizerId,
+        },
+      });
     }
   }
 
@@ -248,5 +278,4 @@ export class ManagementComponent implements OnInit{
     event.stopPropagation();
     item.isExpanded = !item.isExpanded;
   }
-
 }
