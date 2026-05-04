@@ -67,12 +67,7 @@ export class EditManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // const state = history.state ?? {};
 
-    // const organizerList = state.organizerList;
-    // const idState = state.id;
-
-    // console.log("organizerList:", organizerList);
 
     this.route.queryParams.subscribe((params) => {
       const { id } = params;
@@ -144,58 +139,7 @@ export class EditManagementComponent implements OnInit {
     });
 
   }
-
-  // ngOnInit(): void {
-  //   const state = history.state ?? {};
-
-  //   const organizerList = state.organizerList;
-  //   const idState = state.organizerList.id;
-
-  //   console.log("organizerList:", organizerList);
-
-  //   this.hasOrganizerList =
-  //     Array.isArray(organizerList) && organizerList.length > 0;
-
-  //   this.route.queryParams.subscribe((params) => {
-  //     const {
-  //       name,
-  //       active,
-  //       startYear,
-  //       endYear,
-  //       description,
-  //       id,
-  //       modelName,
-  //       modelNameInPlural,
-  //     } = params;
-
-  //     const finalId = id ?? idState;
-
-  //     if (!finalId) {
-  //       // this.router.navigate(["/pages/management"]);
-  //       return;
-  //     }
-
-  //     this.form.patchValue({
-  //       name,
-  //       active,
-  //       startYear,
-  //       endYear,
-  //       description,
-  //       id: finalId,
-  //     });
-
-  //     const names: string[] = Array.isArray(modelName)
-  //       ? modelName
-  //       : modelName?.split(",") || [];
-
-  //     const namesPlural: string[] = Array.isArray(modelNameInPlural)
-  //       ? modelNameInPlural
-  //       : modelNameInPlural?.split(",") || [];
-
-  //     this.structureList = this.buildHierarchy(names, namesPlural);
-  //   });
-  // }
-
+  
   private buildHierarchy(
     names: string[],
     namesPlural: string[],
@@ -228,7 +172,6 @@ export class EditManagementComponent implements OnInit {
 
   onCancel(): void {
     this.form.reset();
-    console.log("dasdad")
     this.router.navigate(["/pages/management"]);
   }
 

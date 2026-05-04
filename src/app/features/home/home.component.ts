@@ -21,9 +21,6 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.route.queryParams.subscribe(params => {
-    //   console.log('ID:', params['id']); // Exibe no console para teste
-    // });
     this.getOdsInfo(1)
   }
 
