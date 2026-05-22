@@ -196,8 +196,14 @@
           <span *ngIf="selectedPdfFile" class="file-name">{{
             selectedPdfFile.name
           }}</span>
+          <span
+          *ngIf="!selectedPdfFile && existingPdfFileName"
+          class="file-name"
+        >
+          {{ existingPdfFileName }}
+        </span>
           <button
-            *ngIf="selectedPdfFile"
+            *ngIf="selectedPdfFile  || existingPdfFileName"
             type="button"
             nbButton
             status="danger"
