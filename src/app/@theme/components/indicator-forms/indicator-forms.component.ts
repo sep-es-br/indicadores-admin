@@ -482,7 +482,6 @@ export class IndicatorFormsComponent implements OnInit, OnDestroy {
   }
 
   addNewYearRow(year: number, type: string) {
-    console.log("Adicionando novo período:", { year, type });
     const inputYear = Number(year);
     const normalizedType =
       String(type || "")
